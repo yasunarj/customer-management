@@ -16,6 +16,7 @@ import {
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Textarea } from "../ui/textarea";
+import DateSelect from "../dateSelect/DateSelect";
 
 const newReservationSchema = z.object({
   name: z.string().min(1, "名前を入力してください"),
@@ -23,24 +24,22 @@ const newReservationSchema = z.object({
     .string()
     .regex(/^\d{10,11}$/, "10桁または11桁の数字を入力してください"),
   productName: z.string().min(1, "商品名を入力してください"),
-  price: z.string().refine((value) => !isNaN(Number(value)), "正しい数字を入力してください"),
-  reservationDate: z
+  price: z
     .string()
-    .refine(
-      (value) => !isNaN(Date.parse(value)),
-      "正しい日付を入力してください"
-    ),
-  deliveryDate: z
-    .string()
-    .refine(
-      (value) => !isNaN(Date.parse(value)),
-      "正しい日付を入力してください"
-    ),
+    .min(1, "価格を入力してください")
+    .refine((value) => !isNaN(Number(value)), "正しい数字を入力してください"),
 });
 
 const CreateForm = ({ type }: { type: string }) => {
-  const [ errorMessage, setErrorMessage ] = useState<string>("");
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [reservationYear, setReservationYear] = useState<number>(2025);
+  const [reservationMonth, setReservationMonth] = useState<number>(1);
+  const [reservationDay, setReservationDay] = useState<number>(1);
+  const [deliveryYear, setDeliveryYear] = useState<number>(2025);
+  const [deliveryMonth, setDeliveryMonth] = useState<number>(1);
+  const [deliveryDay, setDeliveryDay] = useState<number>(1);
   const router = useRouter();
+  
   const form = useForm({
     resolver: zodResolver(newReservationSchema),
     defaultValues: {
@@ -48,13 +47,17 @@ const CreateForm = ({ type }: { type: string }) => {
       phone: "",
       productName: "",
       price: "",
-      reservationDate: "",
-      deliveryDate: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof newReservationSchema>) => {
-    const sendData = {...values, type};
+    const reservationDate = new Date(
+      reservationYear,
+      reservationMonth - 1,
+      reservationDay
+    );
+    const deliveryDate = new Date(deliveryYear, deliveryMonth - 1, deliveryDay);
+    const sendData = { ...values, type, reservationDate, deliveryDate };
     try {
       const response = await fetch("/api/reservation", {
         method: "POST",
@@ -68,7 +71,7 @@ const CreateForm = ({ type }: { type: string }) => {
       } else {
         setErrorMessage("登録できませんでした");
         console.error("Error creating reservation");
-      } 
+      }
     } catch (e) {
       setErrorMessage("登録できませんでした");
       console.error("NeTwork error:", e);
@@ -80,11 +83,13 @@ const CreateForm = ({ type }: { type: string }) => {
       <div className="h-[98%] w-[80%] flex justify-center">
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col items-center px-6 py-6 w-full h-auto gap-4 rounded-md shadow-2xl bg-white"
+          className="flex flex-col items-center px-6 py-6 w-full h-auto gap-6 rounded-md shadow-2xl bg-white"
         >
-          <h2 className="text-xl sm:text-3xl text-gray-800 font-semibold">予約フォーム</h2>
+          <h2 className="text-xl sm:text-3xl text-gray-800 font-semibold">
+            予約フォーム
+          </h2>
           <div className="w-full space-y-3 sm:space-y-0 sm:flex sm:w-[80%] sm:h-full sm:justify-center sm:gap-8 sm:p-4">
-            <div className="flex flex-col gap-3 sm:w-[45%] sm:gap-12">
+            <div className="flex flex-col gap-3 sm:w-[45%] sm:gap-16">
               <FormField
                 control={form.control}
                 name="name"
@@ -124,7 +129,8 @@ const CreateForm = ({ type }: { type: string }) => {
                 )}
               />
             </div>
-            <div className="flex flex-col gap-3 sm:w-[45%] sm:gap-12">
+
+            <div className="flex flex-col gap-3 sm:w-[45%] sm:gap-16">
               <FormField
                 control={form.control}
                 name="productName"
@@ -162,47 +168,30 @@ const CreateForm = ({ type }: { type: string }) => {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="reservationDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-md sm:text-lg">
-                      予約受付日時
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="p-1 sm:p-2 text-sm sm:text-lg"
-                        placeholder="20xx/xx/xx"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="text-red-500 text-sm" />
-                  </FormItem>
-                )}
+
+              <DateSelect
+                title="予約年月日"
+                setYear={setReservationYear}
+                setMonth={setReservationMonth}
+                setDay={setReservationDay}
+                year={reservationYear}
+                month={reservationMonth}
+                day={reservationDay}
               />
-              <FormField
-                control={form.control}
-                name="deliveryDate"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-md sm:text-lg">
-                      お渡し日時
-                    </FormLabel>
-                    <FormControl>
-                      <Input
-                        className="p-1 sm:p-2 text-sm sm:text-lg"
-                        placeholder="20xx/xx/xx"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage className="text-red-500 text-sm" />
-                  </FormItem>
-                )}
+              <DateSelect
+                title="お渡し年月日"
+                setYear={setDeliveryYear}
+                setMonth={setDeliveryMonth}
+                setDay={setDeliveryDay}
+                year={deliveryYear}
+                month={deliveryMonth}
+                day={deliveryDay}
               />
             </div>
           </div>
-          { errorMessage && <div className="text-sm text-red-500">{errorMessage}</div> }
+          {errorMessage && (
+            <div className="text-sm text-red-500">{errorMessage}</div>
+          )}
           <Button className="w-[50%] bg-gray-800 sm:w-[30%] font-semibold sm:text-lg sm:p-5">
             登録する
           </Button>
