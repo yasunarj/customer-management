@@ -1,4 +1,4 @@
-import { FormItem, FormLabel } from "../ui/form";
+
 import { Select, SelectTrigger, SelectContent, SelectItem } from "../ui/select";
 
 const years = Array.from(
@@ -9,7 +9,7 @@ const months = Array.from({ length: 12 }, (_, index) => index + 1);
 const days = Array.from({ length: 31 }, (_, index) => index + 1);
 
 interface DateSelectProps {
-  title: string,
+  title?: string,
   setYear: (year: number) => void;
   setMonth: (month: number) => void;
   setDay: (day: number) => void;
@@ -21,12 +21,13 @@ interface DateSelectProps {
 const DateSelect = ({title, setYear, setMonth, setDay, year, month, day}: DateSelectProps) => {
   return (
     <>
-      <div className="flex flex-col gap-2">
-        <h2 className="text-md sm:text-lg">{title}</h2>
+      <div className="flex flex-col gap-2 justify-center">
+        { title && <h2 className="text-md sm:text-lg">{title}</h2> }
         <div className="w-full flex gap-3">
-          <FormItem className="flex gap-1">
+          <div className="flex gap-1 items-center">
             <Select
               onValueChange={(value) => setYear(Number(value))}
+              defaultValue={String(year)}
             >
               <SelectTrigger>{year}</SelectTrigger>
               <SelectContent className="max-h-[180px]">
@@ -37,11 +38,12 @@ const DateSelect = ({title, setYear, setMonth, setDay, year, month, day}: DateSe
                 ))}
               </SelectContent>
             </Select>
-            <FormLabel className="pt-[3px]">年</FormLabel>
-          </FormItem>
-          <FormItem className="flex gap-1">
+            <span className="pt-[3px]">年</span>
+          </div>
+          <div className="flex gap-1 items-center">
             <Select
               onValueChange={(value) => setMonth(Number(value))}
+              defaultValue={String(month)}
             >
               <SelectTrigger>{month}</SelectTrigger>
               <SelectContent className="max-h-[180px]">
@@ -52,10 +54,11 @@ const DateSelect = ({title, setYear, setMonth, setDay, year, month, day}: DateSe
                 ))}
               </SelectContent>
             </Select>
-            <FormLabel className="pt-[3px]">月</FormLabel>
-          </FormItem>
-          <FormItem className="flex gap-1">
-            <Select onValueChange={(value) => setDay(Number(value))}>
+            <span className="pt-[3px]">月</span>
+          </div>
+          <div className="flex gap-1 items-center">
+            <Select onValueChange={(value) => setDay(Number(value))}
+              defaultValue={String(day)}>
               <SelectTrigger>{day}</SelectTrigger>
               <SelectContent className="max-h-[180px]">
                 {days.map((day) => (
@@ -65,8 +68,8 @@ const DateSelect = ({title, setYear, setMonth, setDay, year, month, day}: DateSe
                 ))}
               </SelectContent>
             </Select>
-            <FormLabel className="pt-[3px]">日</FormLabel>
-          </FormItem>
+            <span className="pt-[3px]">日</span>
+          </div>
         </div>
       </div>
     </>

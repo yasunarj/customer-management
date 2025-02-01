@@ -1,6 +1,5 @@
 "use client";
 import { Reservation } from "@/types/reservation";
-import { ReservationSchema } from "@/utils/validation";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -15,8 +14,10 @@ import { useState } from "react";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
 import DeleteButton from "../button/DeleteButton";
-import { getInitialFormData } from "@/utils/formUtils";
+import { ReservationSchema } from "@/utils/validation";
+import { getInitialFormData, getInitialFormDate } from "@/utils/formUtils";
 import { updateReservation } from "@/utils/api";
+import DateSelect from "../dateSelect/DateSelect";
 
 interface ReservationDetailCardProps {
   reservationData: Reservation;
@@ -29,26 +30,52 @@ const ReservationDetailCard = ({
 }: ReservationDetailCardProps) => {
   const router = useRouter();
   const originalData = getInitialFormData(reservationData);
+  const originalDate = getInitialFormDate(reservationData);
+
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [isSaving, setIsSaving] = useState<boolean>(false);
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [reservationYear, setReservationYear] = useState<number>(
+    reservationData.reservationDate.getFullYear()
+  );
+  const [reservationMonth, setReservationMonth] = useState<number>(
+    reservationData.reservationDate.getMonth() + 1
+  );
+  const [reservationDay, setReservationDay] = useState<number>(
+    reservationData.reservationDate.getDate()
+  );
+
+  const [deliveryYear, setDeliveryYear] = useState<number>(
+    reservationData.deliveryDate!.getFullYear()
+  );
+  const [deliveryMonth, setDeliveryMonth] = useState<number>(
+    reservationData.deliveryDate!.getMonth() + 1
+  );
+  const [deliveryDay, setDeliveryDay] = useState<number>(
+    reservationData.deliveryDate!.getDate()
+  );
+
   const [formData, setFormData] = useState({
     name: reservationData.customer.name,
     phone: reservationData.customer.phone,
     productName: reservationData.productName,
     price: reservationData.price.toString(),
-    reservationDate: new Date(
-      reservationData.reservationDate
-    ).toLocaleDateString(),
-    deliveryDate: reservationData.deliveryDate
-      ? new Date(reservationData.deliveryDate).toLocaleDateString()
-      : "未定",
   });
+
+
+  const resetDate = () => {
+    setReservationYear(originalDate.initialReservationYear);
+    setReservationMonth(originalDate.initialReservationMonth);
+    setReservationDay(originalDate.initialReservationDay);
+    setDeliveryYear(originalDate.initialDeliveryYear);
+    setDeliveryMonth(originalDate.initialDeliveryMonth);
+    setDeliveryDay(originalDate.initialDeliveryDay);
+  }
 
   const handleSave = async () => {
     const sanitizeFormData = Object.fromEntries(
       Object.entries(formData).map(([key, value]) => [key, value?.trim()])
-    )
+    );
     const result = ReservationSchema.safeParse(sanitizeFormData);
     if (!result.success) {
       const errors = result.error.format() as Record<
@@ -72,14 +99,17 @@ const ReservationDetailCard = ({
 
     try {
       setIsSaving(true);
-      await updateReservation(String(reservationData.id), formData);
+      const reservationDate = `${reservationYear}/${reservationMonth}/${reservationDay}`;
+      const deliveryDate = `${deliveryYear}/${deliveryMonth}/${deliveryDay}`;
+      const sendFormData = { ...formData, reservationDate, deliveryDate };
+      await updateReservation(String(reservationData.id), sendFormData);
       alert("登録しました");
       setFormErrors({});
       setIsEditing(false);
       router.refresh();
     } catch (e) {
       console.error("登録できませんでした", e);
-      alert(`更新に失敗しました${e}`);
+      alert(`更新に失敗しました:${e instanceof Error ? e.message : "不明なエラー"}`);
     } finally {
       setIsSaving(false);
     }
@@ -140,7 +170,7 @@ const ReservationDetailCard = ({
                 className={`w-[55%] p-2 rounded border ${
                   formErrors.phone ? "border-red-500" : ""
                 }`}
-                value={formData.phone ? formData.phone : ""}
+                value={formData.phone ?? ""}
                 onChange={handleInputChange}
               />
             ) : (
@@ -209,36 +239,35 @@ const ReservationDetailCard = ({
           <div className="flex justify-between items-center text-md mt-8">
             <strong className="sm:text-2xl text-gray-800">予約受付日時</strong>
             {isEditing ? (
-              <Input
-                name="reservationDate"
-                className={`w-[55%] p-2 rounded border ${
-                  formErrors.reservationDate ? "border-red-500" : ""
-                }`}
-                value={formData.reservationDate}
-                onChange={handleInputChange}
-              />
+              <div className="w-[55%]">
+                <DateSelect
+                  setYear={setReservationYear}
+                  setMonth={setReservationMonth}
+                  setDay={setReservationDay}
+                  year={reservationYear}
+                  month={reservationMonth}
+                  day={reservationDay}
+                />
+              </div>
             ) : (
               <div className="w-[55%] p-2 bg-gray-100 rounded border">{`${new Date(
                 reservationData.reservationDate
               ).toLocaleDateString()}`}</div>
             )}
           </div>
-          {formErrors.reservationDate && (
-            <p className="text-red-500 text-sm text-right mt-1">
-              {formErrors.reservationDate}
-            </p>
-          )}
           <div className="flex justify-between items-center text-md mt-8">
             <strong className="sm:text-2xl text-gray-800">お渡し日時</strong>
             {isEditing ? (
-              <Input
-                name="deliveryDate"
-                className={`w-[55%] p-2 rounded border ${
-                  formErrors.deliveryDate ? "border-red-500" : ""
-                }`}
-                value={formData.deliveryDate}
-                onChange={handleInputChange}
-              />
+              <div className="w-[55%]">
+                <DateSelect
+                  setYear={setDeliveryYear}
+                  setMonth={setDeliveryMonth}
+                  setDay={setDeliveryDay}
+                  year={deliveryYear}
+                  month={deliveryMonth}
+                  day={deliveryDay}
+                />
+              </div>
             ) : (
               <div className="w-[55%] p-2 bg-gray-100 rounded border">
                 {new Date(
@@ -249,11 +278,6 @@ const ReservationDetailCard = ({
               </div>
             )}
           </div>
-          {formErrors.deliveryDate && (
-            <p className="text-red-500 text-sm text-right mt-1">
-              {formErrors.deliveryDate}
-            </p>
-          )}
         </div>
       </CardContent>
       <CardFooter className="flex justify-center gap-12 font-semibold pt-4">
@@ -272,6 +296,8 @@ const ReservationDetailCard = ({
               className="text-lg"
               onClick={() => {
                 setFormErrors({});
+                setFormData(originalData);
+                resetDate();
                 setIsEditing(false);
               }}
             >
@@ -284,7 +310,6 @@ const ReservationDetailCard = ({
               variant="outline"
               className="black text-lg"
               onClick={() => {
-                setFormData(originalData);
                 setIsEditing(true);
               }}
             >

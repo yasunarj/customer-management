@@ -6,13 +6,18 @@ const getInitialFormData = (reservationData: Reservation) => {
     phone: reservationData.customer.phone,
     productName: reservationData.productName,
     price: reservationData.price.toString(),
-    reservationDate: new Date(
-      reservationData.reservationDate
-    ).toLocaleDateString(),
-    deliveryDate: reservationData.deliveryDate
-      ? new Date(reservationData.deliveryDate).toLocaleDateString()
-      : "未定",
   };
 };
 
-export { getInitialFormData };
+const getInitialFormDate = (reservationData: Reservation) => {
+  return {
+    initialReservationYear: reservationData.reservationDate.getFullYear(),
+    initialReservationMonth: reservationData.reservationDate.getMonth() + 1,
+    initialReservationDay: reservationData.reservationDate.getDate(),
+    initialDeliveryYear:  reservationData.deliveryDate!.getFullYear(),
+    initialDeliveryMonth: reservationData.deliveryDate!.getMonth() + 1,
+    initialDeliveryDay: reservationData.deliveryDate!.getDate()
+  }
+}
+
+export { getInitialFormData, getInitialFormDate };
