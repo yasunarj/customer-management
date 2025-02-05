@@ -17,6 +17,13 @@ interface SearchComponentProps {
 
 const searchSchema = z.object({
   name: z.string().min(1, "名前を入力してください"),
+  year: z
+    .string()
+    .optional()
+    .refine(
+      (value) => !value || (Number(value) >= 1000 && Number(value) <= 9999),
+      { message: "正しい西暦を入力してください" }
+    ),
 });
 
 const SearchComponent = ({
@@ -29,11 +36,13 @@ const SearchComponent = ({
     resolver: zodResolver(searchSchema),
     defaultValues: {
       name: "",
+      year: "",
     },
   });
 
   const onSubmit = async (values: z.infer<typeof searchSchema>) => {
     const sendData = { ...values, type };
+    console.log("デバック用", sendData);
     try {
       const response = await fetch(`/api/reservation/search`, {
         method: "POST",
@@ -55,7 +64,24 @@ const SearchComponent = ({
   return (
     <Form {...form}>
       <div className="flex items-center justify-center mt-2 p-1 gap-4">
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="flex gap-2">
+          <FormField
+            control={form.control}
+            name="year"
+            render={({ field }) => (
+              <FormItem>
+                <div className="">
+                  <FormControl>
+                    <Input
+                      className="px-1 text-sm sm:text-lg w-full"
+                      placeholder="西暦を入力"
+                      {...field}
+                    />
+                  </FormControl>
+                </div>
+              </FormItem>
+            )}
+          />
           <FormField
             control={form.control}
             name="name"
@@ -91,4 +117,3 @@ const SearchComponent = ({
 };
 
 export default SearchComponent;
-
