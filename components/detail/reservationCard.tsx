@@ -138,8 +138,8 @@ const ReservationDetailCard = ({
           一覧へ戻る
         </Link>
       </CardHeader>
-      <CardContent className="flex flex-1 justify-center items-center overflow-y-auto py-2">
-        <div className="flex flex-col mt-4 w-[70%]">
+      <CardContent className="flex flex-1 justify-center items-center overflow-y-auto">
+        <div className={`flex flex-col w-[70%] ${isEditing ? "" : "gap-4"}`}>
           <div className="flex justify-between items-center text-md">
             <strong className="sm:text-2xl text-gray-800">お名前</strong>
             {isEditing ? (

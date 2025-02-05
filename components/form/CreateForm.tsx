@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { z } from "zod";
@@ -22,7 +23,11 @@ const newReservationSchema = z.object({
   name: z.string().min(1, "名前を入力してください"),
   phone: z
     .string()
-    .regex(/^\d{10,11}$/, "10桁または11桁の数字を入力してください"),
+    .optional()
+    .refine(
+      (value) => !value || /^\d{10,11}$/.test(value),
+      "10桁または11桁の数字を入力してください"
+    ),
   productName: z.string().min(1, "商品名を入力してください"),
   price: z
     .string()
@@ -39,7 +44,7 @@ const CreateForm = ({ type }: { type: string }) => {
   const [deliveryMonth, setDeliveryMonth] = useState<number>(1);
   const [deliveryDay, setDeliveryDay] = useState<number>(1);
   const router = useRouter();
-  
+
   const form = useForm({
     resolver: zodResolver(newReservationSchema),
     defaultValues: {
@@ -80,7 +85,7 @@ const CreateForm = ({ type }: { type: string }) => {
 
   return (
     <Form {...form}>
-      <div className="h-[98%] w-[80%] flex justify-center">
+      <div className="h-[98%] w-[80%] flex justify-center relative">
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col items-center px-6 py-6 w-full h-auto gap-6 rounded-md shadow-2xl bg-white"
@@ -88,6 +93,12 @@ const CreateForm = ({ type }: { type: string }) => {
           <h2 className="text-xl sm:text-3xl text-gray-800 font-semibold">
             予約フォーム
           </h2>
+          <Link
+            href={`/admin/${type}/list`}
+            className="text-sm sm:text-lg absolute right-4 text-blue-600 hover:underline hover:underline-offset-2"
+          >
+            一覧へ戻る
+          </Link>
           <div className="w-full space-y-3 sm:space-y-0 sm:flex sm:w-[80%] sm:h-full sm:justify-center sm:gap-8 sm:p-4">
             <div className="flex flex-col gap-3 sm:w-[45%] sm:gap-16">
               <FormField

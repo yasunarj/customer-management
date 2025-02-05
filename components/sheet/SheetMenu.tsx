@@ -9,7 +9,11 @@ import {
   SheetTrigger,
 } from "../ui/sheet";
 
-const SheetMenu = ({ type }: { type: string }) => {
+interface SheetMenuProps {
+  menuList: {listName: string, link: string}[]
+}
+
+const SheetMenu = ({ menuList }: SheetMenuProps) => {
   return (
     <Sheet>
       <SheetTrigger>
@@ -23,18 +27,9 @@ const SheetMenu = ({ type }: { type: string }) => {
         </SheetHeader>
         <nav className="flex justify-center mt-8">
           <ul className="flex flex-col space-y-6 text-gray-700 font-semibold text-md sm:text-xl">
-            <li className="hover:text-blue-700 hover:underline hover:underline-offset-4 cursor-pointer">
-              <Link href={"/admin/dashboard"}>予約商材一覧へ</Link>
-            </li>
-            <li className="hover:text-blue-700 hover:underline hover:underline-offset-4 cursor-pointer">
-              <Link href={`/admin/${type}/new/`}>新規登録</Link>
-            </li>
-            <li className="hover:text-blue-700 hover:underline hover:underline-offset-4 cursor-pointer">
-              検索
-            </li>
-            <li className="hover:text-blue-700 hover:underline hover:underline-offset-4 cursor-pointer">
-              アタックリスト
-            </li>
+            { menuList.map((list) => {
+              return <li key={list.listName} className="hover:text-blue-700 hover:underline hover:underline-offset-4 cursor-pointer"><Link href={list.link}>{list.listName}</Link></li>
+            }) }
           </ul>
         </nav>
       </SheetContent>

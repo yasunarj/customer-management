@@ -30,7 +30,7 @@ const Header = () => {
     return () => {
       subscription?.subscription.unsubscribe();
     };
-  }, []);
+  }, [router, supabase.auth]);
 
   const handleLogout = async () => {
     setIsLoading(true);
@@ -41,7 +41,7 @@ const Header = () => {
     } else {
       alert("ログアウトしました");
       setIsLoading(false);
-    } 
+    }
   };
   return (
     <div className="bg-gradient-to-r from-green-800 via-green-500 to-green-700 h-[5vh]">
@@ -51,13 +51,16 @@ const Header = () => {
         </h2>
         <div className="flex items-center space-x-8 font-semibold">
           {isAuthenticated ? (
-            isLoading ? (<p>ログアウト中</p>) : (
-            <button
-              onClick={handleLogout}
-              className="text-sm sm:text-lg hover:underline hover:underline-offset-4"
-            >
-              ログアウト
-            </button> )
+            isLoading ? (
+              <p>ログアウト中</p>
+            ) : (
+              <button
+                onClick={handleLogout}
+                className="text-sm sm:text-lg hover:underline hover:underline-offset-4"
+              >
+                ログアウト
+              </button>
+            )
           ) : (
             <Link
               href={"/auth/login"}
