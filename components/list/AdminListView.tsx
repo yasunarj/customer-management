@@ -8,7 +8,6 @@ type ReservationListData = Reservation[] | undefined;
 
 import { useRouter } from "next/navigation"; //デバック
 
-
 const AdminListView = ({
   decodeType,
   reservations,
@@ -20,7 +19,7 @@ const AdminListView = ({
     { listName: `予約商材一覧へ`, link: `/admin/dashboard/` },
     { listName: `新規登録`, link: `/admin/${decodeType}/new/` },
     { listName: `アタックリスト`, link: `/admin/dashboard` },
-  ]
+  ];
   const [reservationsList, setReservationList] =
     useState<ReservationListData>(reservations);
   const [isSearched, setIsSearched] = useState<boolean>(false);
@@ -31,10 +30,10 @@ const AdminListView = ({
   if (!reservationsList || reservationsList.length === 0) {
     return (
       <div className="select-none h-[90vh] bg-center bg-cover flex justify-center items-center bg-[url('/images/istockphoto-1499955814-612x612.jpg')]">
-      <div className="overflow-y-auto w-[95%] h-[95%] bg-white rounded-xl shadow-4xl p-4 relative">
-        <h1 className="text-gray-800 text-xl sm:text-3xl font-bold text-center">
-          {decodeType}の予約一覧 (管理者用)
-        </h1>
+        <div className="overflow-y-auto w-[95%] h-[95%] bg-white rounded-xl shadow-4xl p-4 relative">
+          <h1 className="text-gray-800 text-xl sm:text-3xl font-bold text-center">
+            {decodeType}の予約一覧 (管理者用)
+          </h1>
           <div className="absolute top-4 right-4">
             <SheetMenu menuList={menuList} />
           </div>
@@ -45,7 +44,7 @@ const AdminListView = ({
               setIsSearched(true);
             }}
             isSearched={isSearched}
-            handleGetLists = { handleGetLists }
+            handleGetLists={handleGetLists}
           />
           <p className="h-[80%] flex justify-center items-center text-md sm:text-xl ">
             データがありません
@@ -89,7 +88,7 @@ const AdminListView = ({
             {reservationsList.map((reservation) => {
               return (
                 <tr key={reservation.id}>
-                  <td className="text-sm border border-gray-300 px-4 py-2 text-center">
+                  <td className="text-sm border border-gray-300 px-4 py-2 text-center min-w-[120px]">
                     {reservation.customer.name}
                   </td>
                   <td className="text-sm border border-gray-300 px-4 py-2 text-center">

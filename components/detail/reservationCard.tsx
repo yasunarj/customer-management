@@ -128,7 +128,7 @@ const ReservationDetailCard = ({
         <CardTitle className="sm:text-3xl text-gray-800 font-semibold text-center">
           {isEditing
             ? "編集モード"
-            : `${reservationData.customer.name}様の予約状況`}
+            : `${reservationData.customer.name} 様の予約状況`}
         </CardTitle>
 
         <Link
