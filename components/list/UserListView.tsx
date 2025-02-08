@@ -86,7 +86,9 @@ const UserListView = ({
             {reservationList.map((reservation) => (
               <tr key={reservation.id}>
                 <td className="text-sm border border-gray-300 px-4 py-2 text-center">
+                  <Link href={`/user/${decodeType}/customer/${reservation.customer.name}/history`}>
                   {reservation.customer.name}
+                  </Link>
                 </td>
                 <td className="text-sm border border-gray-300 px-4 py-2 text-center">
                   {reservation.customer.phone}
@@ -108,7 +110,7 @@ const UserListView = ({
                   {new Date(reservation.reservationDate).toLocaleDateString()}
                 </td>
                 <td className="text-sm border border-gray-300 px-4 py-2 text-center">
-                  {new Date(reservation.reservationDate).toLocaleDateString()}
+                  {new Date(reservation.deliveryDate!).toLocaleDateString()}
                 </td>
                 <td className="text-sm border border-gray-300 px-4 py-2 text-center">
                   <Link

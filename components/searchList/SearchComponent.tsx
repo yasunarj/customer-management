@@ -16,7 +16,7 @@ interface SearchComponentProps {
 }
 
 const searchSchema = z.object({
-  name: z.string().min(1, "名前を入力してください"),
+  name: z.string().optional(),
   year: z
     .string()
     .optional()
@@ -42,7 +42,6 @@ const SearchComponent = ({
 
   const onSubmit = async (values: z.infer<typeof searchSchema>) => {
     const sendData = { ...values, type };
-    console.log("デバック用", sendData);
     try {
       const response = await fetch(`/api/reservation/search`, {
         method: "POST",
@@ -55,6 +54,7 @@ const SearchComponent = ({
         throw new Error("検索データを取得できませんでした");
       }
       const searchData = await response.json();
+      console.log("デバック用", searchData.length);
       setReservationList(searchData.data);
     } catch (e) {
       console.error("Network error", e);
@@ -104,12 +104,15 @@ const SearchComponent = ({
           />
         </form>
         {isSearched && (
-          <Button
-            className="bg-gray-700 font-semibold sm:text-md px-2"
-            onClick={handleGetLists}
-          >
-            一覧再表示
-          </Button>
+          <div>
+            <Button
+              className="bg-gray-700 font-semibold sm:text-md px-2"
+              onClick={handleGetLists}
+            >
+              一覧再表示
+            </Button>
+            <p>合計件数: {}</p>
+          </div>
         )}
       </div>
     </Form>

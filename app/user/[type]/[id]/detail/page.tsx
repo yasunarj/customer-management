@@ -37,7 +37,7 @@ const UserDetailPage = async ({
         backgroundImage: "url('/images/istockphoto-1499955814-612x612.jpg')",
       }}
     >
-      <Card className="flex flex-col w-[80%] max-w-4xl min-w-[580px] h-[95%] bg-white rounded-xl shadow-4xl p-4 border-double border-8 border-gray-800">
+      <Card className="flex flex-col w-[80%] max-w-4xl min-w-[580px] h-[95%] bg-white rounded-xl shadow-4xl p-4 border-double border-8 border-gray-800 overflow-y-auto">
         <CardHeader className="relative">
           <CardTitle className="sm:text-3xl text-gray-800 font-semibold text-center">
             {reservation?.customer.name} 様の予約状況
@@ -49,7 +49,7 @@ const UserDetailPage = async ({
             一覧へ戻る
           </Link>
         </CardHeader>
-        <CardContent className="flex flex-1 justify-center items-center overflow-y-auto">
+        <CardContent className="flex flex-1 justify-center items-center">
           <div className="flex flex-col w-[70%] gap-14">
             <div className="flex justify-between items-center text-md">
               <strong className="sm:text-2xl text-gray-800">お名前</strong>

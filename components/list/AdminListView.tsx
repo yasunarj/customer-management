@@ -89,7 +89,7 @@ const AdminListView = ({
               return (
                 <tr key={reservation.id}>
                   <td className="text-sm border border-gray-300 px-4 py-2 text-center min-w-[120px]">
-                    {reservation.customer.name}
+                    <Link href={`/admin/${decodeType}/customer/${reservation.customer.name}/history`}>{reservation.customer.name}</Link>
                   </td>
                   <td className="text-sm border border-gray-300 px-4 py-2 text-center">
                     {reservation.customer.phone}

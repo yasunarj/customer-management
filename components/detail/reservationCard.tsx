@@ -123,7 +123,7 @@ const ReservationDetailCard = ({
   };
 
   return (
-    <Card className="flex flex-col w-[80%] max-w-4xl min-w-[580px] h-[95%] bg-white rounded-xl shadow-4xl p-4 border-double border-8 border-gray-800">
+    <Card className="flex flex-col w-[80%] max-w-4xl min-w-[580px] h-[95%] bg-white rounded-xl shadow-4xl p-4 border-double border-8 border-gray-800 overflow-y-auto">
       <CardHeader className="relative">
         <CardTitle className="sm:text-3xl text-gray-800 font-semibold text-center">
           {isEditing
@@ -138,7 +138,7 @@ const ReservationDetailCard = ({
           一覧へ戻る
         </Link>
       </CardHeader>
-      <CardContent className="flex flex-1 justify-center items-center overflow-y-auto">
+      <CardContent className="flex flex-1 justify-center items-center">
         <div className={`flex flex-col w-[70%] ${isEditing ? "" : "gap-4"}`}>
           <div className="flex justify-between items-center text-md">
             <strong className="sm:text-2xl text-gray-800">お名前</strong>

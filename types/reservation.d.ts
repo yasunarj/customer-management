@@ -12,6 +12,24 @@ interface Reservation {
   }
 };
 
+interface HistoryListProps {
+  admin: boolean;
+  type: string;
+  name: string;
+  customerReservations: {
+    customerName: string;
+    customerPhone: string | null;
+    id: number;
+    productName: string;
+    price: number;
+    reservationDate: Date;
+    deliveryDate: Date | null;
+    customerId: number;
+    type: string;
+  }[] | undefined;
+}
+
 export type {
-  Reservation
+  Reservation,
+  HistoryListProps
 };
