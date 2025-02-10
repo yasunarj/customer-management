@@ -14,8 +14,12 @@ const AdminReservationList = async ({
     decodeType
   );
   return (
-    <ListView key={new Date().getTime()} decodeType={decodeType} reservations={reservations} />
-  )
+    <ListView
+      key={new Date().getTime()}
+      decodeType={decodeType}
+      reservations={reservations}
+    />
+  );
 };
 
 export default AdminReservationList;

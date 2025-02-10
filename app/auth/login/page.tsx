@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/client";
+import { useState } from "react";
 
 const passwordSchema = z.object({
   password: z.string().min(10, "パスワードは10文字以上で入力してください"),
@@ -23,6 +24,7 @@ const passwordSchema = z.object({
 const LoginPage = () => {
   const supabase = createClient();
   const router = useRouter();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const form = useForm({
     resolver: zodResolver(passwordSchema),
     defaultValues: {
@@ -33,14 +35,15 @@ const LoginPage = () => {
   const onSubmit = async (values: z.infer<typeof passwordSchema>) => {
     if (values.password === process.env.NEXT_PUBLIC_USER_PASSWORD) {
       try {
+        setIsLoading(true);
         const { data, error } = await supabase.auth.signInWithPassword({
           email: "unosato@gmail.com",
           password: process.env.NEXT_PUBLIC_USER_PASSWORD,
         });
-        
 
         if (error) {
           alert("ログインに失敗しました");
+          return;
         } else {
           await supabase.auth.setSession(data.session);
           alert("ログインしました");

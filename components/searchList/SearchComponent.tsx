@@ -10,6 +10,8 @@ type ReservationListData = Reservation[] | undefined;
 
 interface SearchComponentProps {
   type: string;
+  totalNumber?: number;
+  totalAmount?: number;
   setReservationList: (state: ReservationListData) => void;
   isSearched: boolean;
   handleGetLists: () => void;
@@ -28,10 +30,13 @@ const searchSchema = z.object({
 
 const SearchComponent = ({
   type,
+  totalAmount,
+  totalNumber,
   setReservationList,
   isSearched,
   handleGetLists,
 }: SearchComponentProps) => {
+
   const form = useForm({
     resolver: zodResolver(searchSchema),
     defaultValues: {
@@ -39,6 +44,7 @@ const SearchComponent = ({
       year: "",
     },
   });
+  const { formState: { isSubmitting } } = form;
 
   const onSubmit = async (values: z.infer<typeof searchSchema>) => {
     const sendData = { ...values, type };
@@ -54,7 +60,6 @@ const SearchComponent = ({
         throw new Error("検索データを取得できませんでした");
       }
       const searchData = await response.json();
-      console.log("デバック用", searchData.length);
       setReservationList(searchData.data);
     } catch (e) {
       console.error("Network error", e);
@@ -70,10 +75,10 @@ const SearchComponent = ({
             name="year"
             render={({ field }) => (
               <FormItem>
-                <div className="">
+                <div>
                   <FormControl>
                     <Input
-                      className="px-1 text-sm sm:text-lg w-full"
+                      className="px-1 text-sm md:text-md lg:text-lg w-full"
                       placeholder="西暦を入力"
                       {...field}
                     />
@@ -90,13 +95,13 @@ const SearchComponent = ({
                 <div className="flex gap-2">
                   <FormControl>
                     <Input
-                      className="px-1 text-sm sm:text-lg w-full"
+                      className="px-1 text-sm md:text-md lg:text-lg w-full"
                       placeholder="名前を入力"
                       {...field}
                     />
                   </FormControl>
-                  <Button className="bg-gray-700 font-semibold sm:text-md px-2">
-                    検索
+                  <Button type="submit" className="bg-gray-700 font-semibold sm:text-md px-2" disabled={isSubmitting}>
+                    {isSubmitting ? "取得中" : "検索"}
                   </Button>
                 </div>
               </FormItem>
@@ -104,16 +109,25 @@ const SearchComponent = ({
           />
         </form>
         {isSearched && (
-          <div>
-            <Button
-              className="bg-gray-700 font-semibold sm:text-md px-2"
-              onClick={handleGetLists}
-            >
-              一覧再表示
-            </Button>
-            <p>合計件数: {}</p>
+          <div className="flex justify-center items-center gap-8 ">
+            <div>
+              <Button
+                className="bg-gray-700 font-semibold sm:text-md px-2"
+                onClick={handleGetLists}
+              >
+                一覧再表示
+              </Button>
+            </div>
+            <div className="hidden md:block">
+              <p>合計件数: {totalNumber}件</p>
+              <p>合計金額: {totalAmount}円</p>
+            </div>
           </div>
         )}
+      </div>
+      <div className="flex gap-8 justify-end text-sm sm:text-md md:hidden mt-2">
+        <p>合計件数: {totalNumber}件</p>
+        <p>合計金額: {totalAmount}円</p>
       </div>
     </Form>
   );

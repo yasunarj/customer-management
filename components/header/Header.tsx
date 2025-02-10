@@ -33,13 +33,20 @@ const Header = () => {
   }, [router, supabase.auth]);
 
   const handleLogout = async () => {
-    setIsLoading(true);
-    const { error } = await supabase.auth.signOut();
-    if (error) {
-      console.error("ログアウトエラー:", error.message);
-      setIsLoading(false);
-    } else {
+    try {
+      setIsLoading(true);
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.error("ログアウトエラー:", error.message);
+        alert(`ログアウトに失敗しました: ${error.message}`);
+        return;
+      }
+
       alert("ログアウトしました");
+    } catch (e) {
+      console.error("予期せぬエラー", e);
+      alert("エラーが発生しました");
+    } finally {
       setIsLoading(false);
     }
   };

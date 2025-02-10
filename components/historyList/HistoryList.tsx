@@ -26,7 +26,7 @@ const HistoryList = ({
     <div
       className="flex-grow flex justify-center items-center bg-center bg-cover"
       style={{
-        backgroundImage: "url('/images/istockphoto-1499955814-612x612.jpg')",
+        backgroundImage: "url('/images/istockphoto-1499955814-612x612.jpg')", // cSpell: disable-line
       }}
     >
       <div className="overflow-y-auto w-[90%] h-[95%] bg-white rounded-xl shadow-4xl p-4">

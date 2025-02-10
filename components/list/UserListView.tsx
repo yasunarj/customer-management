@@ -22,6 +22,10 @@ const UserListView = ({
     useState<ReservationListData>(reservations);
   const [isSearched, setIsSearched] = useState<boolean>(false);
   const router = useRouter();
+  const totalNumber = reservationList ? reservationList.length : 0;
+  const totalAmount = () => {
+    return reservationList?.reduce((acc, list) => acc + list.price, 0) ?? 0;
+  };
   const handleGetLists = () => {
     router.refresh();
   };
@@ -29,7 +33,7 @@ const UserListView = ({
   if (!reservationList || reservationList.length === 0) {
     return (
       <div className="flex-grow flex justify-center items-center bg-center bg-cover bg-[url('/images/istockphoto-1499955814-612x612.jpg')]">
-        <div className="overflow-y-auto w-[95%] h-[95%] bg-white rounded-xl shadow-4xl p-4 relative">
+        <div className="overflow-y-auto max-w-[1500px] w-[95%] h-[95%] bg-white rounded-xl shadow-4xl p-4 relative">
           <h1 className="text-gray-800 text-xl sm:text-3xl font-bold text-center">
             {decodeType}の予約一覧
           </h1>
@@ -38,6 +42,8 @@ const UserListView = ({
           </div>
           <SearchComponent
             type={decodeType}
+            totalNumber={totalNumber}
+            totalAmount={totalAmount()}
             setReservationList={(data) => {
               setReservationList(data);
               setIsSearched(true);
@@ -53,8 +59,13 @@ const UserListView = ({
     );
   }
   return (
-    <div className="select-none h-[90vh] flex justify-center items-center bg-center bg-cover bg-[url('/images/istockphoto-1499955814-612x612.jpg')]">
-      <div className="overflow-y-auto w-[95%] h-[95%] bg-white rounded-xl shadow-4xl p-4 relative">
+    <div
+      className="select-none h-[90dvh] flex justify-center items-center bg-center bg-cover"
+      style={{
+        backgroundImage: "url('/images/istockphoto-1499955814-612x612.jpg')",
+      }}
+    >
+      <div className="overflow-y-auto max-w-[1500px] w-[98%] sm:w-[95%] h-[95%] bg-white rounded-xl shadow-4xl p-4 relative">
         <h1 className="text-gray-800 text-xl sm:text-3xl font-bold text-center">
           {decodeType}の予約一覧
         </h1>
@@ -63,6 +74,8 @@ const UserListView = ({
         </div>
         <SearchComponent
           type={decodeType}
+          totalNumber={totalNumber}
+          totalAmount={totalAmount()}
           setReservationList={(data) => {
             setReservationList(data);
             setIsSearched(true);
@@ -74,23 +87,33 @@ const UserListView = ({
           <thead>
             <tr>
               <th className="border border-gray-300 px-4 py-2">お客様名</th>
-              <th className="border border-gray-300 px-4 py-2">電話番号</th>
+              <th className="border border-gray-300 px-4 py-2 sm:table-cell hidden">
+                電話番号
+              </th>
               <th className="border border-gray-300 px-4 py-2">予約商品名</th>
-              <th className="border border-gray-300 px-4 py-2">合計金額</th>
-              <th className="border border-gray-300 px-4 py-2">予約受付日</th>
-              <th className="border border-gray-300 px-4 py-2">お渡し日</th>
+              <th className="border border-gray-300 px-4 py-2 sm:table-cell hidden">
+                合計金額
+              </th>
+              <th className="border border-gray-300 px-4 py-2 sm:table-cell hidden">
+                予約受付日
+              </th>
+              <th className="border border-gray-300 px-4 py-2 sm:table-cell hidden">
+                お渡し日
+              </th>
               <th className="border border-gray-300 px-4 py-2"></th>
             </tr>
           </thead>
           <tbody>
             {reservationList.map((reservation) => (
               <tr key={reservation.id}>
-                <td className="text-sm border border-gray-300 px-4 py-2 text-center">
-                  <Link href={`/user/${decodeType}/customer/${reservation.customer.name}/history`}>
-                  {reservation.customer.name}
+                <td className="text-sm border border-gray-300 px-4 py-2 text-center min-w-[120px]">
+                  <Link
+                    href={`/user/${decodeType}/customer/${reservation.customer.name}/history`}
+                  >
+                    {reservation.customer.name}
                   </Link>
                 </td>
-                <td className="text-sm border border-gray-300 px-4 py-2 text-center">
+                <td className="text-sm border border-gray-300 px-4 py-2 text-center sm:table-cell hidden">
                   {reservation.customer.phone}
                 </td>
                 <td className="text-sm border border-gray-300 px-4 py-2  max-w-[200px] relative group">
@@ -105,11 +128,11 @@ const UserListView = ({
                     </ul>
                   </span>
                 </td>
-                <td className="text-sm border border-gray-300 px-4 py-2 text-center">{`¥${reservation.price.toLocaleString()}`}</td>
-                <td className="text-sm border border-gray-300 px-4 py-2 text-center">
+                <td className="text-sm border border-gray-300 px-4 py-2 text-center sm:table-cell hidden">{`¥${reservation.price.toLocaleString()}`}</td>
+                <td className="text-sm border border-gray-300 px-4 py-2 text-center sm:table-cell hidden">
                   {new Date(reservation.reservationDate).toLocaleDateString()}
                 </td>
-                <td className="text-sm border border-gray-300 px-4 py-2 text-center">
+                <td className="text-sm border border-gray-300 px-4 py-2 text-center sm:table-cell hidden">
                   {new Date(reservation.deliveryDate!).toLocaleDateString()}
                 </td>
                 <td className="text-sm border border-gray-300 px-4 py-2 text-center">

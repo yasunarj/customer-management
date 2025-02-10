@@ -11,21 +11,22 @@ const AdminDashboardPage = () => {
     <div
       className="flex-grow bg-center bg-cover select-none flex justify-center items-center"
       style={{
-        backgroundImage: "url('/images/istockphoto-1499955814-612x612.jpg')",
+        backgroundImage: "url('/images/istockphoto-1499955814-612x612.jpg')", // cSpell: disable-line
       }}
     >
-      <div className="w-[95%] h-[95%] bg-white rounded-xl shadow-4xl">
+      <div className="w-[95%] h-[95%] lg:max-w-[1024px] bg-white rounded-xl shadow-4xl">
         <div className="flex flex-col items-center gap-12 sm:gap-24 p-24">
-          <div className="space-y-6 text-center">
-            <h1 className="text-2xl sm:text-5xl text-gray-800 font-bold">
+          <div className="space-y-2 text-center">
+            <h1 className="hidden sm:block sm:text-4xl lg:text-5xl text-gray-800 font-bold">
               予約商材を選択してください
             </h1>
+            <h1 className="sm:hidden text-3xl font-bold text-gray-800">予約商材一覧</h1>
             <h2 className="text-xl sm:text-3xl text-gray-800 font-semibold">
               (管理者用)
             </h2>
           </div>
           <div>
-            <ul className="flex flex-col gap-6 sm:gap-12 text-3xl sm:text-4xl text-gray-600 font-bold">
+            <ul className="flex flex-col gap-6 sm:gap-12 text-3xl sm:text-4xl lg:text-5xl text-gray-600 font-bold">
               {adminItems.map((item) => {
                 return (
                   <li key={item.type}>

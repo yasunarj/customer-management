@@ -7,7 +7,7 @@ const CreateNewDataPage = async ({ params }: { params: { type: string } }) => {
     <div
       className="flex-grow bg-cover bg-center flex justify-center items-center"
       style={{
-        backgroundImage: "url('/images/istockphoto-1499955814-612x612.jpg')",
+        backgroundImage: "url('/images/istockphoto-1499955814-612x612.jpg')", // cSpell: disable-line
       }}
     >
       <CreateForm type={decodeType} />

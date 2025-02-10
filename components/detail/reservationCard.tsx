@@ -289,7 +289,7 @@ const ReservationDetailCard = ({
               onClick={handleSave}
               disabled={isSaving}
             >
-              {isSaving ? "保存中..." : "保存"}
+              {isSaving ? "保存中" : "保存"}
             </Button>
             <Button
               variant="outline"

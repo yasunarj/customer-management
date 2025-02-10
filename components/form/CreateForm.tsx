@@ -55,6 +55,10 @@ const CreateForm = ({ type }: { type: string }) => {
     },
   });
 
+  const {
+    formState: { isSubmitting },
+  } = form;
+
   const onSubmit = async (values: z.infer<typeof newReservationSchema>) => {
     const reservationDate = new Date(
       reservationYear,
@@ -203,8 +207,11 @@ const CreateForm = ({ type }: { type: string }) => {
           {errorMessage && (
             <div className="text-sm text-red-500">{errorMessage}</div>
           )}
-          <Button className="w-[50%] bg-gray-800 sm:w-[30%] font-semibold sm:text-lg sm:p-5">
-            登録する
+          <Button
+            className="w-[50%] bg-gray-800 sm:w-[30%] font-semibold sm:text-lg sm:p-5"
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? "登録中" : "登録する"}
           </Button>
         </form>
       </div>

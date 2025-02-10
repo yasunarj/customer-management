@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
 
-const DeleteButton = ({ id, type }: { id: number, type: string }) => {
+const DeleteButton = ({ id, type }: { id: number; type: string }) => {
   const router = useRouter();
   const [isDeleted, setIsDeleted] = useState<boolean>(false);
   const handleDelete = async () => {
@@ -16,7 +16,7 @@ const DeleteButton = ({ id, type }: { id: number, type: string }) => {
         });
         if (response.ok) {
           alert("データを削除しました");
-          router.push(`/admin/${type}/list`)
+          router.push(`/admin/${type}/list`);
         } else {
           alert("データが削除できませんでした");
         }
@@ -28,13 +28,16 @@ const DeleteButton = ({ id, type }: { id: number, type: string }) => {
     }
   };
 
-  return isDeleted ? (
-    <div className="text-lg text-center">削除中...</div>
-  ) : (
-    <Button variant="destructive" className="text-lg" onClick={handleDelete}>削除</Button>
+  return (
+    <Button
+      variant="destructive"
+      className="text-lg"
+      onClick={handleDelete}
+      disabled={isDeleted}
+    >
+      {isDeleted ? "削除中" : "削除"}
+    </Button>
   );
 };
 
 export default DeleteButton;
-
-

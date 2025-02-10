@@ -15,6 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/client";
+import { useState } from "react";
 
 const adminLoginSchema = z.object({
   email: z.string().email("有効なメールアドレスを入力してください"),
@@ -22,6 +23,7 @@ const adminLoginSchema = z.object({
 });
 
 const AdminLoginPage = () => {
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const supabase = createClient();
   const router = useRouter();
   const form = useForm({
@@ -33,23 +35,28 @@ const AdminLoginPage = () => {
   });
 
   const onSubmit = async (values: z.infer<typeof adminLoginSchema>) => {
-    const { data: loginData, error: loginError } =
-      await supabase.auth.signInWithPassword({
-        email: values.email,
-        password: values.password,
-      });
+    try {
+      setIsLoading(true);
+      const { data: loginData, error: loginError } =
+        await supabase.auth.signInWithPassword({
+          email: values.email,
+          password: values.password,
+        });
 
-    if (process.env.NODE_ENV === "development") {
-      console.log("/auth/adminLogin/page.tsx", loginData); //デバック用
-    }
-
-    if (loginError) {
-      console.error("ログインエラー", loginError.message);
-      alert(`ログインに失敗しました: ${loginError.message}`);
-      return;
-    } else {
+      if (process.env.NODE_ENV === "development") {
+        console.log("/auth/adminLogin/page.tsx", loginData); //デバック用
+      }
+      if (loginError) {
+        console.error("ログインエラー", loginError.message);
+        alert(`ログインに失敗しました: ${loginError.message}`);
+        return;
+      }
       alert("管理者としてログインしました");
       router.push("/admin/dashboard");
+    } catch (e) {
+      console.error("予期せぬエラー", e);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -109,7 +116,7 @@ const AdminLoginPage = () => {
                 )}
               />
             </div>
-            <Button className="w-[42%]">ログイン</Button>
+            <Button className="w-[42%]" disabled={isLoading}>{isLoading ? "ログイン中" : "ログイン"}</Button>
           </form>
         </div>
       </Form>

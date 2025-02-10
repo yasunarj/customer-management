@@ -36,6 +36,7 @@ const POST = async (req: Request) => {
       include: {
         customer: true,
       },
+      orderBy: { deliveryDate: "desc" }
     });
     return NextResponse.json({ status: 200, data: response });
   } catch (e) {
