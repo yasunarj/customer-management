@@ -32,33 +32,70 @@ const LoginPage = () => {
     },
   });
 
-  const onSubmit = async (values: z.infer<typeof passwordSchema>) => {
-    if (values.password === process.env.NEXT_PUBLIC_USER_PASSWORD) {
-      try {
-        setIsLoading(true);
-        const { data, error } = await supabase.auth.signInWithPassword({
-          email: "unosato@gmail.com",
-          password: process.env.NEXT_PUBLIC_USER_PASSWORD,
-        });
-
-        if (error) {
-          alert("ログインに失敗しました");
-          return;
-        } else {
-          await supabase.auth.setSession(data.session);
-          alert("ログインしました");
-          router.push("/user/dashboard");
-        }
-      } catch (e) {
-        console.error(e);
-        alert("予期せぬエラーが発生しました");
+  const loginUser = async () => {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: "unosato@gmail.com",
+        password: process.env.NEXT_PUBLIC_USER_PASSWORD!,
+      });
+      if (error) {
+        alert("ログインに失敗しました");
+        return false;
       }
-    } else if (values.password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
-      router.push("/auth/adminLogin");
-    } else {
-      alert("パスワードが間違っています");
+      await supabase.auth.setSession(data.session);
+      alert("ログインしました");
+      router.push("/user/dashboard");
+      return true;
+    } catch (e) {
+      console.error("ログイン処理エラー:", e);
+      alert("予期せぬエラーが発生しました");
+      return false;
     }
   };
+
+  const onSubmit = async (values: z.infer<typeof passwordSchema>) => {
+    setIsLoading(true);
+    try {
+      if (values.password === process.env.NEXT_PUBLIC_USER_PASSWORD) {
+        const success = await loginUser();
+        if (!success) return;
+      } else if (values.password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
+        router.push("/auth/adminLogin");
+      } else {
+        alert("パスワードが間違っています");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // const onSubmit = async (values: z.infer<typeof passwordSchema>) => {
+  //   if (values.password === process.env.NEXT_PUBLIC_USER_PASSWORD) {
+  //     try {
+  //       setIsLoading(true);
+  //       const { data, error } = await supabase.auth.signInWithPassword({
+  //         email: "unosato@gmail.com",
+  //         password: process.env.NEXT_PUBLIC_USER_PASSWORD,
+  //       });
+
+  //       if (error) {
+  //         alert("ログインに失敗しました");
+  //         return;
+  //       } else {
+  //         await supabase.auth.setSession(data.session);
+  //         alert("ログインしました");
+  //         router.push("/user/dashboard");
+  //       }
+  //     } catch (e) {
+  //       console.error(e);
+  //       alert("予期せぬエラーが発生しました");
+  //     }
+  //   } else if (values.password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
+  //     router.push("/auth/adminLogin");
+  //   } else {
+  //     alert("パスワードが間違っています");
+  //   }
+  // };
 
   return (
     <div
@@ -94,8 +131,12 @@ const LoginPage = () => {
                 </FormItem>
               )}
             />
-            <Button className="w-[42%] font-semibold" type="submit">
-              ログイン
+            <Button
+              className="w-[42%] font-semibold"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? "ログイン中" : "ログイン"}
             </Button>
           </form>
         </div>

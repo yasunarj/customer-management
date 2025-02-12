@@ -29,18 +29,27 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data: userData } = await supabase.auth.getUser();
+  const user = userData?.user ?? null;
 
-  // if (!user && !request.nextUrl.pathname.startsWith("/auth/login")) {
-  //   const url = request.nextUrl.clone();
-  //   url.pathname = "/auth/login";
-  //   return NextResponse.redirect(url);
-  // }
 
-  if (!user && !request.nextUrl.pathname.startsWith("/auth/login")) {
-    return NextResponse.redirect(`${request.nextUrl.origin}/auth/login`);
+  if (request.nextUrl.pathname === "/") {
+    console.log("Skipping auth check for home page.");
+    return supabaseResponse;
+  }
+
+  // 🔹 `/auth/login` はそのまま通過
+  if (request.nextUrl.pathname.startsWith("/auth/login")) {
+    console.log("Skipping auth check for login page.");
+    return supabaseResponse;
+  }
+
+  // 🔹 `/user` や `/admin` にアクセスする場合はログインチェック
+  if (!user && (request.nextUrl.pathname.startsWith("/user") || request.nextUrl.pathname.startsWith("/admin"))) {
+    console.log("Redirecting to /auth/login");
+    const url = request.nextUrl.clone();
+    url.pathname = "/auth/login";
+    return NextResponse.redirect(url);
   }
 
   return supabaseResponse;
