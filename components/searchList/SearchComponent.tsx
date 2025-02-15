@@ -138,7 +138,7 @@ const SearchComponent = ({
         )}
       </div>
       {error && (
-        <div className="text-center text-red-700 text-sm">{error}</div>
+        <div className="text-center text-red-500 text-sm">{error}</div>
       )}
       {isSearched && (
         <div className="flex gap-8 justify-end text-sm sm:text-md md:hidden mt-2">

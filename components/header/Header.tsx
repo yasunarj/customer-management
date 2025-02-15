@@ -6,14 +6,16 @@ import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Dialog, DialogContent, DialogTitle, DialogHeader } from "../ui/dialog";
 import { Loader2 } from "lucide-react";
+import { useLogoutOnClose } from "@/hooks/useLogoutOnCloes";
 const Header = () => {
   const supabase = createClient();
   const router = useRouter();
   const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-
   const [userRole, setUserRole] = useState<string | null>(null);
+
+  useLogoutOnClose();
 
   useEffect(() => {
     const fetchUserRole = async () => {
