@@ -3,12 +3,14 @@ import getReservationByType from "@/lib/getReservationsByType";
 import { Reservation } from "@/types/reservation";
 
 type ReservationListData = Reservation[] | undefined;
-const UserReservationList = async ({
-  params,
-}: {
-  params: { type: string };
-}) => {
-  const { type } = await params;
+type UserReservationListProps = {
+  params: Promise<{
+    type: string;
+  }>
+}
+const UserReservationList = async (props: UserReservationListProps) => {
+  const params = await props.params;
+  const { type } = params;
   const decodeType = decodeURIComponent(type);
   const reservations: ReservationListData = await getReservationByType(
     decodeType

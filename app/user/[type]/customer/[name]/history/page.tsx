@@ -1,8 +1,16 @@
 import HistoryList from "@/components/historyList/HistoryList";
 import { getReservationByCustomerName } from "@/lib/getReservationsByType";
 
-const UserHistoryPage = async ({ params }: { params: { type: string, name: string } }) => {
-  const { type, name } = await params;
+type UserHistoryPageProps = {
+  params: Promise<{
+    type: string;
+    name: string;
+  }>
+}
+
+const UserHistoryPage = async (props: UserHistoryPageProps) => {
+  const params = await props.params;
+  const { type, name } = params;
   const customerName = decodeURIComponent(name);
   const customerReservations = await getReservationByCustomerName(customerName);
 

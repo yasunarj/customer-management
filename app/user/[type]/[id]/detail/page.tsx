@@ -1,12 +1,16 @@
 import UserReservationDetailCard from "@/components/detail/UserReservationDetailCard";
 import { getReservationByTypeWithId } from "@/lib/getReservationsByType";
 
-const UserDetailPage = async ({
-  params,
-}: {
-  params: { type: string; id: string };
-}) => {
-  const { type, id } = await params;
+type UserDetailPageProps = {
+  params: Promise<{
+    type: string;
+    id: string;
+  }>
+}
+
+const UserDetailPage = async (props: UserDetailPageProps) => {
+  const params = await props.params;
+  const { type, id } = params;
   const reservationId = parseInt(id, 10);
   const decodeType = decodeURIComponent(type);
   const reservation = await getReservationByTypeWithId(

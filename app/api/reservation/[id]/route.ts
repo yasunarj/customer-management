@@ -1,7 +1,10 @@
 import prisma from "@/lib/prisma";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-const DELETE = async (req: Request, props: { params: Promise<{ id: string }> }) => {
+const DELETE = async (
+  req: NextRequest,
+  props: { params: Promise<{ id: string }> }
+) => {
   const params = await props.params;
   try {
     const reservationId = parseInt(params.id, 10);
@@ -38,15 +41,19 @@ const DELETE = async (req: Request, props: { params: Promise<{ id: string }> }) 
   }
 };
 
-const PUT = async (req: Request, { params }: { params: { id: string } }) => {
+const PUT = async (
+  req: NextRequest,
+  props: { params: Promise<{ id: string }> }
+) => {
+  const params = await props.params;
   try {
-    const parseId = await parseInt(params.id, 10);
+    const parseId = parseInt(params.id, 10);
     if (isNaN(parseId)) {
       return NextResponse.json({ error: "無効なIDです" }, { status: 400 });
     }
     const { name, phone, productName, price, reservationDate, deliveryDate } =
       await req.json();
-    const parsePrice = await parseInt(price);
+    const parsePrice = parseInt(price);
     if (isNaN(parsePrice)) {
       return NextResponse.json({ error: "無効な価格です" }, { status: 400 });
     }
