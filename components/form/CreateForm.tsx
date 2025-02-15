@@ -89,7 +89,7 @@ const CreateForm = ({ type }: { type: string }) => {
 
   return (
     <Form {...form}>
-      <div className="h-[98%] w-[80%] flex justify-center relative">
+      <div className="h-[98%] w-[85%] sm:w-[80%] flex justify-center relative">
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="flex flex-col items-center px-6 py-6 w-full h-auto gap-6 rounded-md shadow-2xl bg-white"
@@ -99,7 +99,7 @@ const CreateForm = ({ type }: { type: string }) => {
           </h2>
           <Link
             href={`/admin/${type}/list`}
-            className="text-sm sm:text-lg absolute right-4 text-blue-600 hover:underline hover:underline-offset-2"
+            className="text-sm sm:text-lg absolute top-7 right-4 text-blue-600 hover:underline hover:underline-offset-2"
           >
             一覧へ戻る
           </Link>

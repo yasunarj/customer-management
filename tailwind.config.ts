@@ -23,7 +23,7 @@ export default {
   		},
 			boxShadow: {
 				'4xl': '0 45px 70px -20px rgba(0, 0, 0, 1)',
-			},
+			}
   	}
   },
   plugins: [require("tailwindcss-animate")],

@@ -33,7 +33,7 @@ const ReservationDetailPage = async ({
 
   return (
     <div
-      className="flex-grow flex justify-center items-center bg-center bg-cover bg-[url('/images/istockphoto-1499955814-612x612.jpg')]" // cSpell: disable-line
+      className="h-[90dvh] flex justify-center items-center bg-center bg-cover bg-[url('/images/istockphoto-1499955814-612x612.jpg')]" // cSpell: disable-line
     >
       <ReservationDetailCard
         reservationData={reservation}

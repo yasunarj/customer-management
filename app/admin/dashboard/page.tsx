@@ -2,9 +2,8 @@
 import { useRouter } from "next/navigation";
 import { adminItems } from "@/lib/adminItems";
 import { useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Loader2 } from "lucide-react";
-import { DialogTitle } from "@radix-ui/react-dialog";
 
 const AdminDashboardPage = () => {
   const router = useRouter();

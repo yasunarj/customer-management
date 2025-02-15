@@ -4,6 +4,11 @@ import "./globals.css";
 import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 
+export const metadata: Metadata = {
+  title: "Customer_Management App",
+  description: "This is a reservation management app using Next.js",
+};
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -14,10 +19,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Customer_Management App",
-  description: "This is a reservation management app using Next.js",
-};
 
 export default function RootLayout({
   children,

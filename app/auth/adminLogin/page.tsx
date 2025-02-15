@@ -65,7 +65,7 @@ const AdminLoginPage = () => {
       className="flex-grow bg-center bg-cover"
       style={{
         backgroundImage:
-          "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/istockphoto-1499955814-612x612.jpg')",
+          "linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/images/photo-1735303937312-381ad640f71e.avif')",
       }}
     >
       <Form {...form}>

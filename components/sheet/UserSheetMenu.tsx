@@ -23,7 +23,7 @@ const UserSheetMenu = ({ type }: { type: string }) => {
           </SheetTitle>
         </SheetHeader>
         <nav className="flex justify-center mt-8">
-          <ul className="flex flex-col space-y-4 text-gray-700 font-semibold text-md sm:text-xl">
+          <ul className="flex flex-col space-y-4 text-gray-700 font-semibold text-md md:text-lg lg:text-xl">
             <li className="hover:text-blue-700 hover:underline hover:underline-offset-4 cursor-pointer">
               <Link href={"/user/dashboard"}>予約商材一覧へ</Link>
             </li>

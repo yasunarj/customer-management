@@ -129,7 +129,7 @@ const AdminListView = ({
                   <td className="text-sm border border-gray-300 px-4 py-2 max-w-[200px]  relative group">
                     <div className="truncate">{reservation.productName}</div>
                     <span className="absolute left-0 top-0 mt-1 w-max max-w-xs p-2 bg-gray-700 text-white text-sm rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-50">
-                      <ul className="px-1">
+                      <ul className="px-1 max-w-[185px] sm:max-w-[100%]">
                         {reservation.productName
                           .split(",")
                           .map((item, index) => (

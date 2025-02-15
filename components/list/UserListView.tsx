@@ -32,7 +32,7 @@ const UserListView = ({
 
   if (!reservationList || reservationList.length === 0) {
     return (
-      <div className="flex-grow flex justify-center items-center bg-center bg-cover bg-[url('/images/istockphoto-1499955814-612x612.jpg')]">
+      <div className="select-none h-[90dvh] flex justify-center items-center bg-center bg-cover bg-[url('/images/istockphoto-1499955814-612x612.jpg')]">
         <div className="overflow-y-auto max-w-[1500px] w-[95%] h-[95%] bg-white rounded-xl shadow-4xl p-4 relative">
           <h1 className="text-gray-800 text-xl sm:text-3xl font-bold text-center">
             {decodeType}の予約一覧
@@ -69,9 +69,6 @@ const UserListView = ({
         <h1 className="text-gray-800 text-xl sm:text-3xl font-bold text-center">
           {decodeType}の予約一覧
         </h1>
-        <div className="absolute top-4 right-4">
-          <SheetMenu menuList={menuList} />
-        </div>
         <SearchComponent
           type={decodeType}
           totalNumber={totalNumber}
@@ -83,6 +80,9 @@ const UserListView = ({
           isSearched={isSearched}
           handleGetLists={handleGetLists}
         />
+        <div className="absolute top-4 right-4">
+          <SheetMenu menuList={menuList} />
+        </div>
         <table className="table-auto w-full border-collapse border border-gray-700 mt-4 text-gray-700">
           <thead>
             <tr>
@@ -119,7 +119,7 @@ const UserListView = ({
                 <td className="text-sm border border-gray-300 px-4 py-2  max-w-[200px] relative group">
                   <div className="truncate">{reservation.productName}</div>
                   <span className="absolute left-0 top-0 mt-1 w-max max-w-xs p-2 bg-gray-700 text-white text-sm rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-50">
-                    <ul className="px-1">
+                    <ul className="px-1 max-w-[185px] sm:max-w-[100%]">
                       {reservation.productName.split(",").map((item, index) => (
                         <li key={index} className="py-1">
                           {item.trim()}
@@ -135,7 +135,7 @@ const UserListView = ({
                 <td className="text-sm border border-gray-300 px-4 py-2 text-center sm:table-cell hidden">
                   {new Date(reservation.deliveryDate!).toLocaleDateString()}
                 </td>
-                <td className="text-sm border border-gray-300 px-4 py-2 text-center">
+                <td className="text-sm border border-gray-300 min-w-[60px]">
                   <Link
                     href={`/user/${decodeType}/${reservation.id}/detail`}
                     className="flex justify-center"

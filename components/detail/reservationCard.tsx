@@ -8,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card";
-import Link from "next/link";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { Input } from "../ui/input";
@@ -62,7 +61,6 @@ const ReservationDetailCard = ({
     price: reservationData.price.toString(),
   });
 
-
   const resetDate = () => {
     setReservationYear(originalDate.initialReservationYear);
     setReservationMonth(originalDate.initialReservationMonth);
@@ -70,7 +68,7 @@ const ReservationDetailCard = ({
     setDeliveryYear(originalDate.initialDeliveryYear);
     setDeliveryMonth(originalDate.initialDeliveryMonth);
     setDeliveryDay(originalDate.initialDeliveryDay);
-  }
+  };
 
   const handleSave = async () => {
     const sanitizeFormData = Object.fromEntries(
@@ -109,7 +107,9 @@ const ReservationDetailCard = ({
       router.refresh();
     } catch (e) {
       console.error("登録できませんでした", e);
-      alert(`更新に失敗しました:${e instanceof Error ? e.message : "不明なエラー"}`);
+      alert(
+        `更新に失敗しました:${e instanceof Error ? e.message : "不明なエラー"}`
+      );
     } finally {
       setIsSaving(false);
     }
@@ -123,36 +123,40 @@ const ReservationDetailCard = ({
   };
 
   return (
-    <Card className="flex flex-col w-[80%] max-w-4xl min-w-[580px] h-[95%] bg-white rounded-xl shadow-4xl p-4 border-double border-8 border-gray-800 overflow-y-auto">
+    <Card className="flex flex-col max-w-4xl w-[98%] h-[98%] sm:w-[95%] sm:h-[95%] bg-white rounded-xl shadow-4xl  sm:p-4 border-double border-8 border-gray-800 overflow-y-auto">
       <CardHeader className="relative">
-        <CardTitle className="sm:text-3xl text-gray-800 font-semibold text-center">
+        <CardTitle className="text-xl sm:text-3xl text-gray-800 font-semibold text-center">
           {isEditing
             ? "編集モード"
             : `${reservationData.customer.name} 様の予約状況`}
         </CardTitle>
 
-        <Link
-          href={`/admin/${decodeType}/list`}
-          className="text-sm sm:text-lg absolute right-4 text-blue-600 hover:underline hover:underline-offset-2"
+        <div
+          className="select-none text-sm sm:text-lg absolute sm:top-5 right-4 text-blue-600 hover:underline hover:underline-offset-2 cursor-pointer"
+          onClick={() => router.back()}
         >
-          一覧へ戻る
-        </Link>
+          戻る
+        </div>
       </CardHeader>
       <CardContent className="flex flex-1 justify-center items-center">
-        <div className={`flex flex-col w-[70%] ${isEditing ? "" : "gap-4"}`}>
-          <div className="flex justify-between items-center text-md">
+        <div
+          className={`flex flex-col w-[98%] sm:w-[70%]  ${
+            isEditing ? "sm:gap-6" : "gap-2 sm:gap-4"
+          }`}
+        >
+          <div className="flex justify-between items-center text-sm md:text-lg">
             <strong className="sm:text-2xl text-gray-800">お名前</strong>
             {isEditing ? (
               <Input
                 name="name"
-                className={`w-[55%] p-2 rounded border ${
+                className={`text-sm md:text-[16px] w-[70%] sm:w-[60%] p-2 bg-gray-100 rounded border ${
                   formErrors.name ? "border-red-500" : ""
                 }`}
                 value={formData.name}
                 onChange={handleInputChange}
               />
             ) : (
-              <div className="w-[55%] p-2 bg-gray-100 rounded border">
+              <div className="w-[70%] sm:w-[60%] p-2 bg-gray-100 rounded border">
                 {reservationData.customer.name}
               </div>
             )}
@@ -162,19 +166,19 @@ const ReservationDetailCard = ({
               {formErrors.name}
             </p>
           )}
-          <div className="flex justify-between items-center text-md mt-8">
+          <div className="flex justify-between items-center text-md mt-8 text-sm md:text-lg">
             <strong className="sm:text-2xl text-gray-800">電話番号</strong>
             {isEditing ? (
               <Input
                 name="phone"
-                className={`w-[55%] p-2 rounded border ${
+                className={`text-sm md:text-[16px] w-[70%] sm:w-[60%] p-2 bg-gray-100 rounded border ${
                   formErrors.phone ? "border-red-500" : ""
                 }`}
                 value={formData.phone ?? ""}
                 onChange={handleInputChange}
               />
             ) : (
-              <div className="w-[55%] p-2 bg-gray-100 rounded border">
+              <div className="w-[70%] sm:w-[60%] p-2 bg-gray-100 rounded border">
                 {reservationData.customer.phone}
               </div>
             )}
@@ -184,12 +188,12 @@ const ReservationDetailCard = ({
               {formErrors.phone}
             </p>
           )}
-          <div className="flex justify-between items-center text-md mt-8">
+          <div className="flex justify-between items-center text-md mt-8 text-sm md:text-lg">
             <strong className=" sm:text-2xl text-gray-800">商品名</strong>
             {isEditing ? (
               <Textarea
                 name="productName"
-                className={`w-[55%] p-2 rounded border ${
+                className={`text-sm md:text-[16px] w-[70%] sm:w-[60%] p-2 bg-gray-100 rounded border ${
                   formErrors.productName ? "border-red-500" : ""
                 }`}
                 rows={6}
@@ -197,7 +201,7 @@ const ReservationDetailCard = ({
                 onChange={handleInputChange}
               />
             ) : (
-              <div className="w-[55%] p-2 bg-gray-100 rounded border">
+              <div className="w-[70%] sm:w-[60%] p-2 bg-gray-100 rounded border">
                 <ul>
                   {reservationData.productName
                     .split(",")
@@ -216,19 +220,19 @@ const ReservationDetailCard = ({
               {formErrors.productName}
             </p>
           )}
-          <div className="flex justify-between items-center text-md mt-8">
+          <div className="flex justify-between items-center text-md mt-8 text-sm md:text-lg">
             <strong className="sm:text-2xl text-gray-800">合計金額</strong>
             {isEditing ? (
               <Input
                 name="price"
-                className={`w-[55%] p-2 rounded border ${
+                className={`text-sm md:text-[16px] w-[70%] sm:w-[60%] p-2 bg-gray-100 rounded border ${
                   formErrors.price ? "border-red-500" : ""
                 }`}
                 value={formData.price}
                 onChange={handleInputChange}
               />
             ) : (
-              <div className="w-[55%] p-2 bg-gray-100 rounded border">{`¥${reservationData.price}`}</div>
+              <div className="w-[70%] sm:w-[60%] p-2 bg-gray-100 rounded border">{`¥${reservationData.price}`}</div>
             )}
           </div>
           {formErrors.price && (
@@ -236,10 +240,10 @@ const ReservationDetailCard = ({
               {formErrors.price}
             </p>
           )}
-          <div className="flex justify-between items-center text-md mt-8">
+          <div className="flex justify-between items-center text-md mt-8 text-sm md:text-lg">
             <strong className="sm:text-2xl text-gray-800">予約受付日時</strong>
             {isEditing ? (
-              <div className="w-[55%]">
+              <div className="w-[70%] sm:w-[60%] ">
                 <DateSelect
                   setYear={setReservationYear}
                   setMonth={setReservationMonth}
@@ -250,15 +254,15 @@ const ReservationDetailCard = ({
                 />
               </div>
             ) : (
-              <div className="w-[55%] p-2 bg-gray-100 rounded border">{`${new Date(
+              <div className="w-[70%] sm:w-[60%] p-2 bg-gray-100 rounded border">{`${new Date(
                 reservationData.reservationDate
               ).toLocaleDateString()}`}</div>
             )}
           </div>
-          <div className="flex justify-between items-center text-md mt-8">
+          <div className="flex justify-between items-center text-md mt-8 text-sm md:text-lg">
             <strong className="sm:text-2xl text-gray-800">お渡し日時</strong>
             {isEditing ? (
-              <div className="w-[55%]">
+              <div className="w-[70%] sm:w-[60%]">
                 <DateSelect
                   setYear={setDeliveryYear}
                   setMonth={setDeliveryMonth}
@@ -269,7 +273,7 @@ const ReservationDetailCard = ({
                 />
               </div>
             ) : (
-              <div className="w-[55%] p-2 bg-gray-100 rounded border">
+              <div className="w-[70%] sm:w-[60%] p-2 bg-gray-100 rounded border">
                 {new Date(
                   reservationData.deliveryDate
                     ? reservationData.deliveryDate
@@ -280,12 +284,12 @@ const ReservationDetailCard = ({
           </div>
         </div>
       </CardContent>
-      <CardFooter className="flex justify-center gap-12 font-semibold pt-4">
+      <CardFooter className="flex justify-center gap-8 sm:gap-12 font-semibold pt-2 sm:pt-4">
         {isEditing ? (
           <>
             <Button
               variant="default"
-              className="text-lg bg-blue-600 text-white"
+              className="sm:text-lg bg-blue-600 text-white"
               onClick={handleSave}
               disabled={isSaving}
             >
@@ -293,7 +297,7 @@ const ReservationDetailCard = ({
             </Button>
             <Button
               variant="outline"
-              className="text-lg"
+              className="sm:text-lg"
               onClick={() => {
                 setFormErrors({});
                 setFormData(originalData);
@@ -308,7 +312,7 @@ const ReservationDetailCard = ({
           <>
             <Button
               variant="outline"
-              className="black text-lg"
+              className="black sm:text-lg"
               onClick={() => {
                 setIsEditing(true);
               }}

@@ -11,7 +11,7 @@ const POST = async (req: Request) => {
         { status: 400 }
       );
     }
-    if (!name && !year) {
+    if (name === "" && year === "") {
       return NextResponse.json(
         { error: "西暦または名前を入力してください" },
         { status: 400 }

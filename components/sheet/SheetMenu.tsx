@@ -26,7 +26,7 @@ const SheetMenu = ({ menuList }: SheetMenuProps) => {
           </SheetTitle>
         </SheetHeader>
         <nav className="flex justify-center mt-8">
-          <ul className="flex flex-col space-y-6 text-gray-700 font-semibold text-md sm:text-xl">
+          <ul className="flex flex-col space-y-6 text-gray-700 font-semibold text-md md:text-lg lg:text-xl">
             { menuList.map((list) => {
               return <li key={list.listName} className="hover:text-blue-700 hover:underline hover:underline-offset-4 cursor-pointer"><Link href={list.link}>{list.listName}</Link></li>
             }) }

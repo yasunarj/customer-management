@@ -31,7 +31,7 @@ const DeleteButton = ({ id, type }: { id: number; type: string }) => {
   return (
     <Button
       variant="destructive"
-      className="text-lg"
+      className="sm:text-lg"
       onClick={handleDelete}
       disabled={isDeleted}
     >

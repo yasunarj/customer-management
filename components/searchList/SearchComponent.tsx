@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { Form, FormControl, FormField, FormItem } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
+import { useState } from "react";
 
 type ReservationListData = Reservation[] | undefined;
 
@@ -36,7 +37,7 @@ const SearchComponent = ({
   isSearched,
   handleGetLists,
 }: SearchComponentProps) => {
-
+  const [error, setError] = useState<string | null>(null);
   const form = useForm({
     resolver: zodResolver(searchSchema),
     defaultValues: {
@@ -44,9 +45,12 @@ const SearchComponent = ({
       year: "",
     },
   });
-  const { formState: { isSubmitting } } = form;
+  const {
+    formState: { isSubmitting },
+  } = form;
 
   const onSubmit = async (values: z.infer<typeof searchSchema>) => {
+    setError(null);
     const sendData = { ...values, type };
     try {
       const response = await fetch(`/api/reservation/search`, {
@@ -57,7 +61,9 @@ const SearchComponent = ({
         body: JSON.stringify(sendData),
       });
       if (!response.ok) {
-        throw new Error("検索データを取得できませんでした");
+        const errorData = await response.json();
+        setError(errorData.error);
+        return;
       }
       const searchData = await response.json();
       setReservationList(searchData.data);
@@ -80,6 +86,7 @@ const SearchComponent = ({
                     <Input
                       className="px-1 text-sm md:text-md lg:text-lg w-full"
                       placeholder="西暦を入力"
+                      onFocus={() => setError(null)}
                       {...field}
                     />
                   </FormControl>
@@ -97,10 +104,15 @@ const SearchComponent = ({
                     <Input
                       className="px-1 text-sm md:text-md lg:text-lg w-full"
                       placeholder="名前を入力"
+                      onFocus={() => setError(null)}
                       {...field}
                     />
                   </FormControl>
-                  <Button type="submit" className="bg-gray-700 font-semibold sm:text-md px-2" disabled={isSubmitting}>
+                  <Button
+                    type="submit"
+                    className="bg-gray-700 font-semibold sm:text-md px-2"
+                    disabled={isSubmitting}
+                  >
                     {isSubmitting ? "取得中" : "検索"}
                   </Button>
                 </div>
@@ -125,10 +137,15 @@ const SearchComponent = ({
           </div>
         )}
       </div>
-      <div className="flex gap-8 justify-end text-sm sm:text-md md:hidden mt-2">
-        <p>合計件数: {totalNumber}件</p>
-        <p>合計金額: {totalAmount}円</p>
-      </div>
+      {error && (
+        <div className="text-center text-red-700 text-sm">{error}</div>
+      )}
+      {isSearched && (
+        <div className="flex gap-8 justify-end text-sm sm:text-md md:hidden mt-2">
+          <p>合計件数: {totalNumber}件</p>
+          <p>合計金額: {totalAmount}円</p>
+        </div>
+      )}
     </Form>
   );
 };

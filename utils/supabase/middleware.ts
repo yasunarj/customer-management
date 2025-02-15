@@ -32,24 +32,26 @@ export async function updateSession(request: NextRequest) {
   const { data: userData } = await supabase.auth.getUser();
   const user = userData?.user ?? null;
 
-
-  if (request.nextUrl.pathname === "/") {
-    console.log("Skipping auth check for home page.");
+  if (!user) {
+    if (
+      request.nextUrl.pathname.startsWith("/user") ||
+      request.nextUrl.pathname.startsWith("/admin")
+    ) {
+      return NextResponse.redirect(new URL("/auth/login", request.url));
+    }
     return supabaseResponse;
   }
 
-  // 🔹 `/auth/login` はそのまま通過
-  if (request.nextUrl.pathname.startsWith("/auth/login")) {
-    console.log("Skipping auth check for login page.");
-    return supabaseResponse;
+  const userRole = user.user_metadata?.role || "user";
+
+  if (request.nextUrl.pathname.startsWith("/admin") && userRole !== "admin") {
+    console.log("Unauthorized access to /admin, Redirecting to /user/dashboard");
+    return NextResponse.redirect(new URL("/user/dashboard", request.url));
   }
 
-  // 🔹 `/user` や `/admin` にアクセスする場合はログインチェック
-  if (!user && (request.nextUrl.pathname.startsWith("/user") || request.nextUrl.pathname.startsWith("/admin"))) {
-    console.log("Redirecting to /auth/login");
-    const url = request.nextUrl.clone();
-    url.pathname = "/auth/login";
-    return NextResponse.redirect(url);
+  if(request.nextUrl.pathname.startsWith("/user") && userRole !== "user") {
+    console.log("Unauthorized access to /user. Redirecting to /admin/dashboard");
+    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
   }
 
   return supabaseResponse;
