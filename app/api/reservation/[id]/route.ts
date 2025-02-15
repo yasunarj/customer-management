@@ -1,7 +1,8 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-const DELETE = async (req: Request, { params }: { params: { id: string } }) => {
+const DELETE = async (req: Request, props: { params: Promise<{ id: string }> }) => {
+  const params = await props.params;
   try {
     const reservationId = parseInt(params.id, 10);
     if (isNaN(reservationId)) {

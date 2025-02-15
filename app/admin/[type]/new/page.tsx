@@ -1,7 +1,14 @@
 import CreateForm from "@/components/form/CreateForm";
 
-const CreateNewDataPage = async ({ params }: { params: { type: string } }) => {
-  const { type } = await params;
+type CreateNewDataPageProps = {
+  params: Promise<{
+    type: string;
+  }>
+}
+
+const CreateNewDataPage = async (props: CreateNewDataPageProps) => {
+  const params = await props.params;
+  const { type } = params;
   const decodeType = decodeURIComponent(type);
   return (
     <div
