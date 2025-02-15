@@ -1,12 +1,13 @@
 import ReservationDetailCard from "@/components/detail/reservationCard";
 import { getReservationByTypeWithId } from "@/lib/getReservationsByType";
-
-const ReservationDetailPage = async ({
-  params,
-}: {
-  params: { type: string; id: string };
-}) => {
-  const { type, id } = await params;
+type ReservationDetailPageProps = {
+  params: {
+    type: string;
+    id: string;
+  };
+};
+const ReservationDetailPage = async ({ params }: ReservationDetailPageProps) => {
+  const { type, id } = params;
   const reservationId = parseInt(id, 10);
   const decodeType = decodeURIComponent(type);
   const reservation = await getReservationByTypeWithId(
@@ -19,7 +20,7 @@ const ReservationDetailPage = async ({
       <div
         className="flex-grow flex justify-center items-center bg-center bg-cover"
         style={{
-          backgroundImage: "url('/images/istockphoto-1499955814-612x612.jpg')", 
+          backgroundImage: "url('/images/istockphoto-1499955814-612x612.jpg')",
         }}
       >
         <div className="w-[80%] h-[95%] bg-white rounded-xl shadow-4xl p-4">
