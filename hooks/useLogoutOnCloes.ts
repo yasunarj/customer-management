@@ -14,10 +14,10 @@ export const useLogoutOnClose = () => {
       }
     }
 
-    window.addEventListener("beforeunload", handleLogoutOnClose);
+    window.addEventListener("visibilitychange", handleLogoutOnClose);
 
     return () => {
-      window.removeEventListener("beforeunload", handleLogoutOnClose)
+      window.removeEventListener("visibilitychange", handleLogoutOnClose)
     }
   }, []);
 };
