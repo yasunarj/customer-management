@@ -21,6 +21,7 @@ const UserListView = ({
   const [reservationList, setReservationList] =
     useState<ReservationListData>(reservations);
   const [isSearched, setIsSearched] = useState<boolean>(false);
+  const [activeToolTip, setActiveToolTip] = useState<number | null>(null);
   const router = useRouter();
   const totalNumber = reservationList ? reservationList.length : 0;
   const totalAmount = () => {
@@ -116,17 +117,28 @@ const UserListView = ({
                 <td className="text-sm border border-gray-300 px-4 py-2 text-center sm:table-cell hidden">
                   {reservation.customer.phone}
                 </td>
-                <td className="text-sm border border-gray-300 px-4 py-2  max-w-[200px] relative group">
+                <td
+                  className="text-sm border border-gray-300 px-4 py-2  max-w-[200px] relative"
+                  onClick={() => setActiveToolTip(reservation.id)}
+                  onBlur={() => setActiveToolTip(null)}
+                  onMouseEnter={() => setActiveToolTip(reservation.id)}
+                  onMouseLeave={() => setActiveToolTip(null)}
+                  tabIndex={0}
+                >
                   <div className="truncate">{reservation.productName}</div>
-                  <span className="absolute left-0 top-0 mt-1 w-max max-w-xs p-2 bg-gray-700 text-white text-sm rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-50">
-                    <ul className="px-1 max-w-[185px] sm:max-w-[100%]">
-                      {reservation.productName.split(",").map((item, index) => (
-                        <li key={index} className="py-1">
-                          {item.trim()}
-                        </li>
-                      ))}
-                    </ul>
-                  </span>
+                  {activeToolTip === reservation.id && (
+                    <span className="absolute left-0 top-0 mt-1 w-max max-w-xs p-2 bg-gray-700 text-white text-sm rounded shadow-lg z-50">
+                      <ul className="px-1 max-w-[185px] sm:max-w-[100%]">
+                        {reservation.productName
+                          .split(",")
+                          .map((item, index) => (
+                            <li key={index} className="py-1">
+                              {item.trim()}
+                            </li>
+                          ))}
+                      </ul>
+                    </span>
+                  )}
                 </td>
                 <td className="text-sm border border-gray-300 px-4 py-2 text-center sm:table-cell hidden">{`¥${reservation.price.toLocaleString()}`}</td>
                 <td className="text-sm border border-gray-300 px-4 py-2 text-center sm:table-cell hidden">

@@ -2,6 +2,7 @@
 import { HistoryListProps } from "@/types/reservation";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 const HistoryList = ({
   admin,
   // type,
@@ -9,6 +10,7 @@ const HistoryList = ({
   customerReservations,
 }: HistoryListProps) => {
   const router = useRouter();
+  const [activeToolTip, setActiveToolTip] = useState<number | null>(null);
   if (!customerReservations) {
     return (
       <div
@@ -67,17 +69,28 @@ const HistoryList = ({
                 <td className="text-sm border border-gray-300 px-4 py-2 flex justify-center min-w-[120px]">
                   <p className="w-[80px]">{reservation.type}</p>
                 </td>
-                <td className="text-sm border border-gray-300 px-4 py-2 max-w-[200px] relative group">
+                <td
+                  className="text-sm border border-gray-300 px-4 py-2 max-w-[200px] relative"
+                  onClick={() => setActiveToolTip(reservation.id)}
+                  onBlur={() => setActiveToolTip(null)}
+                  onMouseEnter={() => setActiveToolTip(reservation.id)}
+                  onMouseLeave={() => setActiveToolTip(null)}
+                >
                   <div className="truncate">{reservation.productName}</div>
-                  <span className="absolute left-0 top-0 mt-1 w-max max-w-xs p-2 bg-gray-700 text-white text-sm rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity z-50">
-                    <ul className="px-1 max-w-[185px] sm:max-w-[100%]">
-                      {reservation.productName.split(",").map((item, index) => (
-                        <li key={index} className="py-1">
-                          {item.trim()}
-                        </li>
-                      ))}
-                    </ul>
-                  </span>
+                  {(activeToolTip === reservation.id) &&
+                  (
+                    <span className="absolute left-0 top-0 mt-1 w-max max-w-xs p-2 bg-gray-700 text-white text-sm rounded shadow-lg z-50">
+                      <ul className="px-1 max-w-[185px] sm:max-w-[100%]">
+                        {reservation.productName
+                          .split(",")
+                          .map((item, index) => (
+                            <li key={index} className="py-1">
+                              {item.trim()}
+                            </li>
+                          ))}
+                      </ul>
+                    </span>
+                  )}
                 </td>
                 <td className="text-sm border border-gray-300 px-4 py-2 text-center hidden sm:table-cell">{`¥${reservation.price}`}</td>
                 <td className="text-sm border border-gray-300 px-4 py-2 text-center hidden sm:table-cell">
@@ -106,16 +119,3 @@ const HistoryList = ({
 };
 
 export default HistoryList;
-// [
-//   {
-//     customerName: '軽部棋子',
-//     customerPhone: '08065241115',
-//     id: 66,
-//     productName: 'A-24 FLOフルーツカスタードタルト,G-9 マルゲリータピッツァ,ザクチキ2個',
-//     price: 6621,
-//     reservationDate: 2024-10-08T15:00:00.000Z,
-//     deliveryDate: 2024-12-19T15:00:00.000Z,
-//     customerId: 67,
-//     type: 'クリスマス'
-//   }
-// ]
