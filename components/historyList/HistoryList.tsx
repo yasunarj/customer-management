@@ -34,7 +34,7 @@ const HistoryList = ({
     <>
       <Dialog open={isLoading}>
         <DialogContent className="flex flex-col justify-center items-center p-10">
-          <DialogTitle>ページ遷移中</DialogTitle>
+          <DialogTitle className="sr-only">ページ遷移中</DialogTitle>
           <Loader2 className="w-12 h-12 animate-spin text-gray-800" />
           <p className="mt-4 text-lg text-gray-700 font-semibold ">
             データ取得中
