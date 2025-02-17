@@ -23,12 +23,6 @@ const AdminDashboardPage = () => {
         </DialogContent>
       </Dialog>
 
-      <div
-        className="flex-grow bg-center bg-cover select-none flex justify-center items-center"
-        style={{
-          backgroundImage: "url('/images/istockphoto-1499955814-612x612.jpg')", // cSpell: disable-line
-        }}
-      >
         <div className="w-[95%] h-[95%] lg:max-w-[1024px] bg-white rounded-xl shadow-4xl">
           <div className="flex flex-col items-center gap-12 sm:gap-24 p-24">
             <div className="space-y-2 text-center">
@@ -60,7 +54,6 @@ const AdminDashboardPage = () => {
             </div>
           </div>
         </div>
-      </div>
     </>
   );
 };

@@ -5,8 +5,22 @@ import Header from "@/components/header/Header";
 import Footer from "@/components/footer/Footer";
 
 export const metadata: Metadata = {
-  title: "Customer_Management App",
-  description: "This is a reservation management app using Next.js",
+  title: "さくら卯の里４丁目店 顧客管理アプリ",
+  description: "セブンイレブンの予約商材の管理を紙から、Next.jsを使用したアプリにしました",
+  keywords: ["顧客管理", "予約管理", "クリスマスケーキ", "おせち", "恵方巻き", "Next.js", "Supabase"],
+  authors: [{name: "セブンイレブンさくら卯の里4丁目店", url: "customer-management-delta.vercel.app"}],
+  openGraph: {
+    title: "さくら卯の里4丁目店",
+    description: "さくら卯の里店の予約商品商材の管理を簡単に行える顧客管理アプリです。",
+    type: "website",
+    url: "customer-management-delta.vercel.app",
+  },
+  twitter: {
+    card: "summary_large_image",
+    site: "",
+    title: "さくら卯の里4丁目店 顧客管理アプリ",
+    description: "クリスマスケーキや恵方巻きの予約を管理する便利なアプリです。"
+  }
 };
 
 const geistSans = Geist({
