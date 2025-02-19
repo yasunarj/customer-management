@@ -11,7 +11,7 @@ export default function Home() {
         className="flex-grow flex flex-col items-start bg-center bg-cover select-none justify-end p-4 relative"
         style={{
           backgroundImage:
-            "linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), url('/images/photo-1719127516207-89c019911f80.avif')",
+            "linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('/images/photo-1719127516207-89c019911f80.avif')",
         }}
       >
         <div className="absolute top-16 left-6 sm:top-16 sm:left-10 md:top-20 md:left-20 flex flex-col space-y-4 sm:space-y-6 md:space-y-8 items-star w-[80%]">

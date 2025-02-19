@@ -23,8 +23,8 @@ const AdminDashboardPage = () => {
         </DialogContent>
       </Dialog>
 
-        <div className="w-[95%] h-[95%] lg:max-w-[1024px] bg-white rounded-xl shadow-4xl">
-          <div className="flex flex-col items-center gap-12 sm:gap-24 p-24">
+        <div className="w-[80%] h-[40%] sm:h-[60%] lg:max-w-[1024px] bg-white/70 rounded-xl shadow-4xl">
+          <div className="flex flex-col items-center gap-12 sm:gap-24 p-12">
             <div className="space-y-2 text-center">
               <h1 className="hidden sm:block sm:text-4xl lg:text-5xl text-gray-800 font-bold">
                 予約商材を選択してください
@@ -37,7 +37,7 @@ const AdminDashboardPage = () => {
               </h2>
             </div>
             <div>
-              <ul className="flex flex-col gap-6 sm:gap-12 text-3xl sm:text-4xl lg:text-5xl text-gray-600 font-bold">
+              <ul className="flex flex-col gap-6 sm:gap-12 text-3xl sm:text-4xl text-gray-600 font-bold">
                 {adminItems.map((item) => {
                   return (
                     <li key={item.type}>

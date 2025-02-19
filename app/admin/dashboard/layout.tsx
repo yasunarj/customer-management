@@ -8,14 +8,16 @@ export const metadata: Metadata = {
 
 const AdminDashboardLayout = ({children}: { children: ReactNode }) => {
   return (
-    
-    <div
-    className="flex-grow bg-center bg-cover select-none flex justify-center items-center"
-    style={{
-      backgroundImage: "url('/images/photo-1735303937312-381ad640f71e.avif')", // cSpell: disable-line
-    }}
-  >
-      {children}
+    <div className="relative w-full h-screen-vh overflow-hidden">
+      <video 
+        className="absolute top-0 left-0 w-full h-full object-cover brightness-75"
+        src="/videos/5580_960x540.mp4"
+        loop
+        autoPlay
+        muted
+        playsInline
+      />
+      <div className="relative z-10 h-full flex justify-center items-center">{children}</div>
     </div>
   );
 };
