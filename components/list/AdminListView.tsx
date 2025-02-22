@@ -4,11 +4,10 @@ import SheetMenu from "@/components/sheet/SheetMenu";
 import { Reservation } from "@/types/reservation";
 import { useState } from "react";
 import SearchComponent from "../searchList/SearchComponent";
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
 type ReservationListData = Reservation[] | undefined;
 
 import { useRouter } from "next/navigation"; //デバック
-import { Loader2 } from "lucide-react";
+import LoadingDialog from "../dialog/LoadingDialog";
 
 const AdminListView = ({
   decodeType,
@@ -77,15 +76,7 @@ const AdminListView = ({
 
   return (
     <>
-      <Dialog open={isLoading}>
-        <DialogContent className="flex flex-col items-center justify-center p-10">
-          <DialogTitle className="sr-only">ページ遷移中</DialogTitle>
-          <Loader2 className="w-12 h-12 animate-spin text-gray-800 " />
-          <p className="mt-4 text-lg font-semibold text-gray-700">
-            データ取得中
-          </p>
-        </DialogContent>
-      </Dialog>
+      <LoadingDialog isLoading={isLoading} />
 
       <div
         className="select-none h-[90dvh] flex justify-center items-center bg-center bg-cover"

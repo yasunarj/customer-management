@@ -5,8 +5,7 @@ import { Reservation } from "@/types/reservation";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import SearchComponent from "../searchList/SearchComponent";
-import { Dialog, DialogContent, DialogTitle } from "../ui/dialog";
-import { Loader2 } from "lucide-react";
+import LoadingDialog from "../dialog/LoadingDialog";
 type ReservationListData = Reservation[] | undefined;
 
 const UserListView = ({
@@ -64,13 +63,8 @@ const UserListView = ({
   }
   return (
     <>
-      <Dialog open={isLoading}>
-        <DialogContent className="flex flex-col justify-center items-center p-10">
-          <DialogTitle className="sr-only">ページ遷移中</DialogTitle>
-          <Loader2 className="w-12 h-12 animate-spin text-gray-008"/>
-          <p className="mt-4 text-lg text-gray-700 font-semibold">データ取得中</p>
-        </DialogContent>
-      </Dialog>
+
+      <LoadingDialog isLoading={isLoading} />
 
       <div
         className="select-none h-[90dvh] flex justify-center items-center bg-center bg-cover"
