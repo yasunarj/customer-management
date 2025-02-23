@@ -17,7 +17,7 @@ const AdminDashboardPage = () => {
     <>
       <LoadingDialog isLoading={isLoading} />
 
-        <div className="overflow-y-auto w-[80%] h-[60%] sm:h-[65%] md:h-[72%] lg:max-w-[1024px] bg-white/70 rounded-xl shadow-4xl">
+        <div className="overflow-y-auto w-[90%] h-[60%] sm:h-[65%] md:h-[72%] lg:max-w-[1024px] bg-white/70 rounded-xl shadow-4xl">
           <div className="flex flex-col items-center gap-4 p-12">
             <div className="space-y-2 text-center">
               <h1 className="hidden sm:block sm:text-4xl lg:text-5xl text-gray-800 font-bold">
