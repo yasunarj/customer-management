@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import { ReactNode } from "react";
-
+import DashboardSplashScreen from "@/components/splashScreen/DashboardSplashScreen";
 const AdminDashboardLayout = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   return (
-    <div className="relative w-full h-screen-vh overflow-hidden">
-      <video
-        className="absolute top-0 left-0 w-full h-full object-cover brightness-75"
+    <>
+      <DashboardSplashScreen />
+      <div className="relative w-full h-screen-vh overflow-hidden">
+        <video
+          className="absolute top-0 left-0 w-full h-full object-cover brightness-75"
         src="/videos/5580_960x540.mp4"
         onLoadedData={() => setIsLoading(true)}
         loop
@@ -22,6 +24,7 @@ const AdminDashboardLayout = ({ children }: { children: ReactNode }) => {
         </div>
       )}
     </div>
+    </>
   );
 };
 

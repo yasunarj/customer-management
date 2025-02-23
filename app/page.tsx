@@ -1,4 +1,4 @@
-import SplashScreen from "@/components/splashScreen/SplashScreen";
+import HomeSplashScreen from "@/components/splashScreen/HomeSplashScreen";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
@@ -6,7 +6,7 @@ import Link from "next/link";
 export default function Home() {
   return (
     <>
-      <SplashScreen />
+      <HomeSplashScreen />
       <div
         className="flex-grow flex flex-col items-start bg-center bg-cover select-none justify-end p-4 relative"
         style={{

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const SplashScreen = () => {
+const HomeSplashScreen = () => {
   const [showSplash, setShowSplash] = useState<boolean>(true);
 
   useEffect(() => {
@@ -29,4 +29,4 @@ const SplashScreen = () => {
   );
 };
 
-export default SplashScreen;
+export default HomeSplashScreen;
