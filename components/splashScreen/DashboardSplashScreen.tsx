@@ -7,7 +7,7 @@ const DashboardSplashScreen = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSplash(false);
-    }, 400);
+    }, 800);
     return () => clearTimeout(timer);
   }, []);
 
