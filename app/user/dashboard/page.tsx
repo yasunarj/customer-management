@@ -18,7 +18,7 @@ const UserDashboardPage = () => {
       <LoadingDialog isLoading={isLoading} />
 
       <div className="overflow-y-auto w-[90%] h-[55%] sm:h-[62%] md:h-[72%] lg:h-[70%] lg:max-w-[1024px] bg-white/70 rounded-xl shadow-4xl">
-        <div className="flex flex-col items-center gap-4 sm:gap-6 md:gap-8 p-12">
+        <div className="flex flex-col items-center gap-8 sm:gap-12 md:gap-16 p-12">
           <div className="space-y-2 text-center">
             <h1 className="hidden sm:block sm:text-4xl lg:text-5xl text-gray-800 font-bold">
               予約商材を選択してください

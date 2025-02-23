@@ -20,7 +20,7 @@ interface CarouselDashboardProps {
 const CarouselDashboard = ({items, handleNavigation}: CarouselDashboardProps) => {
   return (
     <div className="w-full flex justify-center p-2">
-      <Carousel className="w-[100%] md:w-[85%] lg:w-[70%]">
+      <Carousel className="w-[95%] md:w-[85%] lg:w-[70%]">
         <CarouselContent>
           {items.map((item) => {
             return (
