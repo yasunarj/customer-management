@@ -4,7 +4,6 @@ import { adminItems } from "@/lib/adminItems";
 import { useState } from "react";
 import CarouselDashboard from "@/components/carousel/CarouselDashboard";
 import LoadingDialog from "@/components/dialog/LoadingDialog";
-import DashboardSplashScreen from "@/components/splashScreen/DashboardSplashScreen";
 
 const UserDashboardPage = () => {
   const router = useRouter();
@@ -16,7 +15,6 @@ const UserDashboardPage = () => {
 
   return (
     <>
-      <DashboardSplashScreen />
       <LoadingDialog isLoading={isLoading} />
       <div className="overflow-y-auto w-[90%] h-[55%] sm:h-[62%] md:h-[72%] lg:h-[70%] lg:max-w-[1024px] bg-white/70 rounded-xl shadow-4xl">
         <div className="flex flex-col items-center gap-8 sm:gap-12 md:gap-16 p-12">
