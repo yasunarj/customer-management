@@ -33,8 +33,8 @@ const CarouselDashboard = ({items, handleNavigation}: CarouselDashboardProps) =>
                         alt="商材画像"
                         width={200}
                         height={200}
-                        // priority
-                        // loading="eager"
+                        priority
+                        loading="eager"
                         style={{objectFit: "cover"}}
                         className="w-[90%] mx-auto"
                       />
