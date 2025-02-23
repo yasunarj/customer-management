@@ -43,7 +43,7 @@ const AdminListView = ({
   if (!reservationsList || reservationsList.length === 0) {
     return (
       <div
-        className="select-none h-[90vh] flex justify-center items-center bg-center bg-cover"
+        className="select-none h-[90dvh] flex justify-center items-center bg-center bg-cover"
         style={{
           backgroundImage: "url('/images/istockphoto-1499955814-612x612.jpg')", // cSpell: disable-line
         }}
