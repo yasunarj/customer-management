@@ -145,9 +145,15 @@ const ReservationDetailCard = ({
           }`}
         >
           <div className="flex justify-between items-center text-sm md:text-lg">
-            <strong className="sm:text-2xl text-gray-800">お名前</strong>
+            <label
+              htmlFor="name"
+              className="sm:text-2xl text-gray-800 font-bold"
+            >
+              お名前
+            </label>
             {isEditing ? (
               <Input
+                id="name"
                 name="name"
                 className={`text-sm md:text-[16px] w-[70%] sm:w-[60%] p-2 bg-gray-100 rounded border ${
                   formErrors.name ? "border-red-500" : ""
@@ -167,9 +173,10 @@ const ReservationDetailCard = ({
             </p>
           )}
           <div className="flex justify-between items-center text-md mt-8 text-sm md:text-lg">
-            <strong className="sm:text-2xl text-gray-800">電話番号</strong>
+            <label htmlFor="phone" className="sm:text-2xl text-gray-800 font-bold">電話番号</label>
             {isEditing ? (
               <Input
+                id="phone"
                 name="phone"
                 className={`text-sm md:text-[16px] w-[70%] sm:w-[60%] p-2 bg-gray-100 rounded border ${
                   formErrors.phone ? "border-red-500" : ""
@@ -189,9 +196,10 @@ const ReservationDetailCard = ({
             </p>
           )}
           <div className="flex justify-between items-center text-md mt-8 text-sm md:text-lg">
-            <strong className=" sm:text-2xl text-gray-800">商品名</strong>
+            <label htmlFor="productName" className="sm:text-2xl text-gray-800 font-bold">商品名</label>
             {isEditing ? (
               <Textarea
+                id="productName"
                 name="productName"
                 className={`text-sm md:text-[16px] w-[70%] sm:w-[60%] p-2 bg-gray-100 rounded border ${
                   formErrors.productName ? "border-red-500" : ""
@@ -221,9 +229,10 @@ const ReservationDetailCard = ({
             </p>
           )}
           <div className="flex justify-between items-center text-md mt-8 text-sm md:text-lg">
-            <strong className="sm:text-2xl text-gray-800">合計金額</strong>
+            <label htmlFor="price" className="sm:text-2xl text-gray-800 font-bold">合計金額</label>
             {isEditing ? (
               <Input
+                id="price"
                 name="price"
                 className={`text-sm md:text-[16px] w-[70%] sm:w-[60%] p-2 bg-gray-100 rounded border ${
                   formErrors.price ? "border-red-500" : ""

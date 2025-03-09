@@ -69,34 +69,6 @@ const LoginPage = () => {
     }
   };
 
-  // const onSubmit = async (values: z.infer<typeof passwordSchema>) => {
-  //   if (values.password === process.env.NEXT_PUBLIC_USER_PASSWORD) {
-  //     try {
-  //       setIsLoading(true);
-  //       const { data, error } = await supabase.auth.signInWithPassword({
-  //         email: "unosato@gmail.com",
-  //         password: process.env.NEXT_PUBLIC_USER_PASSWORD,
-  //       });
-
-  //       if (error) {
-  //         alert("ログインに失敗しました");
-  //         return;
-  //       } else {
-  //         await supabase.auth.setSession(data.session);
-  //         alert("ログインしました");
-  //         router.push("/user/dashboard");
-  //       }
-  //     } catch (e) {
-  //       console.error(e);
-  //       alert("予期せぬエラーが発生しました");
-  //     }
-  //   } else if (values.password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
-  //     router.push("/auth/adminLogin");
-  //   } else {
-  //     alert("パスワードが間違っています");
-  //   }
-  // };
-
   return (
     <div
       className="flex-grow bg-center bg-cover"

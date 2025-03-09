@@ -31,7 +31,10 @@ const DELETE = async (
         where: { id: reservationData.customerId },
       }),
     ]);
-    return NextResponse.json({ message: "削除が成功しました" });
+    return NextResponse.json(
+      { message: "削除が成功しました" },
+      { status: 200 }
+    );
   } catch (e) {
     console.error("削除エラー:", e);
     return NextResponse.json(

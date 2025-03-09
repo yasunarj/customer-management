@@ -4,6 +4,13 @@ import { NextResponse } from "next/server";
 
 const POST = async (req: Request) => {
   try {
+    if (req.method !== "POST") {
+      return NextResponse.json(
+        { error: "メソッドが許可されていません" },
+        { status: 405 }
+      );
+    }
+
     const { name, year, type } = await req.json();
     if (!type) {
       return NextResponse.json(
@@ -26,17 +33,20 @@ const POST = async (req: Request) => {
       ...(year && {
         deliveryDate: {
           gte: new Date(`${Number(year)}-01-01`),
-          lt: new Date(`${Number(year) + 1}-01-01`)
+          lt: new Date(`${Number(year) + 1}-01-01`),
         },
       }),
     };
+    // ・containは一部でも一致すればOKとする
+    // ・modeは大文字でも小文字と小文字を共通化させる
+    // ・gteとltは範囲でありその中の範囲であるデータを取得する
 
     const response = await prisma.reservation.findMany({
       where: whereCondition,
       include: {
         customer: true,
       },
-      orderBy: { deliveryDate: "desc" }
+      orderBy: { deliveryDate: "desc" },
     });
     return NextResponse.json({ status: 200, data: response });
   } catch (e) {
