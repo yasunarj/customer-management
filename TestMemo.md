@@ -72,3 +72,13 @@ app/
  │    ├── components/Button.test.tsx
  │    ├── components/Navbar.test.tsx
 📌 「壊れたら困る機能」からテストを書いていくのがベスト！
+
+
+📌 jest --coverage の出力の見方
+カバレッジのレポートには、4つの主要な指標があります。
+
+指標	意味	目標
+% Stmts (Statements)	コード全体の実行された行の割合	90%以上が理想
+% Branch (Branches)	if 文や switch 文のすべての分岐が実行された割合	80%以上が理想
+% Funcs (Functions)	実行された関数の割合	80%以上が理想
+% Lines (Lines)	コードの各行のうち、実行された行の割合	90%以上が理想
