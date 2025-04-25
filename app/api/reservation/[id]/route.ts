@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/utils/supabase/server";
 
 const DELETE = async (
   req: NextRequest,
@@ -7,6 +8,18 @@ const DELETE = async (
 ) => {
   const params = await props.params;
   try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "認証されていません" },
+        { status: 401 }
+      );
+    }
+
     const reservationId = parseInt(params.id, 10);
     if (isNaN(reservationId)) {
       return NextResponse.json({ error: "無効なIDです" }, { status: 400 });
@@ -50,6 +63,16 @@ const PUT = async (
 ) => {
   const params = await props.params;
   try {
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json(
+        { error: "認証されていません" },
+        { status: 401 }
+      );
+    }
     const parseId = parseInt(params.id, 10);
     if (isNaN(parseId)) {
       return NextResponse.json({ error: "無効なIDです" }, { status: 400 });

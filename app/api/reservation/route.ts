@@ -1,16 +1,28 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
+import { createClient } from "@/utils/supabase/server";
 
 const POST = async (req: Request) => {
   try {
-    
+    const supabase = await createClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json(
+        { error: "認証されていません" },
+        { status: 401 }
+      );
+    }
+
     if (req.method !== "POST") {
       return NextResponse.json(
         { error: "メソッドが許可されていません" },
         { status: 405 }
       );
     }
-    
+
     const contentType = req.headers.get("Content-Type")?.toLowerCase();
     if (contentType !== "application/json") {
       return NextResponse.json(
@@ -18,7 +30,7 @@ const POST = async (req: Request) => {
         { status: 400 }
       );
     }
-    
+
     const body = await req.json();
     const {
       name,

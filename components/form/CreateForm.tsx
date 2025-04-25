@@ -220,3 +220,4 @@ const CreateForm = ({ type }: { type: string }) => {
 };
 
 export default CreateForm;
+

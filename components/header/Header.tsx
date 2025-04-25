@@ -28,7 +28,9 @@ const Header = () => {
         if (
           pathname !== "/" &&
           pathname !== "/auth/login" &&
-          pathname !== "/auth/adminLogin"
+          pathname !== "/auth/adminLogin" &&
+          !pathname.startsWith("/lp")
+          // pathname !== "/lp"
         ) {
           router.push("/auth/login");
         }
@@ -58,7 +60,9 @@ const Header = () => {
           if (
             pathname !== "/" &&
             pathname !== "/auth/login" &&
-            pathname !== "/auth/adminLogin"
+            pathname !== "/auth/adminLogin" && 
+            !pathname.startsWith("/lp")
+            // pathname !== "/lp"
           ) {
             router.push("/auth/login");
           }
@@ -101,7 +105,7 @@ const Header = () => {
   };
   return (
     <>
-      <div className="bg-gradient-to-r from-green-800 via-green-500 to-green-700 h-[5dvh]">
+      <div className="main-header bg-gradient-to-r from-green-800 via-green-500 to-green-700 h-[5dvh]">
         <div className="flex justify-between items-center h-full px-4 sm:px-8 text-white">
           <h2 className="text-sm sm:text-lg font-semibold">
             セブンイレブンさくら卯の里４丁目店

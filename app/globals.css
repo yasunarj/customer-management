@@ -6,6 +6,39 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+.lp-mode {
+  display: none;
+}
+
+.wrapper {
+  color: white;
+  overflow: hidden;
+  position: relative;
+  margin-inline: auto;
+  height: 54px;
+}
+
+.loop {
+  white-space: nowrap;
+  animation: loop 60s linear infinite;
+  width: 400%;
+}
+.loop2 {
+  white-space: nowrap;
+  position: absolute;
+  top: 0; left: 0;
+  animation: loop 60s -30s linear infinite;
+}
+
+@keyframes loop {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
 @layer base {
   :root {
     --radius: 0.5rem;
@@ -13,7 +46,8 @@ body {
 }
 
 @supports (-webkit-touch-callout: none) {
-  input, textarea {
+  input,
+  textarea {
     font-size: 16px !important;
     -webkit-text-size-adjust: 100%;
   }
