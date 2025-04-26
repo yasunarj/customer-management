@@ -29,8 +29,8 @@ const Header = () => {
           pathname !== "/" &&
           pathname !== "/auth/login" &&
           pathname !== "/auth/adminLogin" &&
-          !pathname.startsWith("/lp")
-          // pathname !== "/lp"
+          !pathname.startsWith("/lp") &&
+          !pathname.startsWith("/safe")
         ) {
           router.push("/auth/login");
         }
@@ -61,8 +61,8 @@ const Header = () => {
             pathname !== "/" &&
             pathname !== "/auth/login" &&
             pathname !== "/auth/adminLogin" && 
-            !pathname.startsWith("/lp")
-            // pathname !== "/lp"
+            !pathname.startsWith("/lp") &&
+            !pathname.startsWith("/safe")
           ) {
             router.push("/auth/login");
           }

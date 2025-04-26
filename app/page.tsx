@@ -22,7 +22,10 @@ export default function Home() {
             お客様には最高の満足を
           </h3>
         </div>
-        <Link href="/lp" className="self-center mb-4 w-[200px] lg:w-[240px] xl:w-[280px]">
+        <Link
+          href="/lp"
+          className="self-center mb-4 w-[200px] lg:w-[240px] xl:w-[280px]"
+        >
           <Button
             className={`${cn(
               buttonVariants({ size: "lg", variant: "link" })
@@ -31,13 +34,26 @@ export default function Home() {
             店舗紹介ページへ
           </Button>
         </Link>
-        <Link href="/auth/login" className="self-center mb-8 sm:mb-12 w-[200px] lg:w-[240px] xl:w-[280px]">
+        <Link
+          href="/auth/login"
+          className="self-center mb-4 w-[200px] lg:w-[240px] xl:w-[280px]"
+        >
           <Button
             className={`${cn(
               buttonVariants({ size: "lg", variant: "link" })
             )} w-full px-8 py-6 font-bold text-white text-lg rounded-md bg-gradient-to-r from-black via-gray-800 to-gray-600`}
           >
             予約商材一覧へ
+          </Button>
+        </Link>
+        <Link
+          href="/safe"
+          className="self-center mb-8 sm:mb-12 w-[200px] lg:w-[240px] xl:w-[280px]"
+        >
+          <Button
+            className={`${cn(buttonVariants({ size: "lg", variant: "link" }))} w-full px-8 py-6 font-bold text-white text-lg rounded-md bg-gradient-to-r from-black via-gray-800 to-gray-600`}
+          >
+            金庫管理ページへ
           </Button>
         </Link>
       </div>
