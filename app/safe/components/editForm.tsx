@@ -105,9 +105,9 @@ const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
-      if(res.ok) {
+      if (res.ok) {
         router.push("/safe/history");
       } else {
         setErrorMessage("データを更新できませんでした");
@@ -142,60 +142,66 @@ const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="border-2 border-gray-400 mt-2 p-8 h-[90%] sm:h-[90%]"
-    >
-      {/* 金種ごとのInput */}
-      <div className="flex flex-col h-[85%] sm:h-[90%] justify-between p-1 sm:p-6 overflow-y-scroll">
-        {detailStates.map((state: DetailState, index: number) => {
-          return (
-            <div key={state.name}>
-              <div className="flex items-center gap-3">
-                <Label htmlFor={"bara"} className="text-md sm:text-lg w-[40%]">
-                  {state.name}
-                </Label>
-                <Input
-                  type="number"
-                  id={"bara"}
-                  value={state.yen}
-                  placeholder="0"
-                  className="text-right"
-                  onChange={(e) =>
-                    handleChange(e, state.name, index, state.error)
-                  }
-                />
+    <div className="h-screen-vh overflow-hidden bg-blue-200 flex justify-center items-center">
+      <form
+        onSubmit={handleSubmit}
+        className="mt-2 h-[95%] sm:h-[90%] bg-white p-2"
+      >
+        <h2 className="mt-2 text-center text-2xl font-bold text-gray-800">修正フォーム</h2>
+        {/* 金種ごとのInput */}
+        <div className="flex flex-col h-[85%] sm:h-[90%] justify-between mt-2 p-4 sm:p-6 overflow-y-scroll border-2 border-gray-400"> 
+          {detailStates.map((state: DetailState, index: number) => {
+            return (
+              <div key={state.name}>
+                <div className="flex items-center gap-3">
+                  <Label
+                    htmlFor={"bara"}
+                    className="text-md sm:text-lg w-[40%]"
+                  >
+                    {state.name}
+                  </Label>
+                  <Input
+                    type="number"
+                    id={"bara"}
+                    value={state.yen}
+                    placeholder="0"
+                    className="text-right"
+                    onChange={(e) =>
+                      handleChange(e, state.name, index, state.error)
+                    }
+                  />
+                </div>
+                <p className="text-sm text-right text-red-600">
+                  {state.error ? state.error : ""}
+                </p>
               </div>
-              <p className="text-sm text-right text-red-600">
-                {state.error ? state.error : ""}
-              </p>
-            </div>
-          );
-        })}
-      </div>
-      <div className="m-3 flex justify-between">
-        <p>合計金額</p>
-        <p
-          className={`text-[18px] ${
-            total === 300000 ? "text-blue-600" : "text-red-600"
-          }`}
-        >
-          {total}
-          <span className="text-gray-800">円</span>
-        </p>
-      </div>
-      {/* 送信ボタン */}
-      <div className="flex gap-4 justify-center">
-        <Button type="submit" className="text-md w-[40%]">
-          {isEditing ? (
-            <Loader2 className="animate-spin h-10 w-10" strokeWidth={3} />
-          ) : (
-            "更新"
-          )}
-        </Button>
-      </div>
-      <p className="text-red-600 text-center text-sm mt-1">{errorMessage}</p>
-    </form>
+            );
+          })}
+          <div className="mt-1 flex justify-between">
+            <p>合計金額</p>
+            <p
+              className={`text-[18px] ${
+                total === 300000 ? "text-blue-600" : "text-red-600"
+              }`}
+            >
+              {total}
+              <span className="text-gray-800">円</span>
+            </p>
+          </div>
+        </div>
+        {/* 送信ボタン */}
+        <div className="flex gap-4 justify-center mt-2">
+          <Button type="submit" className="text-md w-[40%]">
+            {isEditing ? (
+              <Loader2 className="animate-spin h-10 w-10" strokeWidth={3} />
+            ) : (
+              "更新"
+            )}
+          </Button>
+        </div>
+        <p className="text-red-600 text-center text-sm mt-1">{errorMessage}</p>
+      </form>
+    </div>
   );
 };
 

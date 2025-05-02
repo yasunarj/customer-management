@@ -5,7 +5,7 @@ const SafeCheckHistoryPage = async () => {
   const safeCheckAllData = await getSafeCheckHistory();
 
   return (
-    <div className="h-screen-vh overflow-hidden bg-blue-200 flex justify-center items-center ">
+    <div className="h-screen-vh overflow-hidden bg-blue-200 flex justify-center items-center">
       <div className="bg-white w-[90%] h-[95%] max-w-[900px] rounded-xl">
         <h1 className="text-3xl text-gray-800 font-bold text-center mt-2">
           金庫精算の履歴一覧

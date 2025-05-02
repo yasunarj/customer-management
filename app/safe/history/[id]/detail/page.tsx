@@ -22,14 +22,14 @@ const SafeCheckDetailPage = async (props: SafeCheckDetailPage) => {
 
   return (
     <div className="h-screen-vh overflow-hidden bg-blue-200 flex justify-center items-center">
-      <div className="bg-white w-[90%] h-[95%] rounded-xl">
+      <div className="bg-white w-[90%] h-[95%] rounded-xl overflow-y-scroll">
         <h1 className="text-gray-800 text-3xl text-center font-bold mt-4">
           {safeCheckDetailData.date
             ? new Date(safeCheckDetailData.date).toLocaleDateString()
             : ""}{" "}
           精算データ
         </h1>
-        <div className="w-[90%] max-w-[400px] mx-auto  p-4 space-y-4 text-[16px] mt-4 border-2 overflow-scroll">
+        <div className="w-[90%] max-w-[400px] mx-auto  p-4 space-y-4 text-[18px] mt-4 border-2">
           <div className="flex justify-between">
             <h3>バラ</h3>
             <p>{safeCheckDetailData.bara}</p>
