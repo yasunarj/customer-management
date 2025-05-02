@@ -29,7 +29,7 @@ const SafeCheckDetailPage = async (props: SafeCheckDetailPage) => {
             : ""}{" "}
           精算データ
         </h1>
-        <div className="w-[90%] max-w-[400px] mx-auto  p-4 space-y-4 text-[24px] mt-4 border-2 overflow-scroll">
+        <div className="w-[90%] max-w-[400px] mx-auto  p-4 space-y-4 text-[16px] mt-4 border-2 overflow-scroll">
           <div className="flex justify-between">
             <h3>バラ</h3>
             <p>{safeCheckDetailData.bara}</p>
