@@ -25,7 +25,7 @@ const SafeCheckDetailPage = async (props: SafeCheckDetailPage) => {
       <div className="bg-white w-[90%] h-[95%] rounded-xl overflow-y-scroll shadow-2xl">
         <h1 className="text-gray-800 text-3xl text-center font-bold mt-4">
           {safeCheckDetailData.date
-            ? new Date(safeCheckDetailData.date).toLocaleDateString()
+            ? new Date(safeCheckDetailData.date).toLocaleDateString("ja-JP")
             : ""}{" "}
           精算データ
         </h1>

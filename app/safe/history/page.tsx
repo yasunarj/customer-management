@@ -31,7 +31,7 @@ const SafeCheckHistoryPage = async () => {
                 return (
                   <tr key={safeData.id} className="text-center">
                     <td className="border border-gray-300 px-4 py-2">
-                      {new Date(safeData.date).toLocaleDateString()}
+                      {new Date(safeData.date).toLocaleDateString("ja-JP")}
                     </td>
                     <td
                       className={`border border-gray-300 px-4 py-2 ${
