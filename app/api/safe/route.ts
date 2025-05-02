@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import { SafeCheck } from "@prisma/client";
 import { NextResponse } from "next/server";
 
 const POST = async (req: Request) => {
@@ -20,7 +21,7 @@ const POST = async (req: Request) => {
       );
     }
 
-    const body = await req.json();
+    const body: SafeCheck = await req.json();
 
     const newSafeCheck = await prisma.safeCheck.create({
       data: body,

@@ -89,6 +89,7 @@ const InputForm = () => {
     setValues(newValues);
 
     if(newValues.some((value) => value.error !== "")) {
+      setIsSending(false);
       return;
     }
 
@@ -116,7 +117,7 @@ const InputForm = () => {
         body: JSON.stringify(sendData)
       })
       if(res.ok) {
-        router.push("/safe");
+        router.push("/safe/history");
       } else {
         setErrorMessage("登録できませんでした");
       }

@@ -1,0 +1,202 @@
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { inputSchema } from "../lib/inputSchema";
+import { useRouter } from "next/navigation";
+
+type DetailDataProps = {
+  id: number;
+  date: Date;
+  bara: number;
+  yen10000: number;
+  yen5000: number;
+  yen1000: number;
+  yen500: number;
+  yen100: number;
+  yen50: number;
+  yen10: number;
+  yen5: number;
+  yen1: number;
+  total: number;
+  createAt: Date;
+  updateAt: Date;
+} | null;
+
+interface DetailState {
+  name: string;
+  yen: number;
+  error: string;
+}
+
+type DetailStates = DetailState[];
+
+const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [total, setTotal] = useState<number>(detailData ? detailData.total : 0);
+  const [errorMessage, setErrorMessage] = useState<string>("");
+  const [detailStates, setDetailStates] = useState<DetailStates | null>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!detailData) {
+      return;
+    }
+
+    setDetailStates([
+      { name: "バラ", yen: detailData.bara, error: "" },
+      { name: "一万円", yen: detailData.yen10000, error: "" },
+      { name: "五千円", yen: detailData.yen5000, error: "" },
+      { name: "千円", yen: detailData.yen1000, error: "" },
+      { name: "500円", yen: detailData.yen500, error: "" },
+      { name: "100円", yen: detailData.yen100, error: "" },
+      { name: "50円", yen: detailData.yen50, error: "" },
+      { name: "10円", yen: detailData.yen10, error: "" },
+      { name: "5円", yen: detailData.yen5, error: "" },
+      { name: "1円", yen: detailData.yen1, error: "" },
+    ]);
+  }, [detailData]);
+
+  if (!detailStates) {
+    return <div className="h-screen-vh">データが存在しません</div>;
+  }
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsEditing(true);
+    const newState = detailStates.map((state) => {
+      const result = inputSchema.safeParse({ yen: state.yen });
+      if (!result.success) {
+        return { ...state, error: result.error.errors[0].message };
+      }
+      return { ...state };
+    });
+
+    setDetailStates(newState);
+
+    if (newState.some((state) => state.error !== "")) {
+      setIsEditing(false);
+      return;
+    }
+
+    const updateData = {
+      bara: detailStates[0].yen,
+      yen10000: detailStates[1].yen,
+      yen5000: detailStates[2].yen,
+      yen1000: detailStates[3].yen,
+      yen500: detailStates[4].yen,
+      yen100: detailStates[5].yen,
+      yen50: detailStates[6].yen,
+      yen10: detailStates[7].yen,
+      yen5: detailStates[8].yen,
+      yen1: detailStates[9].yen,
+      total: total,
+    };
+
+    try {
+      if (!detailData) {
+        throw new Error("データが見当たりません");
+      }
+      const res = await fetch(`/api/safe/${detailData.id}/`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updateData)
+      });
+      if(res.ok) {
+        router.push("/safe/history");
+      } else {
+        setErrorMessage("データを更新できませんでした");
+      }
+    } catch (e) {
+      setErrorMessage("データを更新できませんでした");
+      console.error("データの更新に失敗しました", e);
+    } finally {
+      setIsEditing(false);
+    }
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    name: string,
+    index: number,
+    error: string
+  ) => {
+    const newYen = Number(e.target.value);
+
+    if (e.target.value.length > 1 && e.target.value.startsWith("0")) {
+      e.target.value = e.target.value.replace(/^0+/, "");
+    }
+
+    const newValue = [...detailStates];
+    newValue[index] = { name, yen: e.target.value !== "" ? newYen : 0, error };
+
+    const newTotal = newValue.reduce((sum, value) => sum + (value.yen ?? 0), 0);
+
+    setDetailStates(newValue);
+    setTotal(newTotal);
+  };
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="border-2 border-gray-400 mt-2 p-8 h-[90%] sm:h-[90%]"
+    >
+      {/* 金種ごとのInput */}
+      <div className="flex flex-col h-[85%] sm:h-[90%] justify-between p-1 sm:p-6 overflow-y-scroll">
+        {detailStates.map((state: DetailState, index: number) => {
+          return (
+            <div key={state.name}>
+              <div className="flex items-center gap-3">
+                <Label htmlFor={"bara"} className="text-md sm:text-lg w-[40%]">
+                  {state.name}
+                </Label>
+                <Input
+                  type="number"
+                  id={"bara"}
+                  value={state.yen}
+                  placeholder="0"
+                  className="text-right"
+                  onChange={(e) =>
+                    handleChange(e, state.name, index, state.error)
+                  }
+                />
+              </div>
+              <p className="text-sm text-right text-red-600">
+                {state.error ? state.error : ""}
+              </p>
+            </div>
+          );
+        })}
+      </div>
+      <div className="m-3 flex justify-between">
+        <p>合計金額</p>
+        <p
+          className={`text-[18px] ${
+            total === 300000 ? "text-blue-600" : "text-red-600"
+          }`}
+        >
+          {total}
+          <span className="text-gray-800">円</span>
+        </p>
+      </div>
+      {/* 送信ボタン */}
+      <div className="flex gap-4 justify-center">
+        <Button type="submit" className="text-md w-[40%]">
+          {isEditing ? (
+            <Loader2 className="animate-spin h-10 w-10" strokeWidth={3} />
+          ) : (
+            "更新"
+          )}
+        </Button>
+      </div>
+      <p className="text-red-600 text-center text-sm mt-1">{errorMessage}</p>
+    </form>
+  );
+};
+
+export default EditForm;
