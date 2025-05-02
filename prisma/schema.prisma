@@ -24,3 +24,21 @@ model Reservation {
   type            String
   customer        Customer  @relation(fields: [customerId], references: [id])
 }
+
+model SafeCheck {
+  id        Int      @id @default(autoincrement())
+  date      DateTime @unique
+  bara      Int
+  yen10000  Int
+  yen5000   Int
+  yen1000   Int
+  yen500    Int
+  yen100    Int
+  yen50     Int
+  yen10     Int
+  yen5      Int
+  yen1      Int
+  total     Int
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+}
