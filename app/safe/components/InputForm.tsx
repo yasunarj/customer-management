@@ -132,10 +132,10 @@ const InputForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="border-2 border-gray-400 mt-2 p-8 h-[90%] sm:h-[90%]"
+      className="border-2 border-gray-400 mt-2 p-4 h-[88%] sm:h-[90%] overflow-y-scroll"
     >
       {/* 金種ごとのInput */}
-      <div className="flex flex-col h-[85%] sm:h-[90%] justify-between p-1 sm:p-6 overflow-y-scroll">
+      <div className="flex flex-col h-[85%] sm:h-[90%] justify-between sm:p-6">
         {values.map((value: ValueState, index) => (
           <div key={index}>
             <div className="flex items-center gap-3">

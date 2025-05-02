@@ -145,7 +145,7 @@ const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
     <div className="h-screen-vh overflow-hidden bg-blue-200 flex justify-center items-center">
       <form
         onSubmit={handleSubmit}
-        className="mt-2 h-[95%] sm:h-[90%] bg-white p-2"
+        className="mt-2 max-w-[400px] w-[90%] h-[95%] sm:h-[90%] bg-white p-2 rounded-xl shadow-2xl"
       >
         <h2 className="mt-2 text-center text-2xl font-bold text-gray-800">修正フォーム</h2>
         {/* 金種ごとのInput */}
