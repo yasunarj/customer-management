@@ -7,6 +7,8 @@ import { Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { inputSchema } from "../lib/inputSchema";
 import { useRouter } from "next/navigation";
+import { safeMenuList } from "../lib/safMenuList";
+import SheetMenu from "@/components/sheet/SheetMenu";
 
 type DetailDataProps = {
   id: number;
@@ -147,8 +149,11 @@ const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
         onSubmit={handleSubmit}
         className="mt-2 max-w-[520px] w-[90%] h-[98%] bg-white p-2 rounded-xl shadow-2xl"
       >
-        <h2 className="mt-2 text-center text-2xl font-bold text-gray-800">
+        <h2 className="relative mt-2 text-center text-2xl font-bold text-gray-800">
           修正フォーム
+          <div className="absolute top-1 right-4">
+            <SheetMenu menuList={safeMenuList} />
+          </div>
         </h2>
         {/* 金種ごとのInput */}
         <div className=" h-[91%] sm:h-[93%] w-[95%] max-w-[520px] mx-auto mt-4 border-2 border-gray-400 p-4 overflow-y-scroll">

@@ -2,6 +2,8 @@ import SafeCheckDeleteButton from "@/app/safe/components/SafeCheckDeleteButton";
 import { getSafeCheckDetailData } from "@/app/safe/lib/getSafeCheckDetailData";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { safeMenuList } from "@/app/safe/lib/safMenuList";
+import SheetMenu from "@/components/sheet/SheetMenu";
 type SafeCheckDetailPage = {
   params: Promise<{ id: string }>;
 };
@@ -23,14 +25,17 @@ const SafeCheckDetailPage = async (props: SafeCheckDetailPage) => {
   return (
     <div className="h-screen-vh overflow-hidden bg-blue-200 flex justify-center items-center">
       <div className="bg-white w-[90%] h-[95%] rounded-xl overflow-y-scroll shadow-2xl">
-        <h1 className="text-gray-800 text-2xl text-center font-bold mt-4">
+        <h1 className="relative text-gray-800 text-2xl text-center font-bold mt-4">
           {safeCheckDetailData.date
             ? new Date(safeCheckDetailData.date).toLocaleDateString("ja-JP")
             : ""}{" "}
           精算データ
+          <div className="absolute top-1 right-4">
+            <SheetMenu menuList={safeMenuList} />
+          </div>
         </h1>
         <div className="border-2 border-gray-400 w-[90%] max-w-[520px] h-[88%] mx-auto mt-4">
-          <div className="flex flex-col justify-between  max-w-[400px] h-[88%] mx-auto  px-4 text-[18px] mt-2 sm:mt-4 border-2">
+          <div className="flex flex-col justify-between  max-w-[400px] h-[88%] mx-auto  px-4 text-[18px] mt-2 sm:mt-4">
             <div className="flex justify-between">
               <h3>バラ</h3>
               <p>{safeCheckDetailData.bara}</p>

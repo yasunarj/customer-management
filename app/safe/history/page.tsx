@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { getSafeCheckHistory } from "../lib/getSafeCheckHistory";
+import { safeMenuList } from "../lib/safMenuList";
+import SheetMenu from "@/components/sheet/SheetMenu";
 
 const SafeCheckHistoryPage = async () => {
   const safeCheckAllData = await getSafeCheckHistory();
@@ -7,8 +9,11 @@ const SafeCheckHistoryPage = async () => {
   return (
     <div className="h-screen-vh overflow-hidden bg-blue-200 flex justify-center items-center">
       <div className="bg-white w-[90%] h-[98%] max-w-[900px] rounded-xl shadow-2xl">
-        <h1 className="text-2xl text-gray-800 font-bold text-center mt-4">
+        <h1 className="relative text-2xl text-gray-800 font-bold text-center mt-4">
           金庫精算の履歴一覧
+          <div className="absolute top-1 right-4">
+            <SheetMenu menuList={safeMenuList} />
+          </div>
         </h1>
 
         <table className="table-auto w-[95%] mx-auto border-collapse border border-gray-300 mt-4 text-gray-700 overflow-y-scroll">
