@@ -38,7 +38,7 @@ const InputForm = () => {
     e: React.ChangeEvent<HTMLInputElement>,
     name: string,
     index: number,
-    error: string,
+    error: string
   ) => {
     if (e.target.value.length > 1 && e.target.value.startsWith("0")) {
       e.target.value = e.target.value.replace(/^0+/, "");
@@ -76,7 +76,7 @@ const InputForm = () => {
     e.preventDefault();
     setIsSending(true);
     const newValues = values.map((value) => {
-      if(value.yen === null) {
+      if (value.yen === null) {
         value.yen = 0;
       }
       const result = inputSchema.safeParse({ yen: value.yen });
@@ -88,7 +88,7 @@ const InputForm = () => {
 
     setValues(newValues);
 
-    if(newValues.some((value) => value.error !== "")) {
+    if (newValues.some((value) => value.error !== "")) {
       setIsSending(false);
       return;
     }
@@ -107,21 +107,21 @@ const InputForm = () => {
       yen5: values[8].yen,
       yen1: values[9].yen,
       total: total,
-    }
+    };
     try {
       const res = await fetch("/api/safe", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(sendData)
-      })
-      if(res.ok) {
+        body: JSON.stringify(sendData),
+      });
+      if (res.ok) {
         router.push("/safe/history");
       } else {
         setErrorMessage("登録できませんでした");
       }
-    } catch(e) {
+    } catch (e) {
       setErrorMessage("登録できませんでした");
       console.error("データの登録に失敗しました", e);
     } finally {
@@ -132,10 +132,10 @@ const InputForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="border-2 border-gray-400 mt-2 p-4 h-[88%] sm:h-[90%] overflow-y-scroll"
+      className="border-2 border-gray-400 mt-2 p-4 h-[88%] sm:h-[90%] max-w-[520px] mx-auto overflow-y-scroll"
     >
       {/* 金種ごとのInput */}
-      <div className="flex flex-col h-[85%] sm:h-[90%] justify-between sm:p-6">
+      <div className="flex flex-col mx-auto max-w-[400px] h-[82%] sm:h-[88%] justify-between sm:p-2">
         {values.map((value: ValueState, index) => (
           <div key={index}>
             <div className="flex items-center gap-3">
@@ -151,14 +151,18 @@ const InputForm = () => {
                 value={value.yen !== null ? value.yen : ""}
                 placeholder="0"
                 className="text-right"
-                onChange={(e) => handleChange(e, value.name, index, value.error)}
+                onChange={(e) =>
+                  handleChange(e, value.name, index, value.error)
+                }
               />
             </div>
-            <p className="text-sm text-right text-red-600">{value.error ? value.error : ""}</p>
+            <p className="text-sm text-right text-red-600">
+              {value.error ? value.error : ""}
+            </p>
           </div>
         ))}
       </div>
-      <div className="m-3 flex justify-between">
+      <div className="flex justify-between mx-auto max-w-[400px] px-2 py-4">
         <p>合計金額</p>
         <p
           className={`text-[18px] ${
@@ -170,7 +174,7 @@ const InputForm = () => {
         </p>
       </div>
       {/* 送信ボタン */}
-      <div className="flex gap-4 justify-center">
+      <div className="flex gap-4 justify-center mx-auto max-w-[400px]">
         <Button type="button" className="text-md w-[40%]" onClick={handleReset}>
           リセット
         </Button>

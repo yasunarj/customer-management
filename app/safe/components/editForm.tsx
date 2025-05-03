@@ -145,61 +145,67 @@ const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
     <div className="h-screen-vh overflow-hidden bg-blue-200 flex justify-center items-center">
       <form
         onSubmit={handleSubmit}
-        className="mt-2 max-w-[400px] w-[90%] h-[95%] sm:h-[90%] bg-white p-2 rounded-xl shadow-2xl"
+        className="mt-2 max-w-[520px] w-[90%] h-[98%] bg-white p-2 rounded-xl shadow-2xl"
       >
-        <h2 className="mt-2 text-center text-2xl font-bold text-gray-800">修正フォーム</h2>
+        <h2 className="mt-2 text-center text-2xl font-bold text-gray-800">
+          修正フォーム
+        </h2>
         {/* 金種ごとのInput */}
-        <div className="flex flex-col h-[85%] sm:h-[90%] justify-between mt-2 p-4 sm:p-6 overflow-y-scroll border-2 border-gray-400"> 
-          {detailStates.map((state: DetailState, index: number) => {
-            return (
-              <div key={state.name}>
-                <div className="flex items-center gap-3">
-                  <Label
-                    htmlFor={"bara"}
-                    className="text-md sm:text-lg w-[40%]"
-                  >
-                    {state.name}
-                  </Label>
-                  <Input
-                    type="number"
-                    id={"bara"}
-                    value={state.yen}
-                    placeholder="0"
-                    className="text-right"
-                    onChange={(e) =>
-                      handleChange(e, state.name, index, state.error)
-                    }
-                  />
+        <div className=" h-[91%] sm:h-[93%] w-[95%] max-w-[520px] mx-auto mt-4 border-2 border-gray-400 p-4 overflow-y-scroll">
+          <div className="flex flex-col justify-between max-w-[400px] mx-auto h-[87%] sm:h-[87%]">
+            {detailStates.map((state: DetailState, index: number) => {
+              return (
+                <div key={state.name}>
+                  <div className="flex items-center gap-3">
+                    <Label
+                      htmlFor={"bara"}
+                      className="text-md sm:text-lg w-[40%]"
+                    >
+                      {state.name}
+                    </Label>
+                    <Input
+                      type="number"
+                      id={"bara"}
+                      value={state.yen}
+                      placeholder="0"
+                      className="text-right"
+                      onChange={(e) =>
+                        handleChange(e, state.name, index, state.error)
+                      }
+                    />
+                  </div>
+                  <p className="text-sm text-right text-red-600">
+                    {state.error ? state.error : ""}
+                  </p>
                 </div>
-                <p className="text-sm text-right text-red-600">
-                  {state.error ? state.error : ""}
-                </p>
-              </div>
-            );
-          })}
-          <div className="mt-1 flex justify-between">
-            <p>合計金額</p>
-            <p
-              className={`text-[18px] ${
-                total === 300000 ? "text-blue-600" : "text-red-600"
-              }`}
-            >
-              {total}
-              <span className="text-gray-800">円</span>
-            </p>
+              );
+            })}
           </div>
+            <div className="py-2 sm:py-4 flex justify-between max-w-[400px] mx-auto">
+              <p>合計金額</p>
+              <p
+                className={`text-[18px] ${
+                  total === 300000 ? "text-blue-600" : "text-red-600"
+                }`}
+              >
+                {total}
+                <span className="text-gray-800">円</span>
+              </p>
+            </div>
+            {/* 送信ボタン */}
+            <div className="flex justify-center">
+              <Button type="submit" className="text-md w-[40%]">
+                {isEditing ? (
+                  <Loader2 className="animate-spin h-10 w-10" strokeWidth={3} />
+                ) : (
+                  "更新"
+                )}
+              </Button>
+            </div>
+            <p className="text-red-600 text-center text-sm mt-1">
+              {errorMessage}
+            </p>
         </div>
-        {/* 送信ボタン */}
-        <div className="flex gap-4 justify-center mt-2">
-          <Button type="submit" className="text-md w-[40%]">
-            {isEditing ? (
-              <Loader2 className="animate-spin h-10 w-10" strokeWidth={3} />
-            ) : (
-              "更新"
-            )}
-          </Button>
-        </div>
-        <p className="text-red-600 text-center text-sm mt-1">{errorMessage}</p>
       </form>
     </div>
   );

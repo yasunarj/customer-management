@@ -69,7 +69,7 @@ const LandingPageFooter = () => {
 
         <div className="text-white">
           <footer className="text-sm 2xl:text-lg font-semibold font-playfairDisplay mb-2">
-            &copy; 2025 Nari&apos;s Company
+          © 2025 Yasunari Inc. All rights reserved.
           </footer>
         </div>
       </div>
