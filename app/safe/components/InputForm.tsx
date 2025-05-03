@@ -147,6 +147,11 @@ const InputForm = () => {
               </Label>
               <Input
                 type="number"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                  }
+                }}
                 id={`yen-${index}`}
                 value={value.yen !== null ? value.yen : ""}
                 placeholder="0"

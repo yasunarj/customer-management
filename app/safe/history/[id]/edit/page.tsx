@@ -10,9 +10,7 @@ const SafeCheckDataEditPage = async ({
   const detailId = parseInt(id, 10);
   const detailData = await getSafeCheckDetailData(detailId);
 
-  return (
-    <EditForm detailData={detailData} />
-  );
+  return <EditForm detailData={detailData} />;
 };
 
 export default SafeCheckDataEditPage;

@@ -170,6 +170,11 @@ const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
                     </Label>
                     <Input
                       type="number"
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                        }
+                      }}
                       id={"bara"}
                       value={state.yen}
                       placeholder="0"
@@ -186,30 +191,30 @@ const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
               );
             })}
           </div>
-            <div className="py-2 sm:py-4 flex justify-between max-w-[400px] mx-auto">
-              <p>合計金額</p>
-              <p
-                className={`text-[18px] ${
-                  total === 300000 ? "text-blue-600" : "text-red-600"
-                }`}
-              >
-                {total}
-                <span className="text-gray-800">円</span>
-              </p>
-            </div>
-            {/* 送信ボタン */}
-            <div className="flex justify-center">
-              <Button type="submit" className="text-md w-[40%]">
-                {isEditing ? (
-                  <Loader2 className="animate-spin h-10 w-10" strokeWidth={3} />
-                ) : (
-                  "更新"
-                )}
-              </Button>
-            </div>
-            <p className="text-red-600 text-center text-sm mt-1">
-              {errorMessage}
+          <div className="py-2 sm:py-4 flex justify-between max-w-[400px] mx-auto">
+            <p>合計金額</p>
+            <p
+              className={`text-[18px] ${
+                total === 300000 ? "text-blue-600" : "text-red-600"
+              }`}
+            >
+              {total}
+              <span className="text-gray-800">円</span>
             </p>
+          </div>
+          {/* 送信ボタン */}
+          <div className="flex justify-center">
+            <Button type="submit" className="text-md w-[40%]">
+              {isEditing ? (
+                <Loader2 className="animate-spin h-10 w-10" strokeWidth={3} />
+              ) : (
+                "更新"
+              )}
+            </Button>
+          </div>
+          <p className="text-red-600 text-center text-sm mt-1">
+            {errorMessage}
+          </p>
         </div>
       </form>
     </div>
