@@ -8,6 +8,9 @@ const SafeCheckDeleteButton = ({ id }: { id: number }) => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const router = useRouter();
   const handleDelete = async () => {
+    if(!confirm("本当に削除してよろしいですか？")) {
+      return;
+    }
     setIsDeleting(true);
     try {
       const res = await fetch(`/api/safe/${id}`, {
