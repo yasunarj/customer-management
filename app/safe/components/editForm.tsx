@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Loader2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { inputSchema } from "../lib/inputSchema";
 import { useRouter } from "next/navigation";
 import { safeMenuList } from "../lib/safMenuList";
@@ -37,6 +37,7 @@ interface DetailState {
 type DetailStates = DetailState[];
 
 const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [total, setTotal] = useState<number>(detailData ? detailData.total : 0);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -169,10 +170,14 @@ const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
                       {state.name}
                     </Label>
                     <Input
+                      ref={(el: HTMLInputElement | null) => {
+                        if (el) inputRefs.current[index] = el;
+                      }}
                       type="number"
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
+                          inputRefs.current[index + 1]?.focus();
                         }
                       }}
                       id={"bara"}

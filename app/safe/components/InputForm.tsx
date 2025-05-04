@@ -2,7 +2,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { inputSchema } from "../lib/inputSchema";
 import { useRouter } from "next/navigation";
@@ -17,6 +17,7 @@ type ValuesState = ValueState[];
 
 const InputForm = () => {
   const router = useRouter();
+  const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [total, setTotal] = useState<number | null>(null);
   const [isSending, setIsSending] = useState<boolean>(false);
   const [values, setValues] = useState<ValuesState>([
@@ -146,10 +147,14 @@ const InputForm = () => {
                 {value.name}
               </Label>
               <Input
+                ref={(el: HTMLInputElement | null) => {
+                  if (el) inputRefs.current[index] = el;
+                }}
                 type="number"
                 onKeyDown={(e) => {
                   if (e.key === "Enter") {
                     e.preventDefault();
+                    inputRefs.current[index + 1]?.focus();
                   }
                 }}
                 id={`yen-${index}`}
