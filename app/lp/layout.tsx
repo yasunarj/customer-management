@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import { Metadata } from "next";
 import LandingPageHeader from "./components/Header";
 import LandingPageFooter from "./components/Footer";
+import ClientWrapper from "./components/ClientWrapper";
 
 export const metadata: Metadata = {
   title: "セブンイレブンさくら卯の里4丁目店 | LP",
@@ -14,7 +15,7 @@ const LandingPageLayout = ({ children }: { children: ReactNode }) => {
     <div className="antialiased flex flex-col h-screen-vh overflow-auto">
       <LandingPageHeader />
       <main className="relative flex-1 overflow-y-auto">
-        {children}
+        <ClientWrapper>{children}</ClientWrapper>
         <LandingPageFooter />
       </main>
     </div>
