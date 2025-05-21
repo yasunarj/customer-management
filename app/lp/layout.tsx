@@ -12,13 +12,15 @@ export const metadata: Metadata = {
 
 const LandingPageLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="antialiased flex flex-col">
-      <LandingPageHeader />
-      <main className="relative flex-1">
-        <ClientWrapper>{children}</ClientWrapper>
-        <LandingPageFooter />
-      </main>
-    </div>
+    <ClientWrapper>
+      <div className="antialiased flex flex-col h-full">
+        <LandingPageHeader />
+        <main className="relative flex-1">
+          {children}
+          <LandingPageFooter />
+        </main>
+      </div>
+    </ClientWrapper>
   );
 };
 
