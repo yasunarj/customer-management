@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 const LandingPageLayout = ({ children }: { children: ReactNode }) => {
   return (
-    <div className="antialiased flex flex-col min-h-screen-vh">
+    <div className="antialiased flex flex-col">
       <LandingPageHeader />
       <main className="relative flex-1">
         <ClientWrapper>{children}</ClientWrapper>
