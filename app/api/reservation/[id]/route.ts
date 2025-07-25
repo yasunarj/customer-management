@@ -12,7 +12,6 @@ const DELETE = async (
     const {
       data: { user },
     } = await supabase.auth.getUser();
-
     if (!user) {
       return NextResponse.json(
         { error: "認証されていません" },
