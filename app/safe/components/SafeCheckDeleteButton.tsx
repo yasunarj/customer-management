@@ -29,7 +29,7 @@ const SafeCheckDeleteButton = ({ id }: { id: number }) => {
     }
   };
   return (
-    <Button className="text-lg w-[30%]" onClick={handleDelete}>
+    <Button className="text-lg w-[40%]" onClick={handleDelete}>
       {isDeleting ? (
         <Loader2 className="animate-spin h-10 w-10 strokeWidth={3}" />
       ) : (
