@@ -133,10 +133,10 @@ const InputForm = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="border-2 border-gray-400 mt-2 p-4 h-[88%] sm:h-[90%] max-w-[520px] mx-auto overflow-y-scroll"
+      className="mt-2 px-4 max-w-[520px] mx-auto h-full "
     >
       {/* 金種ごとのInput */}
-      <div className="flex flex-col mx-auto max-w-[400px] h-[82%] sm:h-[88%] justify-between sm:p-2">
+      <div className=" mx-auto max-w-[400px] sm:p-2 h-full flex flex-col justify-between pb-2">
         {values.map((value: ValueState, index) => (
           <div key={index}>
             <div className="flex items-center gap-3">
@@ -171,30 +171,37 @@ const InputForm = () => {
             </p>
           </div>
         ))}
-      </div>
-      <div className="flex justify-between mx-auto max-w-[400px] px-2 py-4">
-        <p>合計金額</p>
-        <p
-          className={`text-[18px] ${
-            total === 300000 ? "text-blue-600" : "text-red-600"
-          }`}
-        >
-          {total ? total : ""}
-          <span className="text-gray-800">円</span>
-        </p>
-      </div>
-      {/* 送信ボタン */}
-      <div className="flex gap-4 justify-center mx-auto max-w-[400px]">
-        <Button type="button" className="text-md w-[40%]" onClick={handleReset}>
-          リセット
-        </Button>
-        <Button type="submit" className="text-md w-[40%]">
-          {isSending ? (
-            <Loader2 className="animate-spin h-10 w-10" strokeWidth={3} />
-          ) : (
-            "送信"
-          )}
-        </Button>
+
+        <div>
+          <div className="flex justify-between mx-auto max-w-[400px] px-2 py-4">
+            <p>合計金額</p>
+            <p
+              className={`text-[18px] ${
+                total === 300000 ? "text-blue-600" : "text-red-600"
+              }`}
+            >
+              {total ? total : ""}
+              <span className="text-gray-800">円</span>
+            </p>
+          </div>
+          {/* 送信ボタン */}
+          <div className="flex gap-4 justify-center mx-auto max-w-[400px] mb-2">
+            <Button
+              type="button"
+              className="text-md w-[40%]"
+              onClick={handleReset}
+            >
+              リセット
+            </Button>
+            <Button type="submit" className="text-md w-[40%]">
+              {isSending ? (
+                <Loader2 className="animate-spin h-10 w-10" strokeWidth={3} />
+              ) : (
+                "送信"
+              )}
+            </Button>
+          </div>
+        </div>
       </div>
       <p className="text-red-600 text-center text-sm mt-1">{errorMessage}</p>
     </form>
