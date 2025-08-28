@@ -60,7 +60,7 @@ const Header = () => {
           if (
             pathname !== "/" &&
             pathname !== "/auth/login" &&
-            pathname !== "/auth/adminLogin" && 
+            pathname !== "/auth/adminLogin" &&
             !pathname.startsWith("/lp") &&
             !pathname.startsWith("/safe")
           ) {
@@ -108,7 +108,7 @@ const Header = () => {
       <div className="main-header bg-gradient-to-r from-green-800 via-green-500 to-green-700 h-[5dvh]">
         <div className="flex justify-between items-center h-full px-4 sm:px-8 text-white">
           <h2 className="text-sm sm:text-lg font-semibold">
-            セブンイレブンさくら卯の里４丁目店
+            <Link href="/">セブンイレブンさくら卯の里４丁目店</Link>
           </h2>
           <div className="flex items-center space-x-8 font-semibold">
             {isAuthenticated ? (
@@ -116,7 +116,9 @@ const Header = () => {
                 <p>ログアウト中</p>
               ) : (
                 <div className="flex gap-2 sm:gap-4 items-center">
-                  <p className="text-sm sm:text-md">({userRole === "admin" ? "管理者" : "ユーザー"})</p>
+                  <p className="text-sm sm:text-md">
+                    ({userRole === "admin" ? "管理者" : "ユーザー"})
+                  </p>
                   <button
                     onClick={handleLogout}
                     className="text-sm sm:text-lg hover:underline hover:underline-offset-4"

@@ -14,7 +14,7 @@ export default function Home() {
             "linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('/images/photo-1719127516207-89c019911f80.avif')",
         }}
       >
-        <div className="absolute top-16 left-6 sm:top-16 sm:left-10 md:top-20 md:left-20 flex flex-col space-y-4 sm:space-y-6 md:space-y-8 items-star w-[80%]">
+        <div className="absolute top-16 left-6 sm:top-16 sm:left-10 md:top-20 md:left-20 flex flex-col space-y-4 sm:space-y-6 md:space-y-8 items-star w-[80%] hide-when-short">
           <h2 className="text-gray-300 text-2xl sm:text-4xl md:text-5xl font-bold">
             地域No1のお店を作り
           </h2>
@@ -51,7 +51,9 @@ export default function Home() {
           className="self-center mb-8 sm:mb-12 w-[200px] lg:w-[240px] xl:w-[280px]"
         >
           <Button
-            className={`${cn(buttonVariants({ size: "lg", variant: "link" }))} w-full px-8 py-6 font-bold text-white text-lg rounded-md bg-gradient-to-r from-black via-gray-800 to-gray-600`}
+            className={`${cn(
+              buttonVariants({ size: "lg", variant: "link" })
+            )} w-full px-8 py-6 font-bold text-white text-lg rounded-md bg-gradient-to-r from-black via-gray-800 to-gray-600`}
           >
             金庫管理ページへ
           </Button>

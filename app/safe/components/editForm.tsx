@@ -158,7 +158,7 @@ const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
             </div>
           </h2>
           {/* 金種ごとのInput */}
-          <div className="w-[95%] max-w-[520px] mx-auto mt-2 border-2 border-gray-400 p-4 overflow-y-scroll flex-1">
+          <div className="w-[95%] max-w-[520px] mx-auto mt-2 border-2 border-gray-400 p-4 pb-0 overflow-y-scroll flex-1">
             <div className="flex flex-col justify-between max-w-[400px] mx-auto h-full">
               <div className="flex-1 flex flex-col justify-between">
                 {detailStates.map((state: DetailState, index: number) => {
@@ -201,7 +201,7 @@ const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
                   );
                 })}
               </div>
-              <div className="py-2 sm:py-4 flex justify-between max-w-[400px] mx-auto w-full">
+              <div className="py-2 mt-2 sm:py-4 flex justify-between max-w-[400px] mx-auto w-full">
                 <p>合計金額</p>
                 <p
                   className={`text-[18px] ${
