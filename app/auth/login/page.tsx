@@ -17,57 +17,51 @@ import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
 
-const passwordSchema = z.object({
+const schema = z.object({
   password: z.string().min(10, "パスワードは10文字以上で入力してください"),
 });
+
+type FormValues = z.infer<typeof schema>;
+
+const FIXED_USER_EMAIL = "unosato@gmail.com";
 
 const LoginPage = () => {
   const supabase = createClient();
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const form = useForm({
-    resolver: zodResolver(passwordSchema),
+  const [isLoading, setIsLoading] = useState(false);
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(schema),
     defaultValues: {
       password: "",
     },
   });
 
-  const loginUser = async () => {
+  const onSubmit = async ({ password }: FormValues) => {
+    setIsLoading(true);
+    if(password === "unosatoAdmin") {
+      router.push("/auth/adminLogin");
+      return;
+    }
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
-        email: "unosato@gmail.com",
-        password: process.env.NEXT_PUBLIC_USER_PASSWORD!,
+        email: FIXED_USER_EMAIL,
+        password,
       });
-      if (error) {
+      if(error) {
         alert("ログインに失敗しました");
-        return false;
+        return;
       }
-      await supabase.auth.setSession(data.session);
+      if (data.session) await supabase.auth.setSession(data.session);
       alert("ログインしました");
       router.push("/user/dashboard");
-      return true;
-    } catch (e) {
-      console.error("ログイン処理エラー:", e);
+    } catch(e) {
+      console.error("ログイン処理エラー", e);
       alert("予期せぬエラーが発生しました");
-      return false;
-    }
-  };
-
-  const onSubmit = async (values: z.infer<typeof passwordSchema>) => {
-    setIsLoading(true);
-    try {
-      if (values.password === process.env.NEXT_PUBLIC_USER_PASSWORD) {
-        const success = await loginUser();
-        if (!success) return;
-      } else if (values.password === process.env.NEXT_PUBLIC_ADMIN_PASSWORD) {
-        router.push("/auth/adminLogin");
-      } else {
-        alert("パスワードが間違っています");
-      }
     } finally {
       setIsLoading(false);
     }
-  };
+  }
 
   return (
     <div
@@ -83,6 +77,7 @@ const LoginPage = () => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col justify-center items-center bg-white px-6 py-16 w-full max-w-md h-auto gap-8 rounded-md shadow-2xl"
           >
+            {/* password フィールド */}
             <FormField
               control={form.control}
               name="password"
@@ -96,6 +91,7 @@ const LoginPage = () => {
                       className="p-2 text-lg"
                       type="password"
                       placeholder="パスワードを入力"
+                      autoComplete="current-password"
                       {...field}
                     />
                   </FormControl>
@@ -103,6 +99,7 @@ const LoginPage = () => {
                 </FormItem>
               )}
             />
+
             <Button
               className="w-[42%] font-semibold"
               type="submit"

@@ -48,7 +48,7 @@ export default function Home() {
         </Link>
         <Link
           href="/safe"
-          className="self-center mb-8 sm:mb-12 w-[200px] lg:w-[240px] xl:w-[280px]"
+          className="self-center mb-4 w-[200px] lg:w-[240px] xl:w-[280px]"
         >
           <Button
             className={`${cn(
@@ -56,6 +56,18 @@ export default function Home() {
             )} w-full px-8 py-6 font-bold text-white text-lg rounded-md bg-gradient-to-r from-black via-gray-800 to-gray-600`}
           >
             金庫管理ページへ
+          </Button>
+        </Link>
+        <Link
+          href="/expiry"
+          className="self-center mb-8 sm:mb-12 w-[200px] lg:w-[240px] xl:w-[280px]"
+        >
+          <Button
+            className={`${cn(
+              buttonVariants({ size: "lg", variant: "link" })
+            )} w-full px-8 py-6 font-bold text-white text-lg rounded-md bg-gradient-to-r from-black via-gray-800 to-gray-600`}
+          >
+            鮮度管理ページへ
           </Button>
         </Link>
       </div>
