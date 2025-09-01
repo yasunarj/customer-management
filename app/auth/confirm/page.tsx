@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 // import { createClient } from "@/utils/supabase/client";
-import { createImplicitClient } from "@/utils/supabase/client-implicit";
+import { createPkceClient } from "@/utils/supabase/client-pkce";
 import Link from "next/link";
 
 const AuthConfirmPage = () => {
   const router = useRouter();
   const search = useSearchParams();
-  const supabase = createImplicitClient();
+  const supabase = createPkceClient();
 
   const [status, setStatus] = useState<"loading" | "error">("loading");
   const [message, setMessage] = useState<string>("確認中です…");
