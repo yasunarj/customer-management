@@ -27,8 +27,7 @@ const Header = () => {
         setUserRole(null);
         if (
           pathname !== "/" &&
-          pathname !== "/auth/login" &&
-          pathname !== "/auth/adminLogin" &&
+          !pathname.startsWith("/auth") &&
           !pathname.startsWith("/lp") &&
           !pathname.startsWith("/safe") &&
           !pathname.startsWith("/expiry")
@@ -60,8 +59,7 @@ const Header = () => {
           setUserRole(null);
           if (
             pathname !== "/" &&
-            pathname !== "/auth/login" &&
-            pathname !== "/auth/adminLogin" &&
+            !pathname.startsWith("/auth") &&
             !pathname.startsWith("/lp") &&
             !pathname.startsWith("/safe") &&
             !pathname.startsWith("/expiry")

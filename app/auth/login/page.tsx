@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
+import Link from "next/link";
 
 const schema = z.object({
   password: z.string().min(10, "パスワードは10文字以上で入力してください"),
@@ -23,7 +24,7 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-const FIXED_USER_EMAIL = "unosato@gmail.com";
+const FIXED_USER_EMAIL = "yasunarj+user@gmail.com";
 
 const LoginPage = () => {
   const supabase = createClient();
@@ -39,29 +40,25 @@ const LoginPage = () => {
 
   const onSubmit = async ({ password }: FormValues) => {
     setIsLoading(true);
-    if(password === "unosatoAdmin") {
-      router.push("/auth/adminLogin");
-      return;
-    }
     try {
       const { data, error } = await supabase.auth.signInWithPassword({
         email: FIXED_USER_EMAIL,
         password,
       });
-      if(error) {
+      if (error) {
         alert("ログインに失敗しました");
         return;
       }
       if (data.session) await supabase.auth.setSession(data.session);
       alert("ログインしました");
       router.push("/user/dashboard");
-    } catch(e) {
+    } catch (e) {
       console.error("ログイン処理エラー", e);
       alert("予期せぬエラーが発生しました");
     } finally {
       setIsLoading(false);
     }
-  }
+  };
 
   return (
     <div
@@ -75,7 +72,7 @@ const LoginPage = () => {
         <div className="h-full flex justify-center items-center p-4">
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col justify-center items-center bg-white px-6 py-16 w-full max-w-md h-auto gap-8 rounded-md shadow-2xl"
+            className="relative flex flex-col justify-center items-center bg-white px-6 py-16 w-full max-w-md h-auto gap-8 rounded-md shadow-2xl"
           >
             {/* password フィールド */}
             <FormField
@@ -107,6 +104,22 @@ const LoginPage = () => {
             >
               {isLoading ? "ログイン中" : "ログイン"}
             </Button>
+
+            <div>
+              パスワードをお忘れの方は{" "}
+              <Link
+                href="/auth/forgot-password"
+                className="text-blue-600 underline"
+              >
+                こちら
+              </Link>
+            </div>
+
+            <div className="absolute bottom-4 right-4">
+              <Link href="/auth/adminLogin" className="text-blue-600 underline">
+                管理者用
+              </Link>
+            </div>
           </form>
         </div>
       </Form>

@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/utils/supabase/client";
 import { useState } from "react";
+import Link from "next/link";
 
 const adminLoginSchema = z.object({
   email: z.string().email("有効なメールアドレスを入力してください"),
@@ -72,7 +73,7 @@ const AdminLoginPage = () => {
         <div className="h-full flex justify-center items-center p-4">
           <form
             onSubmit={form.handleSubmit(onSubmit)}
-            className="flex flex-col items-center bg-white px-6 py-8 w-full max-w-md h-auto gap-8 rounded-md shadow-2xl"
+            className="relative flex flex-col items-center bg-white px-6 py-8 w-full max-w-md h-auto gap-8 rounded-md shadow-2xl"
           >
             <h2 className="text-xl font-semibold">管理者用ログインフォーム</h2>
             <div className="flex flex-col gap-4">
@@ -116,7 +117,23 @@ const AdminLoginPage = () => {
                 )}
               />
             </div>
-            <Button className="w-[42%]" disabled={isLoading}>{isLoading ? "ログイン中" : "ログイン"}</Button>
+            <Button className="w-[42%]" disabled={isLoading}>
+              {isLoading ? "ログイン中" : "ログイン"}
+            </Button>
+            <div className="mb-8">
+              パスワードをお忘れの場合は{" "}
+              <Link
+                href="/auth/forgot-password"
+                className="text-blue-600 underline"
+              >
+                こちら
+              </Link>
+            </div>
+            <div className="absolute bottom-4 right-4">
+              <Link href="/auth/login" className="text-blue-600 underline">
+                ユーザー用
+              </Link>
+            </div>
           </form>
         </div>
       </Form>
