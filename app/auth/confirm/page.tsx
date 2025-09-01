@@ -55,9 +55,9 @@ const AuthConfirmPage = () => {
         setMessage("無効または期限切れのリンクです。もう一度お試しください。");
       } catch (e: unknown) {
         if (e instanceof Error) {
-          setMessage(e.message);
+          setMessage("エラーです" + e.message);
         } else if (typeof e === "string") {
-          setMessage(e);
+          setMessage("エラー" + e);
         } else {
           setMessage(
             "セッションの確立に失敗しました。時間を置いて再度お試しください"
