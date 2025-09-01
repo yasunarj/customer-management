@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createClient } from "@/utils/supabase/client";
+// import { createClient } from "@/utils/supabase/client";
+import { createImplicitClient } from "@/utils/supabase/client-implicit";
 import { useRouter } from "next/navigation";
 import {
   Form,
@@ -30,7 +31,7 @@ const schema = z
 type FormValues = z.infer<typeof schema>;
 
 const ResetPasswordPage = () => {
-  const supabase = createClient();
+  const supabase = createImplicitClient();
   const router = useRouter();
   const [ready, setReady] = useState<boolean>(false);
   const [msg, setMsg] = useState<string | null>(null);

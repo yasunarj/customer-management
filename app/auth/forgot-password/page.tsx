@@ -4,7 +4,8 @@ import { useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { createClient } from "@/utils/supabase/client";
+// import { createClient } from "@/utils/supabase/client";
+import { createImplicitClient } from "@/utils/supabase/client-implicit";
 import {
   Form,
   FormField,
@@ -23,7 +24,7 @@ const schema = z.object({
 type FormValues = z.infer<typeof schema>;
 
 const ForgotPasswordPage = () => {
-  const supabase = createClient();
+  const supabase = createImplicitClient();
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),

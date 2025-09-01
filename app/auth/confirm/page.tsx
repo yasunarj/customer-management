@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
+// import { createClient } from "@/utils/supabase/client";
+import { createImplicitClient } from "@/utils/supabase/client-implicit";
 import Link from "next/link";
 
 const AuthConfirmPage = () => {
   const router = useRouter();
   const search = useSearchParams();
-  const supabase = createClient();
+  const supabase = createImplicitClient();
 
   const [status, setStatus] = useState<"loading" | "error">("loading");
   const [message, setMessage] = useState<string>("確認中です…");
