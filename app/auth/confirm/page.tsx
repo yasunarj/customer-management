@@ -17,10 +17,24 @@ const AuthConfirmPage = () => {
   useEffect(() => {
     const run = async () => {
       try {
-        // 1) 新方式: https://site/auth/confirm?code=xxxx
+        // 1) 新方式: ?code=xxxx の場合
         const code = search.get("code");
         if (code) {
           const { error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error) throw error;
+          router.replace("/auth/reset-password");
+          return;
+        }
+
+        // 2) token=pkce_xxx&type=recovery の場合（今回のケース）
+        const token = search.get("token");
+        const type = search.get("type");
+        if (token && type === "recovery") {
+          // token形式は verifyOtp を使用
+          const { error } = await supabase.auth.verifyOtp({
+            type: "recovery",
+            token_hash: token,
+          });
           if (error) throw error;
           router.replace("/auth/reset-password");
           return;

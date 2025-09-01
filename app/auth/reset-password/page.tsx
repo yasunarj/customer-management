@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-// import { createClient } from "@/utils/supabase/client";
 import { createPkceClient } from "@/utils/supabase/client-pkce";
 import { useRouter } from "next/navigation";
 import {
@@ -45,13 +44,13 @@ const ResetPasswordPage = () => {
     (async () => {
       const { data } = await supabase.auth.getUser();
       if (!data.user) {
-        router.replace("/auth/forgot-password");
+        router.replace("/auth/forgot-password"); // セッションがない=確認通ってない
         return;
       }
       setReady(true);
     })();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // ← 初回だけ
+  }, []);
 
   const onSubmit = async ({ password }: FormValues) => {
     setMsg(null);
