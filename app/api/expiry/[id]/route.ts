@@ -3,10 +3,11 @@ import { NextRequest, NextResponse } from "next/server";
 
 const DELETE = async (
   req: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) => {
   try {
-    const deleteId = parseInt(params.id, 10);
+    const {id } = await params;
+    const deleteId = parseInt(id, 10);
     if (isNaN(deleteId)) {
       return NextResponse.json({ error: "無効なIDです" }, { status: 400 });
     }
