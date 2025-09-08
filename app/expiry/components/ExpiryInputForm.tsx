@@ -121,7 +121,7 @@ const ExpiryInputForm = () => {
     >
       <div className="flex flex-col justify-between mt-2 gap-2 h-full">
         <div className="flex items-center gap-3 ">
-          <Label htmlFor="manager" className="w-[40%]">
+          <Label htmlFor="manager" className="w-[40%] text-[16px] font-bold">
             担当者
           </Label>
           <Input
@@ -139,8 +139,8 @@ const ExpiryInputForm = () => {
           />
         </div>
         <div className="flex items-center gap-3">
-          <Label htmlFor="gondolaNo" className="w-[40%]">
-            ゴンドラNo
+          <Label htmlFor="gondolaNo" className="w-[40%] text-[16px] font-bold">
+            ゴンドラ
           </Label>
           <Input
             id="gondolaNo"
@@ -155,7 +155,7 @@ const ExpiryInputForm = () => {
           />
         </div>
         <div className="flex items-center gap-3">
-          <Label htmlFor="category" className="w-[40%]">
+          <Label htmlFor="category" className="w-[40%] text-[18px] font-bold">
             分類
           </Label>
           <Input
@@ -173,7 +173,7 @@ const ExpiryInputForm = () => {
           />
         </div>
         <div className="flex items-center gap-3">
-          <Label htmlFor="productName" className="w-[40%]">
+          <Label htmlFor="productName" className="w-[40%] text-[18px] font-bold">
             商品名
           </Label>
           <Input
@@ -191,7 +191,7 @@ const ExpiryInputForm = () => {
           />
         </div>
         <div className="flex items-center gap-3">
-          <Label htmlFor="quantity" className="w-[40%]">
+          <Label htmlFor="quantity" className="w-[40%] text-[18px] font-bold">
             個数
           </Label>
           <Input
@@ -207,7 +207,7 @@ const ExpiryInputForm = () => {
           />
         </div>
         <div className="flex items-center gap-3 w-full">
-          <Label htmlFor="expiryDate" className="w-[27.3%]">
+          <Label htmlFor="expiryDate" className="w-[27.3%] text-[18px] font-bold">
             消費期限
           </Label>
           <div className="relative flex-1 min-w-0">
@@ -216,7 +216,7 @@ const ExpiryInputForm = () => {
               type="date"
               value={form.expiryDate}
               onChange={(e) => handleChange(e, "expiryDate")}
-              className=""
+              className="text-right"
               ref={(el) => {
                 inputRefs.current[5] = el;
               }}
