@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { revalidatePath } from "next/cache";
 
 const POST = async (req: Request) => {
   try {
@@ -78,6 +79,9 @@ const POST = async (req: Request) => {
         },
       },
     });
+
+    const encoded = encodeURIComponent(type);
+    revalidatePath(`/admin/${encoded}/list`, "page");
 
     return NextResponse.json(
       {

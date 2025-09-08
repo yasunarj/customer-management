@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { inputSchema } from "../lib/inputSchema";
 import { useRouter } from "next/navigation";
-import { safeMenuList } from "../lib/safMenuList";
+import { safeMenuList } from "../lib/safeMenuList";
 import SheetMenu from "@/components/sheet/SheetMenu";
 
 type DetailDataProps = {

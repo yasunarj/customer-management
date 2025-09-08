@@ -3,7 +3,7 @@ import Link from "next/link";
 const ExpiryPage = () => {
   return (
     <div className="h-screen-vh bg-yellow-200 flex justify-center items-center">
-      <div className="flex flex-col gap-24 text-center max-w-[900px] w-[90%] h-[95%] bg-white rounded-xl p-4">
+      <div className="flex flex-col gap-24 text-center max-w-[900px] w-[80%] h-[80%] bg-white rounded-xl p-4">
         <div className="flex flex-col gap-20 h-full overflow-y-scroll items-center mt-4">
           <div className="flex items-center gap-2">
             <h1 className="text-4xl text-gray-800 font-bold">鮮度商品管理</h1>

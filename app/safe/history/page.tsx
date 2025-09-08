@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getSafeCheckHistory } from "../lib/getSafeCheckHistory";
-import { safeMenuList } from "../lib/safMenuList";
+import { safeMenuList } from "../lib/safeMenuList";
 import SheetMenu from "@/components/sheet/SheetMenu";
 
 const SafeCheckHistoryPage = async () => {

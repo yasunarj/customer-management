@@ -1,6 +1,6 @@
 import SheetMenu from "@/components/sheet/SheetMenu";
 import InputForm from "../components/InputForm";
-import { safeMenuList } from "../lib/safMenuList";
+import { safeMenuList } from "../lib/safeMenuList";
 
 const SafekeepingCalculationInputPage = () => {
   return (

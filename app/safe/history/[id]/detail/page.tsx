@@ -2,7 +2,7 @@ import SafeCheckDeleteButton from "@/app/safe/components/SafeCheckDeleteButton";
 import { getSafeCheckDetailData } from "@/app/safe/lib/getSafeCheckDetailData";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { safeMenuList } from "@/app/safe/lib/safMenuList";
+import { safeMenuList } from "@/app/safe/lib/safeMenuList";
 import SheetMenu from "@/components/sheet/SheetMenu";
 type SafeCheckDetailPage = {
   params: Promise<{ id: string }>;
