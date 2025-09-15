@@ -272,7 +272,7 @@ const ExpiryEditForm = ({
         <p className="text-center text-red-600 text-sm mt-2">{errorMessage}</p>
       </div>
     </form>
-  );
+  )
 };
 
 export default ExpiryEditForm;
