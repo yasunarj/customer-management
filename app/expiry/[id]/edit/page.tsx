@@ -36,7 +36,7 @@ const ExpiryDataEditPage = async ({
           <p>入力後、送信ボタンを押してください</p>
         </div>
         <div className="flex-1 border-2 border-gray-400 overflow-y-scroll">
-          <ExpiryEditForm productData={productData} />;
+          <ExpiryEditForm productData={productData} />
         </div>
       </div>
     </div>
