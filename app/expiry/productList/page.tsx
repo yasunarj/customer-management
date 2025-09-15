@@ -21,7 +21,7 @@ const ProductListPage = async () => {
               <tr>
                 <th className="w-[20%] border border-gray-300 px-2 py-2 text-sm">期限</th>
                 <th className="w-[40%] border border-gray-300 px-2 py-2 text-sm">商品名</th>
-                <th className="w-[20%] border border-gray-300 px-2 py-2 text-sm">ゴンドラ</th>
+                <th className="w-[20%] border border-gray-300 px-2 py-2 text-sm">個数</th>
                 <th className="w-[15%] border border-gray-300 px-2 py-2 text-sm"></th>
               </tr>
             </thead>
@@ -49,7 +49,7 @@ const ProductListPage = async () => {
                         {list.productName}
                       </td>
                       <td className="border border-gray-300 px-2 py-2 text-sm">
-                        {list.gondolaNo}
+                        {list.quantity}
                       </td>
                       <td className="border border-gray-300 px-1 py-2 text-blue-700 text-sm">
                         <Link href={`/expiry/${list.id}/detail`}>詳細</Link>

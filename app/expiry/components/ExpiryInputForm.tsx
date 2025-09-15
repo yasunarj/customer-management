@@ -35,7 +35,7 @@ const ExpiryInputForm = () => {
     if (
       isComposingRef.current ||
       native.isComposing ||
-      native.keyCode === 229
+      native.key === "Process"
     ) {
       return;
     }
@@ -195,7 +195,7 @@ const ExpiryInputForm = () => {
             個数
           </Label>
           <Input
-            id="productName"
+            id="quantity"
             type="number"
             value={form.quantity}
             onChange={(e) => handleChange(e, "quantity")}
@@ -236,7 +236,7 @@ const ExpiryInputForm = () => {
                   category: "",
                   productName: "",
                   expiryDate: "",
-                  quantity: "1",
+                  quantity: "",
                   manager: "",
                 });
               }
