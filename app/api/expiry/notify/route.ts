@@ -52,7 +52,7 @@ export async function GET() {
             ${items
               .map(
                 (r) =>
-                  `<li>ゴンドラ:${r.gondolaNo}|商品:<strong>${r.productName}</strong>|${r.quantity}個
+                  `<li>ゴンドラ: ${r.gondolaNo}/ 商品: <strong>${r.productName}</strong>/ 個数: ${r.quantity}個
                   </li>`
               )
               .join("")}
