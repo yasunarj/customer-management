@@ -5,6 +5,7 @@ import { Label } from "@/components/ui/label";
 import { useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { expirySchema } from "../lib/expirySchema";
+import Link from "next/link";
 
 const ExpiryInputForm = () => {
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
@@ -240,33 +241,39 @@ const ExpiryInputForm = () => {
           </div>
         </div>
 
-        <div className="flex gap-4 justify-center mt-6">
-          <Button
-            type="reset"
-            className="w-[40%]"
-            onClick={() => {
-              if (confirm("リセットしますか？")) {
-                setForm({
-                  gondolaNo: "",
-                  category: "",
-                  productName: "",
-                  expiryDate: "",
-                  quantity: "",
-                  manager: "",
-                });
-              }
-            }}
-          >
-            リセット
-          </Button>
-          <Button type="submit" className="w-[40%]">
-            {isSending ? (
-              <Loader2 className="animate-spin h-5 w-5" />
-            ) : (
-              "登録する"
-            )}
-          </Button>
+        <div className="flex flex-col gap-4">
+          <div className="flex gap-4 justify-center mt-6">
+            <Button
+              type="reset"
+              className="w-[40%]"
+              onClick={() => {
+                if (confirm("リセットしますか？")) {
+                  setForm({
+                    gondolaNo: "",
+                    category: "",
+                    productName: "",
+                    expiryDate: "",
+                    quantity: "",
+                    manager: "",
+                  });
+                }
+              }}
+            >
+              リセット
+            </Button>
+            <Button type="submit" className="w-[40%]">
+              {isSending ? (
+                <Loader2 className="animate-spin h-5 w-5" />
+              ) : (
+                "登録する"
+              )}
+            </Button>
+          </div>
+          <Link href="/expiry/productList" className="w-full text-center">
+            <Button className="w-[40%] ">一覧に戻る</Button>
+          </Link>
         </div>
+
         <p className="text-center text-red-600 text-sm mt-2">{errorMessage}</p>
       </div>
     </form>

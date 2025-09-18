@@ -37,7 +37,7 @@ export async function handleContactForm(
   お問合せ内容:
   ${raw.message}
 
-  ※このメールサイトからの自動通知です。
+  ※このメールはサイトからの自動通知です。
   `;
   const userSubject =
     process.env.REPLY_SUBJECT ?? "お問い合わせありがとうございます";
