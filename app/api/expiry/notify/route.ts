@@ -33,9 +33,9 @@ export async function GET() {
     // 本文生成（テキスト/HTML）
     const lines = items.map(
       (r) =>
-        `G${r.gondolaNo}｜${r.category}｜${r.productName}｜${r.quantity}個｜担当: ${
-          r.manager ?? "-"
-        }`
+        `G${r.gondolaNo}｜${r.category}｜${r.productName}｜${
+          r.quantity
+        }個｜担当: ${r.manager ?? "-"}`
     );
 
     const textBody =
@@ -46,18 +46,21 @@ export async function GET() {
     const htmlBody = `
       <div style="font-family:system-ui,Arial,sans-serif;padding:16px;background:#f7f7f7">
         <div style="max-width:640px;margin:auto;background:#fff;border-radius:8px;padding:20px">
-          <h2 style="margin:0 0 12px;">本日が期限の商品（${today}）</h2>
+          <h2 style="margin:0 0 12px;">本日が期限の商品</h2>
+          <p style="margin:0 0 12px">${today}</p>
           <ul>
             ${items
               .map(
                 (r) =>
-                  `<li>G${r.gondolaNo}／${r.category}／<strong>${r.productName}</strong>／${r.quantity}個／担当: ${
-                    r.manager ?? "-"
-                  }</li>`
+                  `<li>ゴンドラ:${r.gondolaNo}|商品:<strong>${r.productName}</strong>|${r.quantity}個
+                  </li>`
               )
               .join("")}
           </ul>
-          <p style="margin-top:16px;">アプリ：/expiry/productList をご確認ください。</p>
+          <p style="margin-top:16px;">アプリの
+            <a href="https://customer-management-delta.vercel.app/expiry/productList" target="_blank" rel="noopener noreferrer">商品リスト</a>
+            をご確認ください。
+          </p>
         </div>
       </div>
     `;
