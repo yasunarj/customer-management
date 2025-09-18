@@ -8,7 +8,7 @@ export function createMailer() {
     service: "gmail",
     auth: {
       user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_PASS,
+      pass: process.env.GMAIL_PASS, // ※2段階認証ならアプリパスワード
     },
   });
 }
@@ -27,6 +27,6 @@ export async function sendMail({
   from?: string;
 }) {
   const transporter = createMailer();
-  const mailFrom = from ?? process.env.GMAIL_USER!
-  await transporter.sendMail({from: mailFrom, to, subject, text, html});
+  const mailFrom = from ?? process.env.GMAIL_USER!;
+  await transporter.sendMail({ from: mailFrom, to, subject, text, html });
 }
