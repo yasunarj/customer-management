@@ -4,11 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { expirySchema } from "../lib/expirySchema";
 
 const ExpiryInputForm = () => {
-  const router = useRouter();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isSending, setIsSending] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -59,6 +57,17 @@ const ExpiryInputForm = () => {
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
   };
 
+  const reestForm = () => {
+    setForm({
+      gondolaNo: "",
+      category: "",
+      productName: "",
+      expiryDate: "",
+      quantity: "",
+      manager: "",
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSending(true);
@@ -90,7 +99,7 @@ const ExpiryInputForm = () => {
         body: JSON.stringify(parsed.data),
       });
       if (res.ok) {
-        router.push("/expiry/productList");
+        reestForm();
       } else {
         setErrorMessage("登録に失敗しました");
       }
@@ -173,7 +182,10 @@ const ExpiryInputForm = () => {
           />
         </div>
         <div className="flex items-center gap-3">
-          <Label htmlFor="productName" className="w-[40%] text-[18px] font-bold">
+          <Label
+            htmlFor="productName"
+            className="w-[40%] text-[18px] font-bold"
+          >
             商品名
           </Label>
           <Input
@@ -207,7 +219,10 @@ const ExpiryInputForm = () => {
           />
         </div>
         <div className="flex items-center gap-3 w-full">
-          <Label htmlFor="expiryDate" className="w-[27.3%] text-[18px] font-bold">
+          <Label
+            htmlFor="expiryDate"
+            className="w-[27.3%] text-[18px] font-bold"
+          >
             消費期限
           </Label>
           <div className="relative flex-1 min-w-0">

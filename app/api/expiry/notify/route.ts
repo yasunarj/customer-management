@@ -60,7 +60,8 @@ export async function GET() {
           <p style="margin-top:16px;">詳細は
             <a href="https://customer-management-delta.vercel.app/expiry/productList" target="_blank" rel="noopener noreferrer">商品リスト</a>
             をご確認ください。
-          </p>
+          </p  style="margin-top:32px;>
+          <p>※こちらのメールはサイトからの自動通知です</p>
         </div>
       </div>
     `;
