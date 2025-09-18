@@ -57,7 +57,7 @@ export async function GET() {
               )
               .join("")}
           </ul>
-          <p style="margin-top:16px;">アプリの
+          <p style="margin-top:16px;">詳細は
             <a href="https://customer-management-delta.vercel.app/expiry/productList" target="_blank" rel="noopener noreferrer">商品リスト</a>
             をご確認ください。
           </p>
