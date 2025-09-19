@@ -66,7 +66,8 @@ export async function GET() {
       </div>
     `;
 
-    const to = process.env.TO_EMAIL ?? process.env.GMAIL_USER!;
+    const to = [process.env.TO_EMAIL, process.env.GMAIL_USER].filter(Boolean) as string[];
+
     await sendMail({
       to,
       subject: `【鮮度管理】本日が期限の商品（${today}）`,
