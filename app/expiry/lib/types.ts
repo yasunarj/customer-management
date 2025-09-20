@@ -3,6 +3,7 @@ export type ExpiryItem = {
   gondolaNo: number;
   productName: string;
   expiryDate: string;
+  category: string;
   quantity: number;
   manager: string;
 };

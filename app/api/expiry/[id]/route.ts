@@ -1,6 +1,32 @@
 import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
+const GET = async (
+  req: Request,
+  { params }: { params: Promise<{ id: string }> }
+) => {
+  try {
+    const { id } = await params;
+    const productId = parseInt(id, 10);
+    if (!isNaN(productId)) {
+      return NextResponse.json({ error: "無効なIDです" }, { status: 400 });
+    }
+    const item = await prisma.productExpiry.findUnique({
+      where: { id: productId },
+    });
+    if (!item) {
+      return NextResponse.json({ error: "無効なIDです" }, { status: 400 });
+    }
+    return NextResponse.json({
+      ...item,
+      expiryDate: item.expiryDate.toISOString(),
+    });
+  } catch (e) {
+    console.error("detail GET error", e);
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
+  }
+};
+
 const DELETE = async (
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -54,7 +80,7 @@ const PUT = async (
       where: {
         id: updateId,
       },
-      data: {...data, expiryDate: new Date(data.expiryDate)},
+      data: { ...data, expiryDate: new Date(data.expiryDate) },
     });
     return NextResponse.json(res, { status: 200 });
   } catch (e) {
@@ -63,4 +89,4 @@ const PUT = async (
   }
 };
 
-export { DELETE, PUT };
+export { GET, DELETE, PUT };
