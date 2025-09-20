@@ -7,18 +7,7 @@ import { Loader2 } from "lucide-react";
 import { useRef, useState } from "react";
 import { expirySchema } from "../lib/expirySchema";
 import { useRouter } from "next/navigation";
-
-type ExpiryEditFormProps = {
-  id: number;
-  productName: string;
-  gondolaNo: number;
-  category: string;
-  expiryDate: Date;
-  quantity: number;
-  manager: string;
-  createdAt: Date;
-  updateAt: Date;
-};
+import { ExpiryItem } from "../lib/types";
 
 interface EditFormState {
   productName: string;
@@ -44,8 +33,10 @@ const toInputDate = (d: Date | string): string => {
 
 const ExpiryEditForm = ({
   productData,
+  isValidating,
 }: {
-  productData: ExpiryEditFormProps;
+  productData: ExpiryItem;
+  isValidating: boolean;
 }) => {
   const router = useRouter();
   const inputRefs = useRef<(HTMLElement | null)[]>([]);
@@ -59,6 +50,7 @@ const ExpiryEditForm = ({
     quantity: productData.quantity,
     manager: productData.manager ?? "",
   });
+
 
   const isComposingRef = useRef(false);
 
@@ -270,6 +262,9 @@ const ExpiryEditForm = ({
           </Button>
         </div>
         <p className="text-center text-red-600 text-sm mt-2">{errorMessage}</p>
+        {isValidating && (
+      <p className="text-xs text-gray-500 text-center mt-2">更新中...</p>
+    )}
       </div>
     </form>
   )

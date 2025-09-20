@@ -1,5 +1,5 @@
 import SheetMenu from "@/components/sheet/SheetMenu";
-import ExpiryEditForm from "../../components/ExpiryEditForm";
+import ExpiryEdit from "../../components/EspriyEdit";
 import { getProductDetailData } from "../../lib/getProductDetailData";
 import { expiryMenuList } from "../../lib/expiryMenuList";
 
@@ -23,6 +23,11 @@ const ExpiryDataEditPage = async ({
     );
   }
 
+  const initial = {
+    ...productData, expiryDate: productData.expiryDate.toISOString()
+  }
+
+
   return (
     <div className="h-screen-vh flex justify-center items-center bg-yellow-200 overflow-y-hidden">
       <div className="bg-white max-w-[900px] w-[95%] h-[98%] rounded-xl p-2 shadow-2xl flex flex-col">
@@ -36,7 +41,7 @@ const ExpiryDataEditPage = async ({
           <p>入力後、送信ボタンを押してください</p>
         </div>
         <div className="flex-1 border-2 border-gray-400 overflow-y-scroll">
-          <ExpiryEditForm productData={productData} />
+          <ExpiryEdit initial={initial} />
         </div>
       </div>
     </div>
