@@ -8,7 +8,8 @@ const GET = async (
   try {
     const { id } = await params;
     const productId = parseInt(id, 10);
-    if (!isNaN(productId)) {
+
+    if (isNaN(productId)) {
       return NextResponse.json({ error: "無効なIDです" }, { status: 400 });
     }
     const item = await prisma.productExpiry.findUnique({

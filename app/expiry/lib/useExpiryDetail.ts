@@ -9,7 +9,7 @@ const fetcher = async (url: string) => {
 
 export function useExpiryDetail(id: number, initial?: ExpiryItem) {
   const { data, error, isValidating } = useSWR<ExpiryItem>(
-    id ? `/api/expiry/${id}` : null,
+    id ? `/api/expiry/${String(id)}` : null,
     fetcher,
     { fallbackData: initial }
   );

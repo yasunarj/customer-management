@@ -19,7 +19,6 @@ const ProductListPage = async () => {
             <SheetMenu menuList={expiryMenuList} />
           </div>
         </h1>
-
         <ProductListClient initial={initial} />
       </div>
     </div>
