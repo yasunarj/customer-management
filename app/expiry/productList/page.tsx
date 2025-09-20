@@ -1,10 +1,14 @@
 import { getExpiryProductList } from "../lib/getExpiryProductList";
-import Link from "next/link";
 import { expiryMenuList } from "../lib/expiryMenuList";
 import SheetMenu from "@/components/sheet/SheetMenu";
+import ProductListClient from "./ProductListClient";
 
 const ProductListPage = async () => {
-  const expiryProductList = await getExpiryProductList();
+  const raw = await getExpiryProductList();
+  const initial = raw.map(r => ({
+    ...r,
+    expiryDate: new Date(r.expiryDate).toISOString(),
+  }))
 
   return (
     <div className="h-screen-vh overflow-hidden bg-yellow-200 flex justify-center items-center">
@@ -15,52 +19,8 @@ const ProductListPage = async () => {
             <SheetMenu menuList={expiryMenuList} />
           </div>
         </h1>
-        <div className="h-[90%] overflow-y-scroll">
-          <table className="table-auto w-[97%] mx-auto border-collapse border border-gray-300 mt-4 text-gray-700">
-            <thead>
-              <tr>
-                <th className="w-[20%] border border-gray-300 px-2 py-2 text-sm">期限</th>
-                <th className="w-[40%] border border-gray-300 px-2 py-2 text-sm">商品名</th>
-                <th className="w-[20%] border border-gray-300 px-2 py-2 text-sm">個数</th>
-                <th className="w-[15%] border border-gray-300 px-2 py-2 text-sm"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {expiryProductList.length === 0 ? (
-                <tr>
-                  <td colSpan={4} className="text-center py-4 text-gray-500">
-                    データが存在しません
-                  </td>
-                </tr>
-              ) : (
-                expiryProductList.map((list) => {
-                  return (
-                    <tr key={list.id} className="text-center">
-                      <td
-                        className={`border border-gray-300 px-2 py-2 text-sm ${
-                          new Date() > new Date(list.expiryDate)
-                            ? "text-red-700"
-                            : ""
-                        }`}
-                      >
-                        {new Date(list.expiryDate).toLocaleDateString("ja-JP")}
-                      </td>
-                      <td className="border border-gray-300 truncate whitespace-nowrap max-w-[150px] px-2 py-2 text-sm">
-                        {list.productName}
-                      </td>
-                      <td className="border border-gray-300 px-2 py-2 text-sm">
-                        {list.quantity}
-                      </td>
-                      <td className="border border-gray-300 px-1 py-2 text-blue-700 text-sm">
-                        <Link href={`/expiry/${list.id}/detail`}>詳細</Link>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
+
+        <ProductListClient initial={initial} />
       </div>
     </div>
   );

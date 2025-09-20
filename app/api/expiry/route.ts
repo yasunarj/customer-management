@@ -2,6 +2,37 @@ import prisma from "@/lib/prisma";
 import { NextResponse } from "next/server";
 import { expirySchema } from "@/app/expiry/lib/expirySchema";
 
+const GET = async (req: Request) => {
+  const { searchParams } = new URL(req.url);
+  const limit = Number(searchParams.get("limit") ?? "50");
+
+  try {
+    const items = await prisma.productExpiry.findMany({
+      orderBy: { expiryDate: "asc" },
+      take: limit,
+      select: {
+        id: true,
+        gondolaNo: true,
+        category: true,
+        productName: true,
+        expiryDate: true,
+        quantity: true,
+        manager: true,
+      },
+    });
+
+    const normalized = items.map((r) => ({
+      ...r,
+      expiryDate: new Date(r.expiryDate).toString(),
+    }));
+
+    return NextResponse.json({ items: normalized, nextCursor: null });
+  } catch (e) {
+    console.error("GET /api/expiry error", e);
+    return NextResponse.json({ error: "failed to fetch" }, { status: 500 });
+  }
+};
+
 const POST = async (req: Request) => {
   try {
     const contentType = req.headers.get("Content-Type")?.toLowerCase();
@@ -40,4 +71,4 @@ const POST = async (req: Request) => {
   }
 };
 
-export { POST };
+export { GET, POST };
