@@ -66,7 +66,8 @@ export async function GET() {
       </div>
     `;
 
-    const to = [process.env.TO_EMAIL, process.env.GMAIL_USER].filter(Boolean) as string[];
+    const to = [process.env.GMAIL_USER].filter(Boolean) as string[];
+    // const to = [process.env.TO_EMAIL, process.env.GMAIL_USER].filter(Boolean) as string[];
 
     await sendMail({
       to,
