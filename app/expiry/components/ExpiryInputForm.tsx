@@ -3,11 +3,16 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useRef, useState } from "react";
+import { useSWRConfig } from "swr";
+import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { expirySchema } from "../lib/expirySchema";
-import Link from "next/link";
+
+const LIST_KEY = "/api/expiry?limit=50";
 
 const ExpiryInputForm = () => {
+  const router = useRouter();
+  const { mutate } = useSWRConfig();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isSending, setIsSending] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
@@ -261,8 +266,25 @@ const ExpiryInputForm = () => {
             >
               リセット
             </Button>
-            <Button type="button" className="w-[30%]">
-              <Link href="/expiry/productList">一覧に戻る</Link>
+            <Button
+              type="button"
+              className="w-[30%]"
+              disabled={isSending}
+              onClick={async () => {
+                try {
+                  setIsSending(true);
+                  await mutate(LIST_KEY);
+                  router.push("/expiry/productList");
+                } finally {
+                  setIsSending(false);
+                }
+              }}
+            >
+              {isSending ? (
+                <Loader2 className="animate-spin h-5 w-5" />
+              ) : (
+                "一覧に戻る"
+              )}
             </Button>
             <Button type="submit" className="w-[30%]">
               {isSending ? (
@@ -273,7 +295,6 @@ const ExpiryInputForm = () => {
             </Button>
           </div>
         </div>
-
         <p className="text-center text-red-600 text-sm mt-2">{errorMessage}</p>
       </div>
     </form>

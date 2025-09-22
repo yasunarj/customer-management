@@ -8,6 +8,7 @@ import { useRef, useState } from "react";
 import { expirySchema } from "../lib/expirySchema";
 import { useRouter } from "next/navigation";
 import { ExpiryItem } from "../lib/types";
+import { useSWRConfig } from "swr";
 
 interface EditFormState {
   productName: string;
@@ -31,6 +32,8 @@ const toInputDate = (d: Date | string): string => {
   return z.toISOString().slice(0, 10);
 };
 
+const LIST_KEY = "/api/expiry?limit=50";
+
 const ExpiryEditForm = ({
   productData,
   isValidating,
@@ -51,7 +54,7 @@ const ExpiryEditForm = ({
     manager: productData.manager ?? "",
   });
 
-
+  const { mutate, cache } = useSWRConfig();
   const isComposingRef = useRef(false);
 
   const handleKeyDown = (
@@ -109,7 +112,28 @@ const ExpiryEditForm = ({
       return;
     }
 
+    const updated = { ...productData, ...parsed.data };
+
     try {
+      // 1, 楽観的UI: 一覧キャッシュを書き換え
+      const current = cache.get(LIST_KEY)?.data as
+        | { items: ExpiryItem[]; nextCursor: number | null }
+        | undefined;
+
+      if (current) {
+        const optimistic = {
+          ...current,
+          items: current.items.map((it) =>
+            it.id === productData.id ? { ...it, ...parsed.data } : it
+          ),
+        };
+        mutate(LIST_KEY, optimistic, false);
+      }
+
+      // 2, 詳細キャッシュも更新
+      mutate(`/api/expiry/${productData.id}`, updated, false);
+
+      // 3, APIの呼び出し
       const res = await fetch(`/api/expiry/${productData.id}/`, {
         method: "PUT",
         headers: {
@@ -121,6 +145,9 @@ const ExpiryEditForm = ({
         throw new Error("更新に失敗しました");
       }
       router.push("/expiry/productList");
+      // 4, DBと再同期
+      await mutate(LIST_KEY);
+      await mutate(`/api/expiry/${productData.id}`)
     } catch (e) {
       console.error(e);
       setErrorMessage("更新に失敗しました");
@@ -263,11 +290,11 @@ const ExpiryEditForm = ({
         </div>
         <p className="text-center text-red-600 text-sm mt-2">{errorMessage}</p>
         {isValidating && (
-      <p className="text-xs text-gray-500 text-center mt-2">更新中...</p>
-    )}
+          <p className="text-xs text-gray-500 text-center mt-2">更新中...</p>
+        )}
       </div>
     </form>
-  )
+  );
 };
 
 export default ExpiryEditForm;

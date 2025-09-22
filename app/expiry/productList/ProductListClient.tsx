@@ -2,10 +2,19 @@
 
 import { useExpiryList } from "../lib/useExpiry";
 import { ExpiryItem } from "../lib/types";
-import Link from "next/link";
+import { Loader2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
 const ProductListClient = ({ initial }: { initial: ExpiryItem[] }) => {
   const { items, loading, error, isValidating } = useExpiryList(initial);
+  const [loadingId, setLoadingId] = useState<number | null>(null);
+  const router = useRouter();
+  const pathname = usePathname();
+
+  useEffect(() => {
+    setLoadingId(null);
+  }, [pathname]);
 
   if (loading) {
     return <p className="text-center">読み込み中...</p>;
@@ -46,6 +55,8 @@ const ProductListClient = ({ initial }: { initial: ExpiryItem[] }) => {
           ) : (
             items.map((list) => {
               const expired = new Date() > new Date(list.expiryDate);
+              const rowLoading = loadingId === list.id;
+
               return (
                 <tr key={list.id} className="text-center">
                   <td
@@ -62,7 +73,20 @@ const ProductListClient = ({ initial }: { initial: ExpiryItem[] }) => {
                     {list.quantity}
                   </td>
                   <td className="border border-gray-300 px-1 py-2 text-blue-700 text-sm">
-                    <Link href={`/expiry/${list.id}/detail`}>詳細</Link>
+                    {/* <Link href={`/expiry/${list.id}/detail`}>詳細</Link> */}
+                    <button
+                      disabled={loadingId !== null}
+                      onClick={() => {
+                        setLoadingId(list.id);
+                        router.push(`/expiry/${list.id}/detail`);
+                      }}
+                    >
+                      {rowLoading ? (
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                      ) : (
+                        "詳細"
+                      )}
+                    </button>
                   </td>
                 </tr>
               );

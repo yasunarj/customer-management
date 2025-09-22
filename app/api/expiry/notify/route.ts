@@ -38,10 +38,14 @@ export async function GET() {
         }個｜担当: ${r.manager ?? "-"}`
     );
 
+    const APP_URL = process.env.APP_URL ?? "https://customer-management-delta.vercel.app";
+
+    const listUrl = new URL("/expiry/productList", APP_URL).toString();
+
     const textBody =
       `【本日が消費/賞味期限の商品】(${today})\n\n` +
       lines.join("\n") +
-      `\n\n※アプリ：/expiry/productList をご確認ください`;
+      `\n\n※アプリ：${listUrl} をご確認ください`;
 
     const htmlBody = `
       <div style="font-family:system-ui,Arial,sans-serif;padding:16px;background:#f7f7f7">
@@ -58,7 +62,7 @@ export async function GET() {
               .join("")}
           </ul>
           <p style="margin-top:16px;">詳細は
-            <a href="https://customer-management-delta.vercel.app/expiry/productList" target="_blank" rel="noopener noreferrer">商品リスト</a>
+            <a href="${listUrl}" target="_blank" rel="noopener noreferrer">商品リスト</a>
             をご確認ください。
           </p>
           <p style="margin-top:32px">※こちらのメールはサイトからの自動通知です</p>
