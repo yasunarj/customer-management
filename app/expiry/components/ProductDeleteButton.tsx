@@ -26,7 +26,6 @@ const ProductDeleteButton = ({ id }: { id: number }) => {
       : undefined;
 
     try {
-
       if (optimistic) {
         mutate(LIST_KEY, optimistic, false);
       }
