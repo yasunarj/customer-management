@@ -56,3 +56,4 @@ model ProductExpiry {
   @@index([expiryDate])
   @@map("product_expiry")
 }
+
