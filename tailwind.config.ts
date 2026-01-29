@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
 export default {
   darkMode: ["class"],
@@ -8,8 +9,8 @@ export default {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   safelist: [
-    "duration-[2000ms]",
-    "delay-[300ms]",
+    "duration-2000",
+    "delay-300",
   ],
   theme: {
     extend: {
@@ -43,5 +44,5 @@ export default {
       }
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [animate],
 } satisfies Config;

@@ -6,7 +6,7 @@ export const staffList = [
   },
   {
     name: "Ｆ・Ｒ",
-    image: "/images/images (1).jpeg",
+    image: "/images/DSC_1206.webp",
     comment: "もっとお客様に喜んでもらえるように頑張ります。",
   },
   {
@@ -16,7 +16,7 @@ export const staffList = [
   },
   {
     name: "Ｔ・Ａ",
-    image: "/images/images.jpeg",
+    image: "/images/20190831053421.jpg",
     comment: "お客様の笑顔で疲れも吹き飛びます"
   },
   {

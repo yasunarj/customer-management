@@ -57,3 +57,26 @@ model ProductExpiry {
   @@map("product_expiry")
 }
 
+model DailyTask {
+  id        String   @id @default(cuid())
+  title     String
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  checks DailyTaskCheck[]
+}
+
+model DailyTaskCheck {
+  id        String   @id @default(cuid())
+  date      String   // "YYYY-MM-DD"（JST）
+  taskId    String
+  task      DailyTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  checkedBy String?
+  checkedAt DateTime @default(now())
+
+  @@unique([date, taskId])
+  @@index([date])
+}
