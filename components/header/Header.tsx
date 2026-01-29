@@ -30,7 +30,8 @@ const Header = () => {
           !pathname.startsWith("/auth") &&
           !pathname.startsWith("/lp") &&
           !pathname.startsWith("/safe") &&
-          !pathname.startsWith("/expiry")
+          !pathname.startsWith("/expiry") &&
+          !pathname.startsWith("/daily-check")
         ) {
           router.push("/auth/login");
         }
@@ -62,7 +63,8 @@ const Header = () => {
             !pathname.startsWith("/auth") &&
             !pathname.startsWith("/lp") &&
             !pathname.startsWith("/safe") &&
-            !pathname.startsWith("/expiry")
+            !pathname.startsWith("/expiry") && 
+            !pathname.startsWith("/daily-check")
           ) {
             router.push("/auth/login");
           }

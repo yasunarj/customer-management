@@ -14,7 +14,7 @@ export default function Home() {
             "linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('/images/photo-1719127516207-89c019911f80.avif')",
         }}
       >
-        <div className="absolute top-16 left-6 sm:top-16 sm:left-10 md:top-20 md:left-20 flex flex-col space-y-4 sm:space-y-6 md:space-y-8 items-star w-[80%] hide-when-short">
+        <div className="absolute top-12 left-6 sm:top-12 sm:left-10 md:top-20 md:left-20 flex flex-col space-y-4 sm:space-y-6 md:space-y-8 items-star w-[80%] hide-when-short">
           <h2 className="text-gray-300 text-2xl sm:text-4xl md:text-5xl font-bold">
             地域No1のお店を作り
           </h2>
@@ -22,54 +22,53 @@ export default function Home() {
             お客様には最高の満足を
           </h3>
         </div>
-        <Link
-          href="/lp"
-          className="self-center mb-4 w-[200px] lg:w-[240px] xl:w-[280px]"
-        >
-          <Button
-            className={`${cn(
-              buttonVariants({ size: "lg", variant: "link" })
-            )}  w-full px-8 py-6 font-bold text-white text-lg rounded-md bg-gradient-to-r from-black via-gray-800 to-gray-600`}
-          >
-            店舗紹介ページへ
-          </Button>
-        </Link>
-        <Link
-          href="/auth/login"
-          className="self-center mb-4 w-[200px] lg:w-[240px] xl:w-[280px]"
-        >
-          <Button
-            className={`${cn(
-              buttonVariants({ size: "lg", variant: "link" })
-            )} w-full px-8 py-6 font-bold text-white text-lg rounded-md bg-gradient-to-r from-black via-gray-800 to-gray-600`}
-          >
-            予約商材一覧へ
-          </Button>
-        </Link>
-        <Link
-          href="/safe"
-          className="self-center mb-4 w-[200px] lg:w-[240px] xl:w-[280px]"
-        >
-          <Button
-            className={`${cn(
-              buttonVariants({ size: "lg", variant: "link" })
-            )} w-full px-8 py-6 font-bold text-white text-lg rounded-md bg-gradient-to-r from-black via-gray-800 to-gray-600`}
-          >
-            金庫管理ページへ
-          </Button>
-        </Link>
-        <Link
-          href="/expiry"
-          className="self-center mb-8 sm:mb-12 w-[200px] lg:w-[240px] xl:w-[280px]"
-        >
-          <Button
-            className={`${cn(
-              buttonVariants({ size: "lg", variant: "link" })
-            )} w-full px-8 py-6 font-bold text-white text-lg rounded-md bg-gradient-to-r from-black via-gray-800 to-gray-600`}
-          >
-            鮮度管理ページへ
-          </Button>
-        </Link>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-16 lg:gap-24 self-center mb-4 w-[200px] sm:w-[480px] lg:w-[860px]">
+          <Link href="/lp">
+            <Button
+              className={`${cn(
+                buttonVariants({ size: "lg", variant: "link" }),
+              )}  w-full px-8 py-6 font-bold text-white text-lg rounded-md bg-gradient-to-r from-black via-gray-800 to-gray-600`}
+            >
+              店舗紹介ページへ
+            </Button>
+          </Link>
+          <Link href="/auth/login">
+            <Button
+              className={`${cn(
+                buttonVariants({ size: "lg", variant: "link" }),
+              )} w-full px-8 py-6 font-bold text-white text-lg rounded-md bg-gradient-to-r from-black via-gray-800 to-gray-600`}
+            >
+              予約商材一覧へ
+            </Button>
+          </Link>
+          <Link href="/safe">
+            <Button
+              className={`${cn(
+                buttonVariants({ size: "lg", variant: "link" }),
+              )} w-full px-8 py-6 font-bold text-white text-lg rounded-md bg-gradient-to-r from-black via-gray-800 to-gray-600`}
+            >
+              金庫管理ページへ
+            </Button>
+          </Link>
+          <Link href="/expiry">
+            <Button
+              className={`${cn(
+                buttonVariants({ size: "lg", variant: "link" }),
+              )} w-full px-8 py-6 font-bold text-white text-lg rounded-md bg-gradient-to-r from-black via-gray-800 to-gray-600`}
+            >
+              鮮度管理ページへ
+            </Button>
+          </Link>
+          <Link href="/daily-check">
+            <Button
+              className={`${cn(
+                buttonVariants({ size: "lg", variant: "link" }),
+              )} w-full px-8 py-6 font-bold text-white text-lg rounded-md bg-gradient-to-r from-black via-gray-800 to-gray-600`}
+            >
+              オーナータスク
+            </Button>
+          </Link>
+        </div>
       </div>
     </>
   );
