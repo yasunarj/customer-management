@@ -1,4 +1,5 @@
 import Link from "next/link";
+import DailyCheckClient from "./components/ui";
 export const dynamic = "force-dynamic";
 
 const DailyCheckPage = () => {
@@ -10,7 +11,9 @@ const DailyCheckPage = () => {
           チェックは自動保存されます。未完了があると23時にメール通知されます。
         </p>
 
-        <div></div>
+        <div className="mt-6"> 
+          <DailyCheckClient />
+        </div>
 
         <div className="mt-8 text-md">
           <Link

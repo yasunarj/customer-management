@@ -1,18 +1,17 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { jstDateKey } from "@/lib/dateKey";
+import { jstDateKey } from "@/app/daily-check/lib/dateKey";
 
 const POST = async (req: Request) => {
   const body = await req.json().catch(() => null);
   const taskId = body.taskId;
   const checked = body.checked;
 
-  if (!taskId || typeof checked === "boolean") {
+  if (!taskId || typeof checked !== "boolean") {
     return NextResponse.json({ ok: false, error: "taskId/checked is required" }, { status: 400 });
   }
 
   const date = jstDateKey();
-
   if (checked) {
     await prisma.dailyTaskCheck.upsert({
       where: { date_taskId: { date, taskId } },

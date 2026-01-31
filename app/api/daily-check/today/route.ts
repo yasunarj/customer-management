@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { jstDateKey } from "@/lib/dateKey";
+import { jstDateKey } from "@/app/daily-check/lib/dateKey";
 
 const GET = async () => {
   const date = jstDateKey();
