@@ -53,3 +53,8 @@ revalidatePath(`/admin/${encoded}/${t.reservationId}`, "page");
 こちらを追加することでキャッシュをしないように設定することができるので、即時更新されたデータが表示される。
 ※/api/reservation/route.tsの中でPOSTのみ修正更新されているのでそれを元に他も対応させていくと良い。
 詳細はこちらから https://chatgpt.com/c/68b95eac-6d14-8323-b18c-c48e20c55297
+
+git checkout main
+git pull origin main
+git checkout feature/newpc
+git merge main
