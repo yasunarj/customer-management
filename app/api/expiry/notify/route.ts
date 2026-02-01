@@ -14,7 +14,16 @@ function getTodayYmdInJst() {
   return `${y}-${m}-${d}`;
 }
 
-export async function GET() {
+export async function GET(req: Request) {
+  if (!process.env.CRON_SECRET) {
+    return NextResponse.json({ ok: false, error: "CRON_SECRET is not set" }, { status: 500 });
+  }
+
+  const auth = req.headers.get("authorization");
+  if (auth !== `Bearer ${process.env.CRON_SECRET}`) {
+    return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
+  }
+  
   try {
     const today = getTodayYmdInJst(); // "YYYY-MM-DD"
     // Prisma の @db.Date は日付のみなので、UTC 00:00 を渡して equality 比較させる
@@ -33,8 +42,7 @@ export async function GET() {
     // 本文生成（テキスト/HTML）
     const lines = items.map(
       (r) =>
-        `G${r.gondolaNo}｜${r.category}｜${r.productName}｜${
-          r.quantity
+        `G${r.gondolaNo}｜${r.category}｜${r.productName}｜${r.quantity
         }個｜担当: ${r.manager ?? "-"}`
     );
 
@@ -54,12 +62,12 @@ export async function GET() {
           <p style="margin:0 0 12px">${today}</p>
           <ul>
             ${items
-              .map(
-                (r) =>
-                  `<li><strong>${r.productName}</strong>/ ${r.quantity}個
+        .map(
+          (r) =>
+            `<li><strong>${r.productName}</strong>/ ${r.quantity}個
                   </li>`
-              )
-              .join("")}
+        )
+        .join("")}
           </ul>
           <p style="margin-top:16px;">詳細は
             <a href="${listUrl}" target="_blank" rel="noopener noreferrer">商品リスト</a>
