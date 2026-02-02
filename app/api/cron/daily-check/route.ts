@@ -32,7 +32,7 @@ export async function GET(req: Request) {
   if (missing.length === 0) {
     return NextResponse.json({ ok: true, date, missing: 0 });
   }
-t
+
   const lines = missing.map((t, i) => `${i + 1}. ${t.title}`).join("\n");
 
   await sendMail({
