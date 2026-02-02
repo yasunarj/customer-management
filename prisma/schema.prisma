@@ -62,6 +62,15 @@ model DailyTask {
   title     String   @unique
   sortOrder Int      @default(0)
   isActive  Boolean  @default(true)
+
+  onMon     Boolean  @default(true)
+  onTue     Boolean  @default(true)
+  onWed     Boolean  @default(true)
+  onThu     Boolean  @default(true)
+  onFri     Boolean  @default(true)
+  onSat     Boolean  @default(true)
+  onSun     Boolean  @default(true)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

@@ -15,12 +15,18 @@ const DailyCheckPage = () => {
           <DailyCheckClient />
         </div>
 
-        <div className="mt-8 text-md">
+        <div className="mt-8 text-md flex flex-col gap-4">
           <Link
             href="/daily-check/history"
             className="text-blue-500 hover:underline"
           >
             過去のチェック一覧を見る →
+          </Link>
+          <Link
+            href="/daily-check/tasks"
+            className="text-blue-500 hover:underline"
+          >
+            タスク管理 →
           </Link>
         </div>
       </div>

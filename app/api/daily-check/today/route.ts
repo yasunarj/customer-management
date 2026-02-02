@@ -1,12 +1,14 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { jstDateKey } from "@/app/daily-check/lib/dateKey";
+import { jstDateKey, jstWeekdayKey } from "@/app/daily-check/lib/dateKey";
+
 
 const GET = async () => {
   const date = jstDateKey();
+  const wk = jstWeekdayKey();
 
   const tasks = await prisma.dailyTask.findMany({
-    where: { isActive: true },
+    where: { isActive: true, [wk]: true },
     orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
     select: { id: true, title: true },
   })
@@ -21,6 +23,7 @@ const GET = async () => {
   return NextResponse.json({
     ok: true,
     date,
+    weekday: wk,
     tasks: tasks.map((t) => ({ ...t, checked: checkedSet.has(t.id) }))
   })
 }
