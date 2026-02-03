@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 
 const GET = async () => {
   const tasks = await prisma.dailyTask.findMany({
-    orderBy: { sortOrder: "asc", createdAt: "asc" },
+    orderBy: [{ sortOrder: "asc"}, { createdAt: "asc" }],
     select: {
       id: true,
       title: true,
@@ -18,6 +18,7 @@ const GET = async () => {
       onSun: true,
     }
   });
+  console.log("tasks", tasks);
 
   return NextResponse.json({ ok: true, tasks });
 };
