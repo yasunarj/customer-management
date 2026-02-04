@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import { z } from "zod";
 
 const GET = async () => {
   const tasks = await prisma.dailyTask.findMany({
@@ -23,4 +24,10 @@ const GET = async () => {
   return NextResponse.json({ ok: true, tasks });
 };
 
-export { GET };
+const POST = async (req: Request) => {
+  const body = await req.json().catch(() => null);
+
+  if (!body?.title)
+}
+
+export { GET, POST };
