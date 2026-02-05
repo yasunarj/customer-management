@@ -1,5 +1,6 @@
 import Link from "next/link";
 import TaskList from "./components/TaskList";
+import TaskCreateForm from "./components/TaskCreateForm";
 
 const DailyTaskManegePage = () => {
   return (
@@ -14,6 +15,10 @@ const DailyTaskManegePage = () => {
           </div>
         </div>
         <p className="mt-2 text-lg text-gray-200">新しいタスクの作成・編集・削除</p>
+
+        <div className="mt-6">
+          <TaskCreateForm />
+        </div>
 
         <div className="mt-6">
           <TaskList />

@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
+import { Prisma } from "@prisma/client";
 
 const createDailyTaskSchema = z.object({
-  title: z.string().trim().min(1, "title is required").max(200, "title can be up to 200 characters").transform((s) => s.trim()),
-  sortOrder: z.coerce.number().int().min(0).default(0),
+  title: z.string().trim().min(1, "title is required").max(200, "title can be up to 200 characters"),
+  sortOrder: z.coerce.number().int().min(0).optional().default(0),
   onMon: z.boolean().optional().default(true),
   onTue: z.boolean().optional().default(true),
   onWed: z.boolean().optional().default(true),
@@ -37,30 +38,42 @@ const GET = async () => {
 };
 
 const POST = async (req: Request) => {
-  const body = await req.json().catch(() => null);
-  const parsed = createDailyTaskSchema.safeParse(body);
-  if (!parsed.success) {
-    return NextResponse.json({ ok: false, error: "Invalid body", issues: parsed.error.issues }, { status: 400 });
-  }
+  try {
 
-  const data = parsed.data;
+    const body = await req.json().catch(() => null);
+    const parsed = createDailyTaskSchema.safeParse(body);
 
-  const task = await prisma.dailyTask.create({
-    data: {
-      title: data.title,
-      sortOrder: data.sortOrder,
-      isActive: true,
-      onMon: data.onMon,
-      onTue: data.onTue,
-      onWed: data.onWed,
-      onThu: data.onThu,
-      onFri: data.onFri,
-      onSat: data.onSat,
-      onSun: data.onSun,
+    if (!parsed.success) {
+      return NextResponse.json({ ok: false, error: "Invalid body", issues: parsed.error.issues }, { status: 400 });
     }
-  });
 
-  return NextResponse.json({ ok: false, task }, { status: 200 });
+    const data = parsed.data;
+
+    const task = await prisma.dailyTask.create({
+      data: {
+        title: data.title,
+        sortOrder: data.sortOrder,
+        isActive: true,
+        onMon: data.onMon,
+        onTue: data.onTue,
+        onWed: data.onWed,
+        onThu: data.onThu,
+        onFri: data.onFri,
+        onSat: data.onSat,
+        onSun: data.onSun,
+      }
+    });
+
+    return NextResponse.json({ ok: true, task }, { status: 201 });
+  } catch (e: unknown) {
+    if (e instanceof Prisma.PrismaClientKnownRequestError) {
+      if (e.code === "P2002") {
+        return NextResponse.json({ ok: false, error: "duplicate title" }, { status: 409 })
+      }
+    }
+    console.error("daily-task POST error", e);
+    return NextResponse.json({ ok: false, error: "internal error" }, { status: 500 });
+  }
 }
 
 export { GET, POST };
