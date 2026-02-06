@@ -1,3 +1,4 @@
+import TaskEditor from "./TaskEditor";
 import type { Task } from "./TaskList";
 import WeekBadges from "./WeekBadges";
 import { useState } from "react";
@@ -26,7 +27,7 @@ const TaskRow = ({ task }: { task: Task }) => {
         </button>
       </div>
 
-      {/* {open && <TaskEditor task={task} onDone={() => setOpen(false)} />} */}
+      {open && <TaskEditor task={task} onDone={() => setOpen(false)} />}
     </div>
   );
 }
