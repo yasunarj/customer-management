@@ -4,8 +4,8 @@ import TaskCreateForm from "./components/TaskCreateForm";
 
 const DailyTaskManegePage = () => {
   return (
-    <main className="h-screen-vh bg-black text-white flex justify-center items-center">
-      <div className="relative max-w-2xl w-[90%] h-[90%] px-4 py-6 bg-gray-900 overflow-y-auto">
+    <main className="flex-1 bg-black text-white flex justify-center items-center overflow-hidden">
+      <div className="relative max-w-2xl h-[95%] w-[90%] px-4 py-6 bg-gray-900 overflow-y-auto">
         <div>
           <h1 className="text-4xl font-bold">タスク管理</h1>
           <div className="absolute top-8 right-4">
@@ -14,7 +14,9 @@ const DailyTaskManegePage = () => {
             </Link>
           </div>
         </div>
-        <p className="mt-2 text-lg text-gray-200">新しいタスクの作成・編集・削除</p>
+        <p className="mt-2 text-lg text-gray-200">
+          新しいタスクの作成・編集・削除
+        </p>
 
         <div className="mt-6">
           <TaskCreateForm />

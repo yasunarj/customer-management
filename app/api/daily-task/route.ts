@@ -32,7 +32,6 @@ const GET = async () => {
       onSun: true,
     }
   });
-  console.log("tasks", tasks);
 
   return NextResponse.json({ ok: true, tasks });
 };

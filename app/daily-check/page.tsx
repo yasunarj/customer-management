@@ -4,7 +4,7 @@ export const dynamic = "force-dynamic";
 
 const DailyCheckPage = () => {
   return (
-    <main className="h-screen-vh bg-black text-white flex justify-center items-center">
+    <main className="flex-1 bg-black text-white flex justify-center items-center">
       <div className="max-w-2xl w-[90%] h-[90%] px-4 py-6 bg-gray-900">
         <h1 className="text-4xl font-bold">本日のチェック</h1>
         <p className="mt-2 text-lg text-gray-200">
