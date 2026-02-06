@@ -12,15 +12,15 @@ type Props = {
   onSun: boolean;
 };
 
-const WeekBadges = ({tasks}: {tasks: Props}) => {
+const WeekBadges = (props: Props) => {
   const days = [
-    ["月", tasks.onMon],
-    ["火", tasks.onTue],
-    ["水", tasks.onWed],
-    ["木", tasks.onThu],
-    ["金", tasks.onFri],
-    ["土", tasks.onSat],
-    ["日", tasks.onSun],
+    ["月", props.onMon],
+    ["火", props.onTue],
+    ["水", props.onWed],
+    ["木", props.onThu],
+    ["金", props.onFri],
+    ["土", props.onSat],
+    ["日", props.onSun],
   ] as const;
 
   return (

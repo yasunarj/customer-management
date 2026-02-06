@@ -1,8 +1,8 @@
 "use client";
 import useSWR from "swr";
-import WeekBadges from "./WeekBadges";
+import TaskRow from "./TaskRow";
 
-type Task = {
+export type Task = {
   id: string;
   title: string;
   sortOrder: number;
@@ -22,28 +22,14 @@ const TaskList = () => {
   if (error) return <div className="text-red-500">読み込みに失敗しました</div>;
   if (!data) return <div className="text-gray-500">読み込み中,,,</div>;
 
-  if (data.tasks.length === 0) return <div className="text-gray-400">タスクがありません</div>
-
   const tasks = data.tasks as Task[];
+  
+  if (data.tasks.length === 0) return <div className="text-gray-400">タスクがありません</div>
 
   return (
     <div className="space-y-3">
       {tasks.map((t) => (
-        <div key={t.id} className="rounded border border-gray-700 p-3">
-          <div className="flex items-center justify-between gap-3">
-            <div>
-              <div
-                className={`font-bold ${t.isActive ? "" : "line-through text-gray-500"}`}
-              >
-                {t.title}
-              </div>
-              <div>
-                <WeekBadges tasks={t} />
-              </div>
-            </div>
-            <div>並び: {t.sortOrder}</div>
-          </div>
-        </div>
+        <TaskRow key={t.id} task={t} />
       ))}
     </div>
   );
