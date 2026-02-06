@@ -5,7 +5,7 @@ import TaskCreateForm from "./components/TaskCreateForm";
 const DailyTaskManegePage = () => {
   return (
     <main className="h-screen-vh bg-black text-white flex justify-center items-center">
-      <div className="relative max-w-2xl w-[90%] h-[90%] px-4 py-6 bg-gray-900">
+      <div className="relative max-w-2xl w-[90%] h-[90%] px-4 py-6 bg-gray-900 overflow-y-auto">
         <div>
           <h1 className="text-4xl font-bold">タスク管理</h1>
           <div className="absolute top-8 right-4">
