@@ -42,6 +42,7 @@ const TaskCreateForm = () => {
     return Object.values(week).some(Boolean);
   }, [week]);
 
+
   const toggleDay = (k: keyof WeekState) => {
     setWeek((prev) => ({ ...prev, [k]: !prev[k] }));
   };
