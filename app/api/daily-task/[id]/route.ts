@@ -27,7 +27,7 @@ const PATCH = async (req: Request, { params }: { params: Promise<{ id: string }>
     const parsed = updateDailyTaskSchema.safeParse(body);
 
     if (!parsed.success) {
-      return NextResponse.json({ ok: false, error: "Invalid body" }, { status: 400 });
+      return NextResponse.json({ ok: false, error: "Invalid body", issues: parsed.error.issues }, { status: 400 });
     }
 
     const data = parsed.data;

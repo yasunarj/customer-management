@@ -22,7 +22,7 @@ const defaultWeek: WeekState = {
   onSun: false,
 };
 
-const dayLabels: Array<[keyof WeekState, string]> = [
+export const dayLabels: Array<[keyof WeekState, string]> = [
   ["onMon", "月"],
   ["onTue", "火"],
   ["onWed", "水"],
