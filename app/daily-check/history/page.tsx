@@ -19,6 +19,7 @@ const DailyCheckHistoryPage = async () => {
   });
 
   const dates = Array.from({ length: 30 }, (_, i) => daysAgoKey(i));
+
   const checks = await prisma.dailyTaskCheck.findMany({
     where: { date: { in: dates } },
     select: { date: true },

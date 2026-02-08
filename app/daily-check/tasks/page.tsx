@@ -14,7 +14,7 @@ const DailyTaskManegePage = () => {
             </Link>
           </div>
         </div>
-        <p className="mt-2 text-lg text-gray-200">
+        <p className="mt-2 text-sm text-gray-200">
           新しいタスクの作成・編集・削除
         </p>
 

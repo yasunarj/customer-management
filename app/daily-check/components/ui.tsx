@@ -56,7 +56,7 @@ const DailyCheckClient = () => {
 
   return (
     <section>
-      <div className="mb-4">
+      <div className="mb-4 flex justify-between items-center">
         <div className="text-lg font-semibold">{date}</div>
         <div className="text-md text-gray-200">
           達成 {doneCount} / {tasks.length}
