@@ -3,6 +3,9 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
+const WEEK_KEYS = ["onSun", "onMon", "onTue", "onWed", "onThu", "onFri", "onSat"] as const;
+type WeekKey = (typeof WEEK_KEYS)[number];
+
 const daysAgoKey = (daysAgo: number) => {
   const now = new Date();
   const jst = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
@@ -13,11 +16,14 @@ const daysAgoKey = (daysAgo: number) => {
   return `${y}-${m}-${d}`;
 };
 
-const DailyCheckHistoryPage = async () => {
-  const tasksCount = await prisma.dailyTask.count({
-    where: { isActive: true },
-  });
+const weekdayKeyFromYmd = (ymd: string) => {
+  const d = new Date(`${ymd}T00:00:00+09:00`);
+  const w = d.getDay();
+  return WEEK_KEYS[w] ?? "onSun";
+};
 
+
+const DailyCheckHistoryPage = async () => {
   const dates = Array.from({ length: 30 }, (_, i) => daysAgoKey(i));
 
   const checks = await prisma.dailyTaskCheck.findMany({
@@ -25,19 +31,35 @@ const DailyCheckHistoryPage = async () => {
     select: { date: true },
   });
 
-  const map = new Map<string, number>();
+  const doneMap = new Map<string, number>();
   for (const c of checks) {
-    map.set(c.date, (map.get(c.date) ?? 0) + 1);
+    doneMap.set(c.date, (doneMap.get(c.date) ?? 0) + 1);
+  }
+
+  const tasks = await prisma.dailyTask.findMany({
+    where: { isActive: true },
+    select: {
+      onMon: true,
+      onTue: true,
+      onWed: true,
+      onThu: true,
+      onFri: true,
+      onSat: true,
+      onSun: true,
+    },
+  });
+
+  const expectedMap = new Map<string, number>();
+  for (const date of dates) {
+    const wk = weekdayKeyFromYmd(date) as WeekKey;
+    const expected = tasks.filter((t) => t[wk]).length;
+    expectedMap.set(date, expected);
   }
 
   return (
     <main className="h-screen-vh bg-black text-white flex justify-center items-center">
       <div className="relative max-w-2xl w-[90%] h-[95%] px-4 py-6 bg-gray-900 overflow-y-scroll">
         <h1 className="text-2xl font-bold">チェック履歴(直近30日)</h1>
-
-        <p className="mt-2 text-sm text-gray-600">
-          完了 = {tasksCount}/{tasksCount}
-        </p>
         <div className="absolute top-0 right-4 mt-8 text-sm">
           <Link href="/daily-check" className="text-blue-600 hover:underline">
             {`<< 戻る`}
@@ -46,8 +68,9 @@ const DailyCheckHistoryPage = async () => {
 
         <ul className="mt-6 space-y-3">
           {dates.map((date) => {
-            const done = map.get(date) ?? 0;
-            const ok = tasksCount > 0 && done >= tasksCount;
+            const done = doneMap.get(date) ?? 0;
+            const expected = expectedMap.get(date) ?? 0;
+            const ok = expected > 0 && done >= expected;
             return (
               <li
                 key={date}
@@ -59,7 +82,7 @@ const DailyCheckHistoryPage = async () => {
                     ok ? "text-green-600 font-semibold" : "text-yellow-700"
                   }
                 >
-                  {done}/{tasksCount} {ok ? "完了" : "未完了"}
+                  {done}/{expected} {ok ? "完了" : "未完了"}
                 </span>
               </li>
             );
