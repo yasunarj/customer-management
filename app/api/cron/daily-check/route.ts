@@ -16,6 +16,7 @@ export async function GET(req: Request) {
 
   // 現状では曜日関係なく全てのタスクを取得してしまうため、その日のタスクが終わったとしてもメールが来てしまう状態。jstWeekdayKeyを使用して曜日を取得。
   // where: {isActive: true と [jstWeekdayKey()]: true}として取得するタスクを絞る。
+  // この修正と同時に30日以上経過したレコードを自動で削除する処理も一緒に実装するとよさそう。
   const tasks = await prisma.dailyTask.findMany({
     where: { isActive: true },
     orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
