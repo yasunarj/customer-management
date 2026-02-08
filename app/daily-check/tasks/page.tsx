@@ -7,7 +7,7 @@ const DailyTaskManegePage = () => {
     <main className="flex-1 bg-black text-white flex justify-center items-center overflow-hidden">
       <div className="relative max-w-2xl h-[95%] w-[90%] px-4 py-6 bg-gray-900 overflow-y-auto">
         <div>
-          <h1 className="text-4xl font-bold">タスク管理</h1>
+          <h1 className="text-2xl font-bold">タスク管理</h1>
           <div className="absolute top-8 right-4">
             <Link href="/daily-check" className="text-blue-500 hover:underline">
               {`<< 戻る`}
