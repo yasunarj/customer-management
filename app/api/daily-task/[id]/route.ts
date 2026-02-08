@@ -5,7 +5,7 @@ import { Prisma } from "@prisma/client";
 
 const updateDailyTaskSchema = z.object({
   title: z.string().trim().min(1, "1文字以上で入力してください").max(200, "200時以内で入力してください").optional(),
-  orderBy: z.coerce.number().int().min(0, "0以上で入力してください").optional(),
+  sortOrder: z.coerce.number().int().min(0, "0以上で入力してください").optional(),
   isActive: z.boolean().optional(),
   onMon: z.boolean().optional(),
   onTue: z.boolean().optional(),

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FormEvent, useMemo, useState } from "react";
 import type { Task } from "./TaskList";
 import { mutate } from "swr";
 import { dayLabels } from "./TaskCreateForm";
@@ -45,7 +45,22 @@ const TaskEditor = ({ task, onDone }: { task: Task; onDone: () => void }) => {
     });
   };
 
-  const handleSubmit = async () => {
+  const anySelected = useMemo(() => {
+    return Object.values(week).some(Boolean);
+  }, [week]);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!title) {
+      setErr("タイトルを入力してください");
+      return;
+    }
+
+    if (!anySelected) {
+      setErr("曜日を１つ以上入力してください");
+    }
+
     setSubmitting(true);
     setErr(null);
 
@@ -58,7 +73,7 @@ const TaskEditor = ({ task, onDone }: { task: Task; onDone: () => void }) => {
       };
 
       const res = await fetch(`/api/daily-task/${task.id}`, {
-        method: "POST",
+        method: "PATCH",
         headers: {
           "Content-Type": "application/json",
         },
@@ -107,7 +122,84 @@ const TaskEditor = ({ task, onDone }: { task: Task; onDone: () => void }) => {
         </div>
       </div>
 
-      <div></div>
+      <div className="mt-3 flex items-center gap-2">
+        <input
+          id={`active-${task.id}`}
+          type="checkbox"
+          checked={isActive}
+          onChange={(e) => setIsActive(e.target.checked)}
+        />
+        <label htmlFor={`active-${task.id}`} className="text-gray-200">
+          有効
+        </label>
+      </div>
+
+      <div className="mt-3">
+        <div className="flex items-center justify-between">
+          <div className="text-white">曜日</div>
+          <div className="flex gap-2 text-sm">
+            <button
+              type="button"
+              onClick={() => setAll(true)}
+              className="rounded bg-gray-800 px-2 py-1 text-gray-200 hover:bg-gray-700"
+            >
+              全部
+            </button>
+            <button
+              type="button"
+              onClick={() => setAll(false)}
+              className="rounded bg-gray-800 px-2 py-1 text-gray-200 hover:bg-gray-700"
+            >
+              なし
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-2 flex flex-wrap gap-2">
+        {dayLabels.map(([key, label]) => {
+          const on = week[key];
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => toggleDay(key)}
+              className={`rounded px-3 py-1 text-sm ${
+                on
+                  ? "bg-white text-black"
+                  : "bg-gray-800 text-gray-700 hover:text-gray-600"
+              }`}
+            >
+              {label}
+            </button>
+          );
+        })}
+      </div>
+
+      {!anySelected && (
+        <div className="mt-2 text-red-500 text-sm">
+          曜日を１つ以上選択してください
+        </div>
+      )}
+
+      {err && <div className="mt-2 text-sm text-red-500">{err}</div>}
+
+      <div className="mt-2 flex justify-end gap-2">
+        <button
+          type="submit"
+          onClick={handleSubmit}
+          className="rounded bg-blue-600 px-4 py-2 text-sm font-bold disabled:opacity-50"
+        >
+          {submitting ? "保存中..." : "保存"}
+        </button>
+        <button
+          type="button"
+          onClick={onDone}
+          className="rounded bg-gray-800 px-4 py-2 text-sm text-gray-200 hover:bg-gray-700"
+        >
+          キャンセル
+        </button>
+      </div>
     </form>
   );
 };
