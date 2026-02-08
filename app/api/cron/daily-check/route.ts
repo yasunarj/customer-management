@@ -12,8 +12,10 @@ export async function GET(req: Request) {
     return NextResponse.json({ ok: false, error: "unauthorized" }, { status: 401 });
   }
 
-  const date = jstDateKey();
+  const date = jstDateKey(); //jstDateKey()は今日の日付を取得する関数
 
+  // 現状では曜日関係なく全てのタスクを取得してしまうため、その日のタスクが終わったとしてもメールが来てしまう状態。jstWeekdayKeyを使用して曜日を取得。
+  // where: {isActive: true と [jstWeekdayKey()]: true}として取得するタスクを絞る。
   const tasks = await prisma.dailyTask.findMany({
     where: { isActive: true },
     orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
@@ -25,8 +27,8 @@ export async function GET(req: Request) {
     select: { taskId: true },
   });
 
-  const checkedSet = new Set(checks.map((c) => c.taskId));
-  const missing = tasks.filter((t) => !checkedSet.has(t.id));
+  const checkedSet = new Set(checks.map((c) => c.taskId)); // checkedSetをconsole.logで確認する。
+  const missing = tasks.filter((t) => !checkedSet.has(t.id)); //tasksは今日のtask、曜日ごとにタスク数が変わる
 
   // 未チェックがなければメール送らず終了
   if (missing.length === 0) {
