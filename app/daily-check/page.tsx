@@ -11,7 +11,7 @@ const DailyCheckPage = () => {
           チェックは自動保存されます。未完了があると23時にメール通知されます。
         </p>
 
-        <div className="mt-6"> 
+        <div className="mt-6">
           <DailyCheckClient />
         </div>
 

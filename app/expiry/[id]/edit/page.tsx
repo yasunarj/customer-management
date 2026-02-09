@@ -24,9 +24,9 @@ const ExpiryDataEditPage = async ({
   }
 
   const initial = {
-    ...productData, expiryDate: productData.expiryDate.toISOString()
-  }
-
+    ...productData,
+    expiryDate: productData.expiryDate.toISOString(),
+  };
 
   return (
     <div className="h-screen-vh flex justify-center items-center bg-yellow-200 overflow-y-hidden">

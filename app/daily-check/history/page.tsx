@@ -3,7 +3,15 @@ import Link from "next/link";
 
 export const dynamic = "force-dynamic";
 
-const WEEK_KEYS = ["onSun", "onMon", "onTue", "onWed", "onThu", "onFri", "onSat"] as const;
+const WEEK_KEYS = [
+  "onSun",
+  "onMon",
+  "onTue",
+  "onWed",
+  "onThu",
+  "onFri",
+  "onSat",
+] as const;
 type WeekKey = (typeof WEEK_KEYS)[number];
 
 const daysAgoKey = (daysAgo: number) => {
@@ -21,7 +29,6 @@ const weekdayKeyFromYmd = (ymd: string) => {
   const w = d.getDay();
   return WEEK_KEYS[w] ?? "onSun";
 };
-
 
 const DailyCheckHistoryPage = async () => {
   const dates = Array.from({ length: 30 }, (_, i) => daysAgoKey(i));

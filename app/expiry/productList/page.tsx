@@ -5,10 +5,10 @@ import ProductListClient from "./ProductListClient";
 
 const ProductListPage = async () => {
   const raw = await getExpiryProductList();
-  const initial = raw.map(r => ({
+  const initial = raw.map((r) => ({
     ...r,
     expiryDate: new Date(r.expiryDate).toISOString(),
-  }))
+  }));
 
   return (
     <div className="h-screen-vh overflow-hidden bg-yellow-200 flex justify-center items-center">

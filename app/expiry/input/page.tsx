@@ -10,7 +10,7 @@ const ProductRegistrationPage = () => {
           <h1 className="relative text-2xl mt-2 font-bold text-gray-800">
             商品登録フォーム
             <div className="absolute top-1 right-4">
-              <SheetMenu menuList={expiryMenuList}/>
+              <SheetMenu menuList={expiryMenuList} />
             </div>
           </h1>
           <p>入力後、送信ボタンを押してください</p>

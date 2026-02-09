@@ -48,7 +48,10 @@ const SafeCheckHistoryPage = async () => {
                         {safeData.total}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
-                        <Link href={`/safe/history/${safeData.id}/detail`} className="underline underline-offset-4 hover:text-black">
+                        <Link
+                          href={`/safe/history/${safeData.id}/detail`}
+                          className="underline underline-offset-4 hover:text-black"
+                        >
                           詳細
                         </Link>
                       </td>
