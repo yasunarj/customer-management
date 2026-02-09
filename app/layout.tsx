@@ -129,7 +129,7 @@ export default async function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${playfairDisplay.variable} ${geistSans.variable} ${geistMono.variable} ${oswald.variable} ${ibmPlexSansJP.variable} first-line:antialiased flex flex-col h-screen-vh`}
+        className={`${playfairDisplay.variable} ${geistSans.variable} ${geistMono.variable} ${oswald.variable} ${ibmPlexSansJP.variable} first-line:antialiased flex flex-col min-h-[100dvh]`}
       >
         <ClientPathChecker />
         {!isLP && <Header />}
