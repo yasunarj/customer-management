@@ -36,11 +36,10 @@ const Hero = () => {
 
   return (
     <div
-      className={`relative w-full overflow-hidden transition-opacity duration-1000 h-[calc(100svh-var(--lp-header-h))] 
-    supports-[height:100dvh]:h-[calc(100dvh-var(--lp-header-h))] ${
-      isVisibleImage ? "opacity-100" : "opacity-0"
-    }`}
-    >
+  className={`relative w-full overflow-hidden transition-opacity duration-1000
+    h-[calc(var(--vvh)-var(--lp-header-h))]
+    ${isVisibleImage ? "opacity-100" : "opacity-0"}`}
+>
       {images.map((src, i) => (
         <Image
           key={i}
