@@ -35,7 +35,7 @@ const Hero = () => {
   }, []);
 
   return (
-    <div className={`relative w-full min-h-[100dvh] [--lp-header-h:100px] [--vvh:100vh] transition-opacity duration-1000 ${isVisibleImage ? "opacity-100" : "opacity-0"}`}>
+    <div className={`relative w-full min-h-[100dvh] [--lp-header-h:100px] [--vvh:100vh] overflow-hidden transition-opacity duration-1000 ${isVisibleImage ? "opacity-100" : "opacity-0"}`}>
       {images.map((src, i) => 
       <Image
       key={i}
