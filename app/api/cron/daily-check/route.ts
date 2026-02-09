@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import { jstDateKey } from "@/app/daily-check/lib/dateKey";
+import { jstDateKey, jstWeekdayKey } from "@/app/daily-check/lib/dateKey";
 import { sendMail } from "@/app/lp/lib/mailer";
 
 export const dynamic = "force-dynamic";
@@ -13,9 +13,10 @@ export async function GET(req: Request) {
   }
 
   const date = jstDateKey();
+  const wk = jstWeekdayKey();
 
   const tasks = await prisma.dailyTask.findMany({
-    where: { isActive: true },
+    where: { isActive: true, [wk]: true },
     orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
     select: { id: true, title: true },
   });
@@ -23,10 +24,15 @@ export async function GET(req: Request) {
   const checks = await prisma.dailyTaskCheck.findMany({
     where: { date },
     select: { taskId: true },
-  });
+  }); //checksはその日にチェックされた項目を指している。
 
   const checkedSet = new Set(checks.map((c) => c.taskId));
+
   const missing = tasks.filter((t) => !checkedSet.has(t.id));
+
+  if (tasks.length === 0) {
+    return NextResponse.json({ ok: true, date, weekday: wk, missing: 0, message: "no tasks today" });
+  }
 
   // 未チェックがなければメール送らず終了
   if (missing.length === 0) {
