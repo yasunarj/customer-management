@@ -1,16 +1,14 @@
 "use client";
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 
 export default function ViewportVar() {
-  useEffect(() => {
+  useLayoutEffect(() => {
     const set = () => {
       const h = window.visualViewport?.height ?? window.innerHeight;
-      document.documentElement.style.setProperty("--vvh", `${h}px`);
+      document.documentElement.style.setProperty("--vvh", `${Math.floor(h)}px`);
     };
 
     set();
-
-    // iOS Safari 対策：スクロールでバー高さが変わるのを拾う
     window.visualViewport?.addEventListener("resize", set);
     window.visualViewport?.addEventListener("scroll", set);
     window.addEventListener("resize", set);
@@ -24,3 +22,4 @@ export default function ViewportVar() {
 
   return null;
 }
+

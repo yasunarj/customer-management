@@ -18,10 +18,10 @@ const LandingPageHeader = () => {
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50
-    pt-[env(safe-area-inset-top)]
+    pt-[env(safe-area-inset-top)] 
     h-[calc(100px+env(safe-area-inset-top))]
     bg-gradient-to-b from-white via-white/60 to-transparent
-    backdrop-blue-md
+    backdrop-blur-md
     overflow-hidden
     transition-opacity duration-500 ease-in-out
     ${visible ? "opacity-100" : "opacity-0"}

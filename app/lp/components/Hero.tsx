@@ -37,7 +37,7 @@ const Hero = () => {
   return (
     <div
   className={`relative w-full overflow-hidden transition-opacity duration-1000
-    h-[calc(var(--vvh)-var(--lp-header-h))]
+    h-[var(--vvh)]
     ${isVisibleImage ? "opacity-100" : "opacity-0"}`}
 >
       {images.map((src, i) => (
