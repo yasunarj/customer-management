@@ -35,20 +35,20 @@ const Hero = () => {
   }, []);
 
   return (
-    <div className={`relative w-full min-h-[100dvh] transition-opacity duration-1000 ${isVisibleImage ? "opacity-100" : "opacity-0"}`}>
+    <div className={`relative w-full h-[calc(100svh-var(--lp-header-h))] overflow-hidden transition-opacity duration-1000 ${isVisibleImage ? "opacity-100" : "opacity-0"}`}>
       {images.map((src, i) => 
       <Image
       key={i}
       src={src}
       fill
-      priority
+      priority={i === 0}
       alt="hero画像"
       className={`absolute inset-0 object-cover transition-opacity duration-1000 ${index === i ? "opacity-100" : "opacity-0"}`}
     />
       )}
       <h1 className={`absolute bottom-4 left-4 sm:bottom-8 sm:left-8 md:bottom-12 md:left-12 text-white transition-all duration-1000 ${isVisibleTitle ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"}`}>
-        <span className="font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:8xl">明日の未来を、<br/>共に作る。</span>
-        <p className="font-playfairDisplay font-semibold text-lg sm:text-xl md:text-2xl lg:text-3xl xl:4xl mt-4">Building Tomorrow&apos; Future Together</p>
+        <span className="font-extrabold text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">明日の未来を、<br/>共に作る。</span>
+        <p className="font-playfairDisplay font-semibold text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl mt-4">Building Tomorrow&apos; Future Together</p>
       </h1>
     </div>
   );
