@@ -64,7 +64,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-
 const ibmPlexSansJP = IBM_Plex_Sans_JP({
   subsets: ["latin"],
   weight: ["400", "700"],
@@ -75,7 +74,7 @@ const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
   weight: ["400", "700"],
   variable: "--font-playfair-display",
-})
+});
 
 // const zenKakuGothic = Zen_Kaku_Gothic_New({
 //   subsets: ["latin"],
@@ -129,7 +128,10 @@ export default async function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${playfairDisplay.variable} ${geistSans.variable} ${geistMono.variable} ${oswald.variable} ${ibmPlexSansJP.variable} first-line:antialiased flex flex-col h-screen-vh`}
+        className={`${playfairDisplay.variable} ${geistSans.variable} ${
+          geistMono.variable
+        } ${oswald.variable} ${ibmPlexSansJP.variable}
+  antialiased flex flex-col ${isLP ? "min-h-[100dvh]" : "h-screen-vh"}`}
       >
         <ClientPathChecker />
         {!isLP && <Header />}
@@ -141,7 +143,7 @@ export default async function RootLayout({
 }
 
 // ${montserrat.variable}
-// ${poppins.variable} 
+// ${poppins.variable}
 // ${lato.variable}
 // ${notoSansJP.variable}
 // ${mPlus1p.variable}
