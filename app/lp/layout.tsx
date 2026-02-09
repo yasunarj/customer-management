@@ -15,7 +15,7 @@ const LandingPageLayout = ({ children }: { children: ReactNode }) => {
     <div className="antialiased flex flex-col min-h-[100dvh] [--lp-header-h:100px] [--vvh:100vh]">
       <ViewportVar />
       <LandingPageHeader />
-      <main className="pt-[var(--lp-header-h)] flex-1">{children}</main>
+      <main className="flex-1">{children}</main>
       <LandingPageFooter />
     </div>
   );
