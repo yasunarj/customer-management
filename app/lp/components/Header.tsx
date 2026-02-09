@@ -17,11 +17,11 @@ const LandingPageHeader = () => {
   }, []);
   return (
     <header
-      className={`fixed w-full top-0 left-0 p-1 pr-0 sm:p-2 md:p-4 bg-gradient-to-b from-white via-white/60 to-transparent backdrop-blue-md z-50 overflow-hidden transition-opacity duration-500 ease-in-out ${
+      className={`fixed w-full top-0 h-[100px] left-0 p-1 pr-0 sm:p-2 md:p-4 bg-gradient-to-b from-white via-white/60 to-transparent backdrop-blue-md z-50 overflow-hidden transition-opacity duration-500 ease-in-out ${
         visible ? "opacity-100" : "opacity-0"
       }`}
     >
-      <nav className="h-[100px]">
+      <nav className="h-full">
         <div className="flex items-end gap-2">
           <Image
             src={"/images/logo_food.png"}
