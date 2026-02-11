@@ -135,7 +135,7 @@ export default async function RootLayout({
       >
         <ClientPathChecker />
         {!isLP && <Header />}
-        {children}
+        <main className="flex-1 flex flex-col min-h-0">{children}</main>
         {/* {!isLP && <Footer />} */}
       </body>
     </html>

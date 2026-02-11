@@ -8,7 +8,7 @@ export default function Home() {
     <>
       <HomeSplashScreen />
       <div
-        className="flex-grow flex flex-col items-start bg-center bg-cover select-none justify-end p-4 relative"
+        className=" relative flex flex-col items-start bg-center bg-cover select-none justify-end p-4 "
         style={{
           backgroundImage:
             "linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2)), url('/images/photo-1719127516207-89c019911f80.avif')",
