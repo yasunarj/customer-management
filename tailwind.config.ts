@@ -19,7 +19,7 @@ export default {
         foreground: "var(--foreground)",
       },
       height: {
-        "screen-vh": "100svh",
+        "screen-vh": "100dvh", //100svhだったので100vh。スクロールする場所であれば100dvhが良い
       },
       borderRadius: {
         lg: "var(--radius)",

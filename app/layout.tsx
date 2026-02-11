@@ -14,7 +14,7 @@ import {
 } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header/Header";
-import Footer from "@/components/footer/Footer";
+// import Footer from "@/components/footer/Footer";
 import { getPathnameFromHeaders } from "@/lib/headers";
 import ClientPathChecker from "@/components/clientPath/ClientPathChecker";
 
@@ -136,7 +136,7 @@ export default async function RootLayout({
         <ClientPathChecker />
         {!isLP && <Header />}
         {children}
-        {!isLP && <Footer />}
+        {/* {!isLP && <Footer />} */}
       </body>
     </html>
   );

@@ -35,7 +35,7 @@ const UserListView = ({
 
   if (!reservationList || reservationList.length === 0) {
     return (
-      <div className="select-none h-[90dvh] flex justify-center items-center bg-center bg-cover bg-[url('/images/istockphoto-1499955814-612x612.jpg')]">
+      <div className="select-none h-[calc(100dvh-5dvh)] flex justify-center items-center bg-center bg-cover bg-[url('/images/istockphoto-1499955814-612x612.jpg')]">
         <div className="overflow-y-auto max-w-[1500px] w-[95%] h-[95%] bg-white rounded-xl shadow-4xl p-4 relative">
           <h1 className="text-gray-800 text-xl sm:text-3xl font-bold text-center">
             {decodeType}の予約一覧
@@ -67,7 +67,7 @@ const UserListView = ({
       <LoadingDialog isLoading={isLoading} />
 
       <div
-        className="select-none h-[90dvh] flex justify-center items-center bg-center bg-cover"
+        className="select-none h-[calc(100dvh-5dvh)] flex justify-center items-center bg-center bg-cover"
         style={{
           backgroundImage: "url('/images/istockphoto-1499955814-612x612.jpg')",
         }}
@@ -149,10 +149,10 @@ const UserListView = ({
                   </td>
                   <td className="text-sm border border-gray-300 px-4 py-2 text-center sm:table-cell hidden">{`¥${reservation.price.toLocaleString()}`}</td>
                   <td className="text-sm border border-gray-300 px-4 py-2 text-center sm:table-cell hidden">
-                    {new Date(reservation.reservationDate).toLocaleDateString()}
+                    {new Date(reservation.reservationDate).toLocaleDateString("ja-JP")}
                   </td>
                   <td className="text-sm border border-gray-300 px-4 py-2 text-center sm:table-cell hidden">
-                    {new Date(reservation.deliveryDate!).toLocaleDateString()}
+                    {new Date(reservation.deliveryDate!).toLocaleDateString("ja-JP")}
                   </td>
                   <td className="text-sm border border-gray-300 min-w-[60px]">
                     <Link

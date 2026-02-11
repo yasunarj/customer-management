@@ -43,7 +43,7 @@ const LandingPageHeader = () => {
             </div>
             <div className="flex w-full justify-between">
               <h3 className="flex flex-col text-lg sm:text-xl  md:text-2xl font-bold bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900 text-transparent bg-clip-text mb-1">
-                <Link href="/lp">
+                <Link href="/">
                   <span>さくら卯の里４丁目店</span>
                 </Link>
               </h3>

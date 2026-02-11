@@ -17,7 +17,7 @@ const UserDashboardLayout = ({ children }: { children: ReactNode }) => {
       <div className="relative w-full h-screen-vh overflow-hidden">
         <video
           className="absolute top-0 left-0 w-full h-full brightness-75 object-cover"
-          src="/videos/5580_960x540.mp4"
+          src="/videos/5580_960x540 (1).mp4"
           autoPlay
           muted
           loop

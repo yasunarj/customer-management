@@ -43,7 +43,7 @@ const AdminListView = ({
   if (!reservationsList || reservationsList.length === 0) {
     return (
       <div
-        className="select-none h-[90dvh] flex justify-center items-center bg-center bg-cover"
+        className="select-none h-[calc(100dvh-5dvh)] flex justify-center items-center bg-center bg-cover"
         style={{
           backgroundImage: "url('/images/istockphoto-1499955814-612x612.jpg')", // cSpell: disable-line
         }}
@@ -79,7 +79,7 @@ const AdminListView = ({
       <LoadingDialog isLoading={isLoading} />
 
       <div
-        className="select-none h-[90dvh] flex justify-center items-center bg-center bg-cover"
+        className="select-none h-[calc(100dvh-5dvh)] flex justify-center items-center bg-center bg-cover"
         style={{
           backgroundImage: "url('/images/istockphoto-1499955814-612x612.jpg')",
         }}
@@ -165,13 +165,13 @@ const AdminListView = ({
                     <td className="text-sm border border-gray-300 px-4 py-2 text-center sm:table-cell hidden">
                       {new Date(
                         reservation.reservationDate
-                      ).toLocaleDateString()}
+                      ).toLocaleDateString("ja-JP")}
                     </td>
                     <td className="text-sm border border-gray-300 px-4 py-2 text-center sm:table-cell hidden">
                       {reservation.deliveryDate
                         ? new Date(
                             reservation.deliveryDate
-                          ).toLocaleDateString()
+                          ).toLocaleDateString("ja-JP")
                         : "未定"}
                     </td>
                     <td className="border border-gray-300 text-gray-600 min-w-[60px]">
