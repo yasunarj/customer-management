@@ -17,7 +17,7 @@ type WeekKey = (typeof WEEK_KEYS)[number];
 
 const weekdayKeyFromYmd = (ymd: string) => {
   const d = new Date(`${ymd}T00:00:00+09:00`);
-  const w = d.getUTCDay();
+  const w = d.getDay();
   return WEEK_KEYS[w] ?? "onSun";
 };
 
@@ -87,6 +87,9 @@ const DailyCheckHistoryPage = async () => {
           })}
         </ul>
       </div>
+      <p className="text-xs text-gray-400 mt-2">
+        todayKey: {jstDateKey(0)} / nowIso: {new Date().toISOString()}
+      </p>
     </main>
   );
 };
