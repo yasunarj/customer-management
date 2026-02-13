@@ -13,7 +13,7 @@ export function jstDateKey(offsetDay = 0) {
   const ms = Date.now() + JST_OFFSET_MS;
   const d = new Date(ms);
 
-  d.setDate(d.getUTCDate() - offsetDay);
+  d.setUTCDate(d.getUTCDate() - offsetDay);
 
   const y = d.getUTCFullYear();
   const m = String(d.getUTCMonth() + 1).padStart(2, "0");
@@ -33,10 +33,10 @@ const WEEKDAY_KEYS = [
 ] as const;
 
 export function jstWeekdayKey(offsetDay = 0) {
-  const ms = Date.now() - JST_OFFSET_MS;
+  const ms = Date.now() + JST_OFFSET_MS;
   const d = new Date(ms);
 
-  d.setDate(d.getUTCDate() - offsetDay);
+  d.setUTCDate(d.getUTCDate() - offsetDay);
 
   return WEEKDAY_KEYS[d.getUTCDay()];
 }
