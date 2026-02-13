@@ -30,3 +30,4 @@ const HomeSplashScreen = () => {
 };
 
 export default HomeSplashScreen;
+//確認
