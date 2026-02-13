@@ -16,6 +16,10 @@ export function jstDateKey(offsetDay = 0) {
   d.setDate(d.getUTCDate() - offsetDay);
 
   const y = d.getUTCFullYear();
+  const m = String(d.getUTCMonth() + 1).padStart(2, "0");
+  const day = String(d.getUTCDate()).padStart(2, "0");
+
+  return `${y}-${m}-${day}`;
 }
 
 const WEEKDAY_KEYS = [
@@ -28,8 +32,11 @@ const WEEKDAY_KEYS = [
   "onSat"
 ] as const;
 
-export function jstWeekdayKey(now = new Date()) {
-  const jst = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
-  const d = jst.getDay();
-  return WEEKDAY_KEYS[d];
+export function jstWeekdayKey(offsetDay = 0) {
+  const ms = Date.now() - JST_OFFSET_MS;
+  const d = new Date(ms);
+
+  d.setDate(d.getUTCDate() - offsetDay);
+
+  return WEEKDAY_KEYS[d.getUTCDay()];
 }

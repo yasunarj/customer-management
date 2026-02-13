@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
+import { jstDateKey } from "../lib/dateKey";
 
 export const dynamic = "force-dynamic";
 
@@ -14,16 +15,6 @@ const WEEK_KEYS = [
 ] as const;
 type WeekKey = (typeof WEEK_KEYS)[number];
 
-const daysAgoKey = (daysAgo: number) => {
-  const now = new Date();
-  const jst = new Date(now.toLocaleString("en-US", { timeZone: "Asia/Tokyo" }));
-  jst.setDate(jst.getDate() - daysAgo);
-  const y = jst.getFullYear();
-  const m = String(jst.getMonth() + 1).padStart(2, "0");
-  const d = String(jst.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
-};
-
 const weekdayKeyFromYmd = (ymd: string) => {
   const d = new Date(`${ymd}T00:00:00+09:00`);
   const w = d.getDay();
@@ -31,7 +22,7 @@ const weekdayKeyFromYmd = (ymd: string) => {
 };
 
 const DailyCheckHistoryPage = async () => {
-  const dates = Array.from({ length: 30 }, (_, i) => daysAgoKey(i));
+  const dates = Array.from({ length: 30 }, (_, i) => jstDateKey(i));
 
   const checks = await prisma.dailyTaskCheck.findMany({
     where: { date: { in: dates } },
