@@ -15,10 +15,21 @@ const WEEK_KEYS = [
 ] as const;
 type WeekKey = (typeof WEEK_KEYS)[number];
 
-const weekdayKeyFromYmd = (ymd: string) => {
-  const d = new Date(`${ymd}T00:00:00+09:00`);
-  const w = d.getDay();
-  return WEEK_KEYS[w] ?? "onSun";
+// const weekdayKeyFromYmd = (ymd: string) => {
+//   const d = new Date(`${ymd}T00:00:00+09:00`);
+//   const w = d.getDay();
+//   return WEEK_KEYS[w] ?? "onSun";
+// };
+const weekdayKeyFromYmd = (ymd: string): WeekKey => {
+  const [Y, M, D] = ymd.split("-").map(Number);
+  // Tomohiko Sakamoto algorithm
+  const t = [0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4];
+  let y = Y;
+  const m = M;
+  const d = D;
+  if (m < 3) y -= 1;
+  const w = (y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) + t[m - 1] + d) % 7;
+  return WEEK_KEYS[w];
 };
 
 const DailyCheckHistoryPage = async () => {
@@ -54,13 +65,6 @@ const DailyCheckHistoryPage = async () => {
     expectedMap.set(date, expected);
   }
 
-  const tasksCount = tasks.length;
-  const sample = dates.slice(0, 3).map((date) => {
-    const wk = weekdayKeyFromYmd(date) as WeekKey;
-    const expected = tasks.filter((t) => t[wk]).length;
-    return { date, wk, expected };
-  });
-
   return (
     <main className="h-screen-vh bg-black text-white flex justify-center items-center">
       <div className="relative max-w-2xl w-[90%] h-[95%] px-4 py-6 bg-gray-900 overflow-y-scroll">
@@ -94,10 +98,6 @@ const DailyCheckHistoryPage = async () => {
           })}
         </ul>
       </div>
-
-      <pre className="text-xs text-gray-400 mt-4">
-        {JSON.stringify({ tasksCount, sample }, null, 2)}
-      </pre>
     </main>
   );
 };
