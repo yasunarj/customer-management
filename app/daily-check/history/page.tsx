@@ -17,7 +17,7 @@ type WeekKey = (typeof WEEK_KEYS)[number];
 
 const weekdayKeyFromYmd = (ymd: string) => {
   const d = new Date(`${ymd}T00:00:00+09:00`);
-  const w = d.getDay();
+  const w = d.getUTCDay();
   return WEEK_KEYS[w] ?? "onSun";
 };
 
