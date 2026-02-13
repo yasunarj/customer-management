@@ -54,6 +54,13 @@ const DailyCheckHistoryPage = async () => {
     expectedMap.set(date, expected);
   }
 
+  const tasksCount = tasks.length;
+  const sample = dates.slice(0, 3).map((date) => {
+    const wk = weekdayKeyFromYmd(date) as WeekKey;
+    const expected = tasks.filter((t) => t[wk]).length;
+    return { date, wk, expected };
+  });
+
   return (
     <main className="h-screen-vh bg-black text-white flex justify-center items-center">
       <div className="relative max-w-2xl w-[90%] h-[95%] px-4 py-6 bg-gray-900 overflow-y-scroll">
@@ -87,9 +94,10 @@ const DailyCheckHistoryPage = async () => {
           })}
         </ul>
       </div>
-      <p className="text-xs text-gray-400 mt-2">
-        todayKey: {jstDateKey(0)} / nowIso: {new Date().toISOString()}
-      </p>
+
+      <pre className="text-xs text-gray-400 mt-4">
+        {JSON.stringify({ tasksCount, sample }, null, 2)}
+      </pre>
     </main>
   );
 };
