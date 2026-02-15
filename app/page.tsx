@@ -1,7 +1,5 @@
+import HomeNavButtons from "@/components/button/HomeNavButtons";
 import HomeSplashScreen from "@/components/splashScreen/HomeSplashScreen";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
 
 export default function Home() {
   return (
@@ -22,7 +20,8 @@ export default function Home() {
             お客様には最高の満足を
           </h3>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-8 lg:gap-12 self-center mb-4 w-[200px] sm:w-[480px] lg:w-[860px]">
+        <HomeNavButtons />
+        {/* <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-8 lg:gap-12 self-center mb-4 w-[200px] sm:w-[480px] lg:w-[860px]">
           <Link href="/lp">
             <Button
               className={`${cn(
@@ -68,7 +67,7 @@ export default function Home() {
               オーナータスク
             </Button>
           </Link>
-        </div>
+        </div> */}
       </div>
     </>
   );
