@@ -3,19 +3,18 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { useRef, useState } from "react";
-import { useSWRConfig } from "swr";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { expirySchema } from "../lib/expirySchema";
 
-const LIST_KEY = "/api/expiry?limit=50";
-
 const ExpiryInputForm = () => {
   const router = useRouter();
-  const { mutate } = useSWRConfig();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const [isSending, setIsSending] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isNavigating, setIsNavigating] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>("");
+
+  const isBusy = isSubmitting || isNavigating;
 
   const [form, setForm] = useState({
     gondolaNo: "",
@@ -63,7 +62,7 @@ const ExpiryInputForm = () => {
     setForm((prev) => ({ ...prev, [key]: e.target.value }));
   };
 
-  const reestForm = () => {
+  const resetForm = () => {
     setForm({
       gondolaNo: "",
       category: "",
@@ -76,7 +75,7 @@ const ExpiryInputForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsSending(true);
+    setIsSubmitting(true);
     setErrorMessage("");
 
     const parsed = expirySchema.safeParse({
@@ -92,7 +91,7 @@ const ExpiryInputForm = () => {
       const msg =
         parsed.error.issues?.[0]?.message ?? "入力内容を確認してください";
       setErrorMessage(msg);
-      setIsSending(false);
+      setIsSubmitting(false);
       return;
     }
 
@@ -105,7 +104,7 @@ const ExpiryInputForm = () => {
         body: JSON.stringify(parsed.data),
       });
       if (res.ok) {
-        reestForm();
+        resetForm();
       } else {
         setErrorMessage("登録に失敗しました");
       }
@@ -113,7 +112,7 @@ const ExpiryInputForm = () => {
       console.error(e);
       setErrorMessage("サーバーエラーが発生しました");
     } finally {
-      setIsSending(false);
+      setIsSubmitting(false);
     }
   };
   return (
@@ -249,18 +248,12 @@ const ExpiryInputForm = () => {
         <div>
           <div className="flex gap-4 justify-center mt-6">
             <Button
-              type="reset"
+              type="button"
+              disabled={isBusy}
               className="w-[30%]"
               onClick={() => {
-                if (confirm("リセットしますか？")) {
-                  setForm({
-                    gondolaNo: "",
-                    category: "",
-                    productName: "",
-                    expiryDate: "",
-                    quantity: "",
-                    manager: "",
-                  });
+                if (window.confirm("リセットしますか？")) {
+                  resetForm();
                 }
               }}
             >
@@ -269,25 +262,20 @@ const ExpiryInputForm = () => {
             <Button
               type="button"
               className="w-[30%]"
-              disabled={isSending}
+              disabled={isBusy}
               onClick={async () => {
-                try {
-                  setIsSending(true);
-                  await mutate(LIST_KEY);
+                  setIsNavigating(true);
                   router.push("/expiry/productList");
-                } finally {
-                  setIsSending(false);
-                }
               }}
             >
-              {isSending ? (
+              {isNavigating ? (
                 <Loader2 className="animate-spin h-5 w-5" />
               ) : (
                 "一覧に戻る"
               )}
             </Button>
-            <Button type="submit" className="w-[30%]">
-              {isSending ? (
+            <Button type="submit" disabled={isBusy} className="w-[30%]">
+              {isSubmitting ? (
                 <Loader2 className="animate-spin h-5 w-5" />
               ) : (
                 "登録する"
