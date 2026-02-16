@@ -61,7 +61,7 @@ const InputForm = () => {
 
   // リセットボタン押下
   const handleReset = () => {
-    if (confirm("リセットしても良いですか？")) {
+    if (window.confirm("リセットしても良いですか？")) {
       const newValues = values.map((value) => {
         return { name: value.name, yen: null, error: "" };
       });
