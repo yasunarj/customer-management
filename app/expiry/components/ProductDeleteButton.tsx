@@ -14,7 +14,7 @@ const ProductDeleteButton = ({ id }: { id: number }) => {
   const [isDeleting, setIsDeleting] = useState<boolean>(false);
 
   const handleDelete = async () => {
-    if (!confirm("この商品を削除しますがよろしいですか？")) return;
+    if (!window.confirm("この商品を削除しますがよろしいですか？")) return;
     setIsDeleting(true);
 
     const current = cache.get(LIST_KEY)?.data as
