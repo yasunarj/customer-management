@@ -2,13 +2,16 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
+import { useToast } from "@/hooks/use-toast";
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { expirySchema } from "../lib/expirySchema";
+import { ToastAction } from "@radix-ui/react-toast";
 
 const ExpiryInputForm = () => {
   const router = useRouter();
+  const { toast } = useToast();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [isNavigating, setIsNavigating] = useState<boolean>(false);
@@ -29,7 +32,7 @@ const ExpiryInputForm = () => {
 
   const handleKeyDown = (
     e: React.KeyboardEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     if (e.key !== "Enter") return;
 
@@ -50,7 +53,7 @@ const ExpiryInputForm = () => {
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>,
-    key: keyof typeof form
+    key: keyof typeof form,
   ) => {
     if (
       (key === "gondolaNo" || key === "quantity") &&
@@ -105,11 +108,33 @@ const ExpiryInputForm = () => {
       });
       if (res.ok) {
         resetForm();
+
+        toast({
+          title: "登録しました",
+          description: "鮮度商品を登録しました",
+          action: (
+            <ToastAction
+              altText="一覧へ"
+              onClick={() => router.push("/expiry/productList")}
+            >
+              一覧へ
+            </ToastAction>
+          ),
+        });
       } else {
-        setErrorMessage("登録に失敗しました");
+        toast({
+          variant: "destructive",
+          title: "登録失敗",
+          description: "再度お試しください",
+        });
       }
     } catch (e) {
       console.error(e);
+      toast({
+        variant: "destructive",
+        title: "サーバーエラー",
+        description: "時間をおいて再度お試しください",
+      });
       setErrorMessage("サーバーエラーが発生しました");
     } finally {
       setIsSubmitting(false);
@@ -264,8 +289,8 @@ const ExpiryInputForm = () => {
               className="w-[30%]"
               disabled={isBusy}
               onClick={async () => {
-                  setIsNavigating(true);
-                  router.push("/expiry/productList");
+                setIsNavigating(true);
+                router.push("/expiry/productList");
               }}
             >
               {isNavigating ? (

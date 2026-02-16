@@ -17,6 +17,7 @@ import Header from "@/components/header/Header";
 // import Footer from "@/components/footer/Footer";
 import { getPathnameFromHeaders } from "@/lib/headers";
 import ClientPathChecker from "@/components/clientPath/ClientPathChecker";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
   title: "さくら卯の里４丁目店 顧客管理アプリ",
@@ -136,6 +137,7 @@ export default async function RootLayout({
         <ClientPathChecker />
         {!isLP && <Header />}
         <main className="flex-1 flex flex-col min-h-0">{children}</main>
+        <Toaster />
         {/* {!isLP && <Footer />} */}
       </body>
     </html>
