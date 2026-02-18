@@ -1,7 +1,7 @@
-import Link from "next/link";
 import { getSafeCheckHistory } from "../lib/getSafeCheckHistory";
 import { safeMenuList } from "../lib/safeMenuList";
 import SheetMenu from "@/components/sheet/SheetMenu";
+import DetailLoadingButton from "../components/ DetailLoadingButton";
 
 const SafeCheckHistoryPage = async () => {
   const safeCheckAllData = await getSafeCheckHistory();
@@ -48,12 +48,7 @@ const SafeCheckHistoryPage = async () => {
                         {safeData.total}
                       </td>
                       <td className="border border-gray-300 px-4 py-2">
-                        <Link
-                          href={`/safe/history/${safeData.id}/detail`}
-                          className="underline underline-offset-4 hover:text-black"
-                        >
-                          詳細
-                        </Link>
+                        <DetailLoadingButton id={safeData.id} />
                       </td>
                     </tr>
                   );

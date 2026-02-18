@@ -1,9 +1,8 @@
 import SafeCheckDeleteButton from "@/app/safe/components/SafeCheckDeleteButton";
 import { getSafeCheckDetailData } from "@/app/safe/lib/getSafeCheckDetailData";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
 import { safeMenuList } from "@/app/safe/lib/safeMenuList";
 import SheetMenu from "@/components/sheet/SheetMenu";
+import SafeCheckEditButton from "@/app/safe/components/SafeCheckEditButton";
 type SafeCheckDetailPage = {
   params: Promise<{ id: string }>;
 };
@@ -90,12 +89,7 @@ const SafeCheckDetailPage = async (props: SafeCheckDetailPage) => {
                 </p>
               </div>
               <div className="flex justify-center gap-8 my-2 max-w-[400px] mx-auto">
-                <Link
-                  href={`/safe/history/${safeCheckDataId}/edit`}
-                  className="w-[40%]"
-                >
-                  <Button className="text-lg w-[100%]">編集</Button>
-                </Link>
+                <SafeCheckEditButton id={safeCheckDataId} />
                 <SafeCheckDeleteButton id={safeCheckDataId} />
               </div>
             </div>
