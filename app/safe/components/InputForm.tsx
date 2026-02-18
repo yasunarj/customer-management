@@ -6,6 +6,7 @@ import { useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { inputSchema } from "../lib/inputSchema";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/hooks/use-toast";
 
 interface ValueState {
   name: string;
@@ -17,6 +18,7 @@ type ValuesState = ValueState[];
 
 const InputForm = () => {
   const router = useRouter();
+  const { toast } = useToast();
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [total, setTotal] = useState<number | null>(null);
   const [isSending, setIsSending] = useState<boolean>(false);
@@ -39,7 +41,7 @@ const InputForm = () => {
     e: React.ChangeEvent<HTMLInputElement>,
     name: string,
     index: number,
-    error: string
+    error: string,
   ) => {
     if (e.target.value.length > 1 && e.target.value.startsWith("0")) {
       e.target.value = e.target.value.replace(/^0+/, "");
@@ -53,7 +55,7 @@ const InputForm = () => {
     };
     const newTotal = newValues.reduce(
       (sum, value) => sum + (value.yen ?? 0),
-      0
+      0,
     );
     setValues(newValues);
     setTotal(newTotal);
@@ -118,6 +120,10 @@ const InputForm = () => {
         body: JSON.stringify(sendData),
       });
       if (res.ok) {
+        toast({
+          title: "登録しました",
+          description: "金庫内金額を登録しました",
+        });
         router.push("/safe/history");
       } else {
         setErrorMessage("登録できませんでした");
