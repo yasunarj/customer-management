@@ -19,7 +19,7 @@ const SheetMenu = ({ menuList }: SheetMenuProps) => {
       <SheetTrigger>
         <AlignJustify />
       </SheetTrigger>
-      <SheetContent className="w-[40%] lg:w-[30%] bg-blue-200">
+      <SheetContent className="w-[55%] lg:w-[30%] bg-blue-200">
         <SheetHeader>
           <SheetTitle className="text-center text-gray-800 text-2xl mt-2">
             Menu
