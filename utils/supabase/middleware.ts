@@ -1,6 +1,16 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 
+function isPublicPath(pathname: string) {
+  return (
+    pathname.startsWith("/auth/login") ||
+    pathname.startsWith("/_next") ||
+    pathname.startsWith("/favicon") ||
+    pathname.startsWith("/robots.tsx") ||
+    pathname.startsWith("/sitemap")
+  )
+}
+
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -29,13 +39,43 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
+  const host = request.headers.get("host") ?? "";
+  const pathname = request.nextUrl.pathname;
+
+  // 公開パスは常にスルー
+  if (isPublicPath(pathname)) return supabaseResponse;
+
+  // *サブドメイン判定
+  const isOwnerHost = host.startsWith("owner.");
+  // const isReserveHost = host.startsWith("reserve.");
+
+
   const { data: userData } = await supabase.auth.getUser();
   const user = userData?.user ?? null;
 
+  // ─────────────────────────────────────────────
+  // owner.example.com 側のルール
+  // ─────────────────────────────────────────────
+
+  if (isOwnerHost) {
+    const needsAuth = pathname.startsWith("/owner-task");
+
+    if (needsAuth && !user) {
+      return NextResponse.redirect(new URL("/auth/login", request.url));
+    }
+
+    return supabaseResponse;
+  }
+
+  // ─────────────────────────────────────────────
+  // reserve.example.com（または既存ドメイン）側のルール
+  // ─────────────────────────────────────────────
+  // いまの挙動を維持：/user /admin のみガード
+
   if (!user) {
     if (
-      request.nextUrl.pathname.startsWith("/user") ||
-      request.nextUrl.pathname.startsWith("/admin")
+      pathname.startsWith("/user") ||
+      pathname.startsWith("/admin")
     ) {
       return NextResponse.redirect(new URL("/auth/login", request.url));
     }
@@ -44,13 +84,11 @@ export async function updateSession(request: NextRequest) {
 
   const userRole = user.user_metadata?.role || "user";
 
-  if (request.nextUrl.pathname.startsWith("/admin") && userRole !== "admin") {
-    console.log("Unauthorized access to /admin, Redirecting to /user/dashboard");
+  if (pathname.startsWith("/admin") && userRole !== "admin") {
     return NextResponse.redirect(new URL("/user/dashboard", request.url));
   }
 
-  if(request.nextUrl.pathname.startsWith("/user") && userRole !== "user") {
-    console.log("Unauthorized access to /user. Redirecting to /admin/dashboard");
+  if (pathname.startsWith("/user") && userRole !== "user") {
     return NextResponse.redirect(new URL("/admin/dashboard", request.url));
   }
 
