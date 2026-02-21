@@ -3,13 +3,14 @@ import { NextRequest, NextResponse } from "next/server";
 
 function isPublicPath(pathname: string) {
   return (
-    pathname.startsWith("/auth/login") ||
+    pathname.startsWith("/auth") ||
     pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon") ||
-    pathname.startsWith("/robots.tsx") ||
+    pathname === "/favicon.ico" ||
+    pathname === "/robots.txt" ||
     pathname.startsWith("/sitemap")
-  )
+  );
 }
+
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -61,7 +62,10 @@ export async function updateSession(request: NextRequest) {
     const needsAuth = pathname.startsWith("/owner-task");
 
     if (needsAuth && !user) {
-      return NextResponse.redirect(new URL("/auth/login", request.url));
+      const url = new URL("/auth/admin/login", request.url);
+      const nextPath = request.nextUrl.pathname + request.nextUrl.search;
+      url.searchParams.set("next", nextPath);
+      return NextResponse.redirect(url);
     }
 
     return supabaseResponse;

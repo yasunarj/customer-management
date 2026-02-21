@@ -53,7 +53,9 @@ const AdminLoginPage = () => {
         return;
       }
       alert("管理者としてログインしました");
-      router.push("/admin/dashboard");
+      const next = new URLSearchParams(window.location.search).get("next");
+      const safeNext = next && next.startsWith("/") ? next : null;
+      router.push(safeNext ?? "/admin/dashboard");
     } catch (e) {
       console.error("予期せぬエラー", e);
     } finally {

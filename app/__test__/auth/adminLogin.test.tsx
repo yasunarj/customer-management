@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, act } from "@testing-library/react";
-import AdminLoginPage from "@/app/auth/adminLogin/page";
+import AdminLoginPage from "@/app/auth/admin/login/page";
 import { useRouter } from "next/navigation";
 
 jest.mock("next/navigation", () => ({
@@ -33,13 +33,13 @@ describe("管理者用ログインページ", () => {
     expect(screen.getByLabelText("メールアドレス")).toBeInTheDocument();
     expect(screen.getByLabelText("パスワード")).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "ログイン" })
+      screen.getByRole("button", { name: "ログイン" }),
     ).toBeInTheDocument();
   });
 
   it("正しいパスワードを入力すると管理者用のダッシュボードページへ遷移する", async () => {
     mockSignInWithPassword.mockResolvedValue({
-      data: { session: {}},
+      data: { session: {} },
       error: null,
     });
 
@@ -64,8 +64,8 @@ describe("管理者用ログインページ", () => {
   it("間違った情報を入力するとエラーメッセージが表示される", async () => {
     mockSignInWithPassword.mockResolvedValue({
       data: null,
-      error: { message: "ログインに失敗しました"}
-    })
+      error: { message: "ログインに失敗しました" },
+    });
 
     render(<AdminLoginPage />);
 
@@ -75,12 +75,14 @@ describe("管理者用ログインページ", () => {
 
     fireEvent.change(screen.getByLabelText("パスワード"), {
       target: { value: "wrong_password" },
-    })
-
-    await act(async () => {
-      fireEvent.click(screen.getByRole("button", {name: "ログイン"}))
     });
 
-    expect(window.alert).toHaveBeenCalledWith("ログインに失敗しました: ログインに失敗しました");
+    await act(async () => {
+      fireEvent.click(screen.getByRole("button", { name: "ログイン" }));
+    });
+
+    expect(window.alert).toHaveBeenCalledWith(
+      "ログインに失敗しました: ログインに失敗しました",
+    );
   });
 });

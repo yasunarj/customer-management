@@ -41,7 +41,7 @@ const LoginPage = () => {
   const onSubmit = async ({ password }: FormValues) => {
     setIsLoading(true);
     try {
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signInWithPassword({
         email: FIXED_USER_EMAIL,
         password,
       });
@@ -49,7 +49,6 @@ const LoginPage = () => {
         alert("ログインに失敗しました");
         return;
       }
-      if (data.session) await supabase.auth.setSession(data.session);
       alert("ログインしました");
       router.push("/user/dashboard");
     } catch (e) {
