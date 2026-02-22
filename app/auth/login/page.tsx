@@ -115,7 +115,7 @@ const LoginPage = () => {
             </div>
 
             <div className="absolute bottom-4 right-4">
-              <Link href="/auth/adminLogin" className="text-blue-600 underline">
+              <Link href="/auth/admin/login" className="text-blue-600 underline">
                 管理者用
               </Link>
             </div>
