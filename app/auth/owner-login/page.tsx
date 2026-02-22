@@ -35,23 +35,31 @@ const OwnerLoginPage = () => {
 
   return (
     <main className="flex-1 min-h-0 bg-black text-white flex justify-center items-center">
-      <form
-        onSubmit={handleSubmit}
-        className="max-w-2xl w-[80%] h-[40%] sm:h-[20%] px-4 py-6 bg-gray-900"
-      >
-        <h1 className="text-2xl font-bold">オーナータスク</h1>
-        <p>パスワードを入力してください</p>
+      <div className="w-[90%] h-[90%] flex justify-center items-center bg-gray-800">
+        <form
+          onSubmit={handleSubmit}
+          className="max-w-2xl w-[80%] h-[20%] px-4 py-6"
+        >
+          <h1 className="text-2xl font-bold">オーナータスク</h1>
+          <p>パスワードを入力してください</p>
 
-        <div className="flex gap-4 justify-center items-center mt-4">
-          <input
-            type="password"
-            placeholder="password"
-            onChange={(e) => setPassword(String(e.target.value))}
-            className="rounded flex-1 bg-gray-700 px-3 py-2"
-          />
-          <button type="submit" disabled={isLoading} className="rounded bg-blue-700 px-4 py-2 text-white hover:bg-blue-600">入る</button>
-        </div>
-      </form>
+          <div className="flex gap-4 justify-center items-center mt-4">
+            <input
+              type="password"
+              placeholder="password"
+              onChange={(e) => setPassword(String(e.target.value))}
+              className="rounded flex-1 bg-gray-700 px-3 py-2"
+            />
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="rounded bg-blue-700 px-4 py-2 text-white hover:bg-blue-600"
+            >
+              入る
+            </button>
+          </div>
+        </form>
+      </div>
     </main>
   );
 };
