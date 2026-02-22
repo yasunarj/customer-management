@@ -37,7 +37,7 @@ const OwnerLoginPage = () => {
     <main className="flex-1 min-h-0 bg-black text-white flex justify-center items-center">
       <form
         onSubmit={handleSubmit}
-        className="max-w-2xl w-[50%] h-[20%] px-4 py-6 bg-gray-900"
+        className="max-w-2xl w-[80%] h-[40%] sm:h-[20%] px-4 py-6 bg-gray-900"
       >
         <h1 className="text-2xl font-bold">オーナータスク</h1>
         <p>パスワードを入力してください</p>
@@ -46,7 +46,7 @@ const OwnerLoginPage = () => {
           <input
             type="password"
             placeholder="password"
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => setPassword(String(e.target.value))}
             className="rounded flex-1 bg-gray-700 px-3 py-2"
           />
           <button type="submit" disabled={isLoading} className="rounded bg-blue-700 px-4 py-2 text-white hover:bg-blue-600">入る</button>
