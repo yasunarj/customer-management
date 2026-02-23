@@ -1,14 +1,29 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 
 const OwnerLoginPage = () => {
   const router = useRouter();
   const { toast } = useToast();
+  const [locked, setLocked] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const isDisabled = isLoading || locked;
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      const res = await fetch("/api/owner-gate/status");
+      const data = await res.json();
+
+      if (data.locked) {
+        setLocked(true);
+      }
+    };
+    checkStatus();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,8 +45,9 @@ const OwnerLoginPage = () => {
       }
 
       if (res.status === 429) {
+        setLocked(true);
         const min = Math.ceil(data.retry_after_sec / 60);
-        alert(`ロック中です。(あと${min}後に再入力してください)`);
+        alert(`ロック中です。(あと${min}分後に再入力してください)`);
         return;
       }
 
@@ -67,10 +83,10 @@ const OwnerLoginPage = () => {
             />
             <button
               type="submit"
-              disabled={isLoading}
-              className="rounded bg-blue-700 px-4 py-2 text-white hover:bg-blue-600"
+              disabled={isDisabled}
+              className={`rounded px-4 py-2 text-white ${isDisabled ? "bg-gray-500 cursor-not-allowed" : "bg-blue-700 hover:bg-blue-600"}`}
             >
-              入る
+              { locked ? "ロック中" : isLoading ? "確認中" : "ログイン"}
             </button>
           </div>
         </form>
