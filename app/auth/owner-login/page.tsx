@@ -22,10 +22,19 @@ const OwnerLoginPage = () => {
         body: JSON.stringify({ password }),
       });
 
-      if (!res.ok) {
-        alert("パスワードが違います");
+      const data = await res.json();
+
+      if (res.status === 401) {
+        alert(`パスワードが違います。(あと${data.remaining}回)`);
         return;
       }
+
+      if (res.status === 429) {
+        const min = Math.ceil(data.retry_after_sec / 60);
+        alert(`ロック中です。(あと${min}後に再入力してください)`);
+        return;
+      }
+
       toast({
         title: "今日も頑張りましょう",
         description: "パスワードを確認しました",

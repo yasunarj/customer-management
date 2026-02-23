@@ -3,7 +3,7 @@ import prisma from "@/lib/prisma";
 
 export const runtime = "nodejs";
 
-const getClientIp = (req: Request) => {  //この関数がよくわからない
+const getClientIp = (req: Request) => { 
   const xff = req.headers.get("x-forwarded-for");
   if (xff) return xff.split(",")[0].trim();
   return req.headers.get("x-real-ip") ?? "unknown";
@@ -23,7 +23,7 @@ const POST = async (req: Request) => {
       return NextResponse.json({ ok: false, error: "server_not_configured" }, { status: 500 });
     }
 
-    const ip = getClientIp(req); //　この部分がよくわからない
+    const ip = getClientIp(req);
     const key = `owner-gate:${ip}`;
     const now = new Date();
 
@@ -43,7 +43,7 @@ const POST = async (req: Request) => {
         create: { key, failCount: 0, lockedUntil: null },
         update: { failCount: 0, lockedUntil: null },
       })
-      return NextResponse.json({ ok: false }, { status: 401 });
+      return NextResponse.json({ ok: true }, { status: 200 });
     }
 
     // 不正解だった場合
