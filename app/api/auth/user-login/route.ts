@@ -29,9 +29,50 @@ const POST = async (req: Request) => {
     const key = `reservation-user:${email}:${ip}`;
     const now = new Date();
 
-    // ロック確認　
-    
+    // ロック確認
+    const row = await prisma.ownerGateLimit.findUnique({ where: { key } });
+    if (row?.lockedUntil && row.lockedUntil > now) {
+      const remainSec = Math.ceil((row.lockedUntil.getTime() - now.getTime()) / 1000);
+      return NextResponse.json({ ok: false, error: "locked", retry_after_sec: remainSec }, { status: 429 });
+    }
 
+    // 認証(サーバー側)
+    const { data, error } = await supabaseAdmin.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error || !data.session) {
+      // 失敗カウント
+      const nextFail = (row?.failCount ?? 0) + 1;
+
+      if (nextFail >= 3) {
+        const lockedUntil = new Date(now.getTime() + 10 * 60 * 1000);
+        await prisma.ownerGateLimit.upsert({
+          where: { key },
+          create: { key, failCount: 0, lockedUntil },
+          update: { failCount: 0, lockedUntil },
+        })
+        return NextResponse.json({ ok: false, error: "locked", retry_after_sec: 600 }, { status: 429 })
+      }
+
+      await prisma.ownerGateLimit.upsert({
+        where: { key },
+        create: { key, failCount: nextFail, lockedUntil: null },
+        update: { failCount: nextFail, lockedUntil: null },
+      });
+
+      return NextResponse.json({ ok: false, error: "login_failed", remaining: 3 - nextFail }, { status: 401 });
+    }
+
+    // 成功 -> カウントリセット
+    await prisma.ownerGateLimit.upsert({
+      where: { key },
+      create: { key, failCount: 0, lockedUntil: null }
+      update: { failCount: 0, lockedUntil: null },
+    });
+
+    return NextResponse.json({ ok: true, session: data.session }, { status: 200 });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 })
