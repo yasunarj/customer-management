@@ -10,6 +10,7 @@ const OwnerLoginPage = () => {
   const [locked, setLocked] = useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [remainSec, setRemainSec] = useState<number | null>(null);
 
   const isDisabled = isLoading || locked;
 
@@ -20,10 +21,33 @@ const OwnerLoginPage = () => {
 
       if (data.locked) {
         setLocked(true);
+        setRemainSec(data.retry_after_sec);
       }
     };
+
     checkStatus();
   }, []);
+
+  useEffect(() => {
+    if (!locked || remainSec === null) return;
+
+    const timer = setInterval(() => {
+      setRemainSec((prev) => {
+        if (prev === null) return null;
+
+        const next = prev - 60;
+
+        if (prev <= 0) {
+          setLocked(false);
+          return null;
+        }
+
+        return next;
+      });
+    }, 60000);
+
+    return () => clearInterval(timer);
+  }, [locked, remainSec]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -86,7 +110,7 @@ const OwnerLoginPage = () => {
               disabled={isDisabled}
               className={`rounded px-4 py-2 text-white ${isDisabled ? "bg-gray-500 cursor-not-allowed" : "bg-blue-700 hover:bg-blue-600"}`}
             >
-              { locked ? "ロック中" : isLoading ? "確認中" : "ログイン"}
+              {locked ? `ロック中 (${Math.ceil((remainSec ?? 0) / 60)}分)` : isLoading ? "確認中" : "ログイン"}
             </button>
           </div>
         </form>
