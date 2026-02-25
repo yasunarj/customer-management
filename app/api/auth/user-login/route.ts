@@ -68,7 +68,7 @@ const POST = async (req: Request) => {
     // 成功 -> カウントリセット
     await prisma.ownerGateLimit.upsert({
       where: { key },
-      create: { key, failCount: 0, lockedUntil: null }
+      create: { key, failCount: 0, lockedUntil: null },
       update: { failCount: 0, lockedUntil: null },
     });
 
