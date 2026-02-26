@@ -20,9 +20,13 @@ const POST = async (req: Request) => {
     const emailRaw = body?.email;
     const password = body?.password;
 
+    if (typeof emailRaw !== "string" || typeof password !== "string") {
+      return NextResponse.json({ ok: false, error: "Invalid body" }, { status: 400 });
+    }
+
     const email = normalizeEmail(emailRaw);
     const ip = getClientIp(req);
-    const key = `reservation-admin:${email}:${ip}`;
+    const key = `reserve-admin:${email}:${ip}`;
     const now = new Date();
 
     const row = await prisma.ownerGateLimit.findUnique({ where: { key } });
@@ -39,7 +43,7 @@ const POST = async (req: Request) => {
     if (error || !data.session) {
       const nextFailed = (row?.failCount ?? 0) + 1
       if (nextFailed >= 3) {
-        const lockedUntil = new Date(now.getTime() * 10 * 60 * 1000);
+        const lockedUntil = new Date(now.getTime() + 10 * 60 * 1000);
         await prisma.ownerGateLimit.upsert({
           where: { key },
           create: { key, failCount: 0, lockedUntil },

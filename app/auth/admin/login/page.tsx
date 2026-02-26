@@ -38,26 +38,37 @@ const AdminLoginPage = () => {
   const onSubmit = async (values: z.infer<typeof adminLoginSchema>) => {
     try {
       setIsLoading(true);
-      const { data: loginData, error: loginError } =
-        await supabase.auth.signInWithPassword({
-          email: values.email,
-          password: values.password,
-        });
 
-      if (process.env.NODE_ENV === "development") {
-        console.log("/auth/adminLogin/page.tsx", loginData); //デバック用
-      }
-      if (loginError) {
-        console.error("ログインエラー", loginError.message);
-        alert(`ログインに失敗しました: ${loginError.message}`);
+      const res = await fetch("/api/auth/admin-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: values.email, password: values.password }),
+      });
+
+      const data = await res.json().catch(() => null);
+
+      if (res.status === 401) {
+        alert(`ログインに失敗しました (あと${data?.remaining}回)`);
         return;
       }
+
+      if (res.status === 429) {
+        const min = Math.ceil((data.retry_after_sec ?? 600) / 60);
+        alert(`ロック中です(${min}分) `);
+        return;
+      }
+
+      if (!res.ok || !data.session) {
+        alert("ログインに失敗しました");
+        return;
+      }
+
+      await supabase.auth.setSession(data.session);
+
       alert("管理者としてログインしました");
       const next = new URLSearchParams(window.location.search).get("next");
       const safeNext = next && next.startsWith("/") ? next : null;
       router.push(safeNext ?? "/admin/dashboard");
-    } catch (e) {
-      console.error("予期せぬエラー", e);
     } finally {
       setIsLoading(false);
     }
