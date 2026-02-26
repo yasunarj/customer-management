@@ -92,6 +92,7 @@ const AdminLoginPage = () => {
                         className="p-2 text-lg"
                         type="email"
                         placeholder="メールアドレスを入力"
+                        autoComplete="current-email"
                         {...field}
                       />
                     </FormControl>
@@ -112,6 +113,7 @@ const AdminLoginPage = () => {
                         className="p-2 text-lg"
                         type="password"
                         placeholder="パスワードを入力してください"
+                        autoComplete="current-password"
                         {...field}
                       />
                     </FormControl>

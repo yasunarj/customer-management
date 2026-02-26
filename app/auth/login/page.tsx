@@ -116,7 +116,7 @@ const LoginPage = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-xl font-semibold">
-                    ログインパスワード
+                    パスワード
                   </FormLabel>
                   <FormControl>
                     <Input
