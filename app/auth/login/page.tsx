@@ -19,12 +19,11 @@ import { useState } from "react";
 import Link from "next/link";
 
 const schema = z.object({
+  email: z.string().email("有効なメールアドレスを入力してください"),
   password: z.string().min(10, "パスワードは10文字以上で入力してください"),
 });
 
 type FormValues = z.infer<typeof schema>;
-
-const FIXED_USER_EMAIL = "yasunarj+user@gmail.com";
 
 const LoginPage = () => {
   const supabase = createClient();
@@ -34,26 +33,41 @@ const LoginPage = () => {
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: {
+      email: "",
       password: "",
     },
   });
 
-  const onSubmit = async ({ password }: FormValues) => {
+  const onSubmit = async ({ email, password }: FormValues) => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: FIXED_USER_EMAIL,
-        password,
+      const res = await fetch("/api/auth/user-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
       });
-      if (error) {
+
+      const data = await res.json().catch(() => null);
+
+      if (res.status === 401) {
+        alert(`ログインに失敗しました (あと${data?.remaining}回)`);
+        return;
+      }
+
+      if (res.status === 429) {
+        const min = Math.ceil((data?.retry_after_sec ?? 600) / 60);
+        alert(`ロック中です(${min}分) `);
+        return;
+      }
+
+      if (!res.ok || !data.session) {
         alert("ログインに失敗しました");
         return;
       }
-      alert("ログインしました");
+
+      await supabase.auth.setSession(data.session);
+
       router.push("/user/dashboard");
-    } catch (e) {
-      console.error("ログイン処理エラー", e);
-      alert("予期せぬエラーが発生しました");
     } finally {
       setIsLoading(false);
     }
@@ -73,6 +87,28 @@ const LoginPage = () => {
             onSubmit={form.handleSubmit(onSubmit)}
             className="relative flex flex-col justify-center items-center bg-white px-6 py-16 w-full max-w-md h-auto gap-8 rounded-md shadow-2xl"
           >
+            {/* email フィールド */}
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-xl font-semibold">
+                    メールアドレス
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      className="p-2 text-lg"
+                      type="email"
+                      placeholder="メールアドレスを入力"
+                      autoComplete="current-email"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage className="text-red-500 text-sm" />
+                </FormItem>
+              )}
+            />
             {/* password フィールド */}
             <FormField
               control={form.control}
@@ -115,7 +151,10 @@ const LoginPage = () => {
             </div>
 
             <div className="absolute bottom-4 right-4">
-              <Link href="/auth/admin/login" className="text-blue-600 underline">
+              <Link
+                href="/auth/admin/login"
+                className="text-blue-600 underline"
+              >
                 管理者用
               </Link>
             </div>
