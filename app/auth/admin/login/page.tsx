@@ -25,6 +25,7 @@ const adminLoginSchema = z.object({
 
 const AdminLoginPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
   const supabase = createClient();
   const router = useRouter();
   const form = useForm({
@@ -42,7 +43,10 @@ const AdminLoginPage = () => {
       const res = await fetch("/api/auth/admin-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: values.email, password: values.password }),
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+        }),
       });
 
       const data = await res.json().catch(() => null);
@@ -116,13 +120,18 @@ const AdminLoginPage = () => {
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-lg font-semibold">
-                      パスワード
-                    </FormLabel>
+                    <div className="flex justify-between">
+                      <FormLabel className="text-lg font-semibold">
+                        パスワード
+                      </FormLabel>
+                      <button type="button" onClick={() => setShowPassword((prev) => !prev)} className="text-sm px-4 border rounded">
+                        {showPassword ? "非表示" : "表示　"}
+                      </button>
+                    </div>
                     <FormControl>
                       <Input
                         className="p-2 text-lg"
-                        type="password"
+                        type={ showPassword ? "text" : "password" }
                         placeholder="パスワードを入力してください"
                         autoComplete="current-password"
                         {...field}

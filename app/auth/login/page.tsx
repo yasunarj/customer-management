@@ -29,6 +29,7 @@ const LoginPage = () => {
   const supabase = createClient();
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const form = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -115,13 +116,22 @@ const LoginPage = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="text-xl font-semibold">
-                    パスワード
-                  </FormLabel>
+                  <div className="flex justify-between">
+                    <FormLabel className="text-xl font-semibold">
+                      パスワード
+                    </FormLabel>
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((prev) => !prev)}
+                      className="border px-2 text-sm rounded"
+                    >
+                      {showPassword ? "非表示" : "表示　"}
+                    </button>
+                  </div>
                   <FormControl>
                     <Input
                       className="p-2 text-lg"
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       placeholder="パスワードを入力"
                       autoComplete="current-password"
                       {...field}

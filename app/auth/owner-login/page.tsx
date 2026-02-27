@@ -11,6 +11,7 @@ const OwnerLoginPage = () => {
   const [password, setPassword] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [remainSec, setRemainSec] = useState<number | null>(null);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
 
   const isDisabled = isLoading || locked;
 
@@ -100,15 +101,24 @@ const OwnerLoginPage = () => {
 
           <div className="flex gap-4 justify-center items-center mt-4">
             <input
-              type="password"
+              type={ showPassword ? "text" : "password" }
               placeholder="password"
               onChange={(e) => setPassword(String(e.target.value))}
               className="rounded flex-1 bg-gray-700 px-3 py-2"
             />
+
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="px-3 py-2 bg-gray-600 rounded text-sm"
+            >
+              { showPassword ? "非表示" : "表示　" }
+            </button>
+            
             <button
               type="submit"
               disabled={isDisabled}
-              className={`rounded px-4 py-2 text-white ${isDisabled ? "bg-gray-500 cursor-not-allowed" : "bg-blue-700 hover:bg-blue-600"}`}
+              className={`rounded px-4 py-2 text-sm text-white ${isDisabled ? "bg-gray-500 cursor-not-allowed" : "bg-blue-700 hover:bg-blue-600"}`}
             >
               {locked ? `ロック中 (${Math.ceil((remainSec ?? 0) / 60)}分)` : isLoading ? "確認中" : "ログイン"}
             </button>
