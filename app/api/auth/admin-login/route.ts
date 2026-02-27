@@ -1,77 +1,19 @@
 import { NextResponse } from "next/server";
-import supabaseAdmin from "@/lib/supabaseAdmin";
-import prisma from "@/lib/prisma";
-
-export const runtime = "nodejs";
-
-const getClientIp = (req: Request) => {
-  const xff = req.headers.get("x-forwarded-for");
-  if (xff) return xff.split(",")[0].trim();
-  return req.headers.get("x-real-ip") ?? "unknown";
-}
-
-const normalizeEmail = (email: string) => {
-  return email.trim().toLowerCase();
-};
+import { rateLimitLogin } from "@/lib/rateLimitLogin";
+import { getClientIp } from "@/lib/getClientIp";
 
 const POST = async (req: Request) => {
-  try {
-    const body = await req.json().catch(() => null);
-    const emailRaw = body?.email;
-    const password = body?.password;
+  const body = await req.json();
+  const ip = getClientIp(req);
 
-    if (typeof emailRaw !== "string" || typeof password !== "string") {
-      return NextResponse.json({ ok: false, error: "Invalid body" }, { status: 400 });
-    }
+  const result = await rateLimitLogin({
+    email: body.email,
+    password: body.password,
+    ip,
+    prefix: "reserve-admin",
+  });
 
-    const email = normalizeEmail(emailRaw);
-    const ip = getClientIp(req);
-    const key = `reserve-admin:${email}:${ip}`;
-    const now = new Date();
+  return NextResponse.json(result, { status: result.status });
 
-    const row = await prisma.ownerGateLimit.findUnique({ where: { key } });
-    if (row?.lockedUntil && row.lockedUntil > now) {
-      const remainSec = Math.ceil((row.lockedUntil.getTime() - now.getTime()) / 1000);
-      return NextResponse.json({ ok: false, error: "locked", retry_after_sec: remainSec }, { status: 429 });
-    }
-
-    const { data, error } = await supabaseAdmin.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (error || !data.session) {
-      const nextFailed = (row?.failCount ?? 0) + 1
-      if (nextFailed >= 3) {
-        const lockedUntil = new Date(now.getTime() + 10 * 60 * 1000);
-        await prisma.ownerGateLimit.upsert({
-          where: { key },
-          create: { key, failCount: 0, lockedUntil },
-          update: { failCount: 0, lockedUntil },
-        })
-        return NextResponse.json({ ok: false, error: "locked", retry_after_sec: 600 }, { status: 429 })
-      }
-
-      await prisma.ownerGateLimit.upsert({
-        where: { key },
-        create: { key, failCount: nextFailed, lockedUntil: null },
-        update: { failCount: nextFailed, lockedUntil: null },
-      });
-
-      return NextResponse.json({ ok: false, error: "login_failed", remaining: 3 - nextFailed }, { status: 401 });
-    }
-
-    await prisma.ownerGateLimit.upsert({
-      where: { key },
-      create: { key, failCount: 0, lockedUntil: null },
-      update: { failCount: 0, lockedUntil: null }
-    });
-
-    return NextResponse.json({ ok: true, session: data.session }, { status: 200 })
-  } catch (e) {
-    console.error(e);
-    return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 })
-  }
 }
-
 export { POST };
