@@ -12,7 +12,7 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/:path*"], // 認証が必要なルートを指定
+  matcher: ["/user/:path*", "/admin/:path*"], // 認証が必要なルートを指定
 };
 // "/lp:path*" lpサイトはログイン不要のため、matcherから除外
 
