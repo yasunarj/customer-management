@@ -99,29 +99,35 @@ const OwnerLoginPage = () => {
           <h1 className="text-2xl font-bold">オーナータスク</h1>
           <p>パスワードを入力してください</p>
 
-          <div className="flex gap-4 justify-center items-center mt-4">
-            <input
-              type={ showPassword ? "text" : "password" }
-              placeholder="password"
-              onChange={(e) => setPassword(String(e.target.value))}
-              className="rounded flex-1 bg-gray-700 px-3 py-2"
-            />
-
-            <button
-              type="button"
-              onClick={() => setShowPassword((prev) => !prev)}
-              className="px-3 py-2 bg-gray-600 rounded text-sm"
-            >
-              { showPassword ? "非表示" : "表示　" }
-            </button>
-            
-            <button
-              type="submit"
-              disabled={isDisabled}
-              className={`rounded px-4 py-2 text-sm text-white ${isDisabled ? "bg-gray-500 cursor-not-allowed" : "bg-blue-700 hover:bg-blue-600"}`}
-            >
-              {locked ? `ロック中 (${Math.ceil((remainSec ?? 0) / 60)}分)` : isLoading ? "確認中" : "ログイン"}
-            </button>
+          <div className="flex flex-col sm:flex-raw gap-4 justify-center items-center mt-4">
+            <div className="flex gap-2 w-full">
+              <input
+                type={showPassword ? "text" : "password"}
+                placeholder="password"
+                onChange={(e) => setPassword(String(e.target.value))}
+                className="rounded flex-1 bg-gray-700 px-3 py-2"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="px-3 py-2 bg-gray-600 rounded text-sm"
+              >
+                {showPassword ? "非表示" : "表示　"}
+              </button>
+            </div>
+            <div className="w-full">
+              <button
+                type="submit"
+                disabled={isDisabled}
+                className={`w-full rounded px-4 py-2 text-sm text-white ${isDisabled ? "bg-gray-500 cursor-not-allowed" : "bg-blue-700 hover:bg-blue-600"}`}
+              >
+                {locked
+                  ? `ロック中 (${Math.ceil((remainSec ?? 0) / 60)}分)`
+                  : isLoading
+                    ? "確認中"
+                    : "ログイン"}
+              </button>
+            </div>
           </div>
         </form>
       </div>
