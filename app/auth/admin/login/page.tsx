@@ -69,6 +69,8 @@ const AdminLoginPage = () => {
 
       await supabase.auth.setSession(data.session);
 
+      await new Promise((r) => setTimeout(r, 50));
+
       alert("管理者としてログインしました");
       const next = new URLSearchParams(window.location.search).get("next");
       const safeNext = next && next.startsWith("/") ? next : null;

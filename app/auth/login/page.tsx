@@ -68,6 +68,8 @@ const LoginPage = () => {
 
       await supabase.auth.setSession(data.session);
 
+      await new Promise((r) => setTimeout(r, 50));
+
       router.push("/user/dashboard");
     } finally {
       setIsLoading(false);
