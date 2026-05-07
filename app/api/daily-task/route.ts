@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
 import { Prisma } from "@prisma/client";
+import { createClient } from "@/utils/supabase/server";
 
 const createDailyTaskSchema = z.object({
   title: z.string().trim().min(1, "title is required").max(200, "title can be up to 200 characters"),
@@ -16,28 +17,47 @@ const createDailyTaskSchema = z.object({
 })
 
 const GET = async () => {
-  const tasks = await prisma.dailyTask.findMany({
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-    select: {
-      id: true,
-      title: true,
-      sortOrder: true,
-      isActive: true,
-      onMon: true,
-      onTue: true,
-      onWed: true,
-      onThu: true,
-      onFri: true,
-      onSat: true,
-      onSun: true,
-    }
-  });
+  try {
+    const supabase = await createClient();
+    const { data: { user }, error } = await supabase.auth.getUser();
 
-  return NextResponse.json({ ok: true, tasks });
+    if (error || !user) {
+      return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    }
+
+    const tasks = await prisma.dailyTask.findMany({
+      where: { ownerId: user.id },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+      select: {
+        id: true,
+        title: true,
+        sortOrder: true,
+        isActive: true,
+        onMon: true,
+        onTue: true,
+        onWed: true,
+        onThu: true,
+        onFri: true,
+        onSat: true,
+        onSun: true,
+      }
+    });
+    return NextResponse.json({ ok: true, tasks });
+  } catch (e: unknown) {
+    console.error("daily-task GET error", e);
+    return NextResponse.json({
+      ok: false, error: "internal error"
+    }, { status: 500 });
+  }
 };
 
 const POST = async (req: Request) => {
   try {
+    const supabase = await createClient();
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error || !user) {
+      return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    }
 
     const body = await req.json().catch(() => null);
     const parsed = createDailyTaskSchema.safeParse(body);
@@ -50,6 +70,7 @@ const POST = async (req: Request) => {
 
     const task = await prisma.dailyTask.create({
       data: {
+        ownerId: user.id,
         title: data.title,
         sortOrder: data.sortOrder,
         isActive: true,
