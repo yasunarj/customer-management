@@ -1,31 +1,43 @@
 import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import { jstDateKey, jstWeekdayKey } from "@/app/daily-check/lib/dateKey";
+import { createClient } from "@/utils/supabase/server";
 
 
 const GET = async () => {
-  const date = jstDateKey();
-  const wk = jstWeekdayKey();
+  try {
+    const supabase = await createClient();
+    const { data: { user }, error } = await supabase.auth.getUser();
+    if (error || !user) {
+      return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    }
 
-  const tasks = await prisma.dailyTask.findMany({
-    where: { isActive: true, [wk]: true },
-    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
-    select: { id: true, title: true },
-  })
+    const date = jstDateKey();
+    const wk = jstWeekdayKey();
 
-  const checks = await prisma.dailyTaskCheck.findMany({
-    where: { date },
-    select: { taskId: true },
-  });
+    const tasks = await prisma.dailyTask.findMany({
+      where: { isActive: true, [wk]: true, ownerId: user.id },
+      orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+      select: { id: true, title: true },
+    })
 
-  const checkedSet = new Set(checks.map((c) => c.taskId));
+    const checks = await prisma.dailyTaskCheck.findMany({
+      where: { date, ownerId: user.id },
+      select: { taskId: true },
+    });
 
-  return NextResponse.json({
-    ok: true,
-    date,
-    weekday: wk,
-    tasks: tasks.map((t) => ({ ...t, checked: checkedSet.has(t.id) }))
-  })
+    const checkedSet = new Set(checks.map((c) => c.taskId));
+
+    return NextResponse.json({
+      ok: true,
+      date,
+      weekday: wk,
+      tasks: tasks.map((t) => ({ ...t, checked: checkedSet.has(t.id) }))
+    })
+  } catch (e: unknown) {
+    console.error("daily-check today GET error", e);
+    return NextResponse.json({ ok: false, error: "internal error" }, { status: 500 });
+  }
 }
 
 export { GET }; 
