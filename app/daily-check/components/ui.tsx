@@ -27,7 +27,12 @@ const DailyCheckClient = () => {
     load();
   }, []);
 
-  const toggle = async (taskId: string, next: boolean) => {
+  const toggle = async (taskId: string) => {
+    const current = tasks.find((t) => t.id === taskId);
+    if (!current) return;
+
+    const next = !current.checked;
+
     setSavingId(taskId);
 
     setTasks((prev) =>
@@ -39,19 +44,27 @@ const DailyCheckClient = () => {
       headers: {
         "content-type": "application/json",
       },
-      body: JSON.stringify({ taskId, checked: next }),
+      body: JSON.stringify({ taskId }),
     });
 
     if (!res.ok) {
       await load();
       alert("保存に失敗しました。再読み込みしました。");
+      setSavingId(null);
+      return;
     }
+
+    const data = await res.json();
+
+    setTasks((prev) =>
+      prev.map((t) => (t.id === taskId ? { ...t, checked: data.checked } : t))
+    );
 
     setSavingId(null);
   };
 
   if (loading) {
-    return <div className="test-sm text-gray-500">読み込み中,,,</div>;
+    return <div className="text-sm text-gray-500">読み込み中...</div>;
   }
 
   return (
@@ -73,7 +86,7 @@ const DailyCheckClient = () => {
               type="checkbox"
               checked={t.checked}
               disabled={savingId === t.id}
-              onChange={(e) => toggle(t.id, e.target.checked)}
+              onChange={() => toggle(t.id)}
               className="h-5 w-5 accent-blue-600"
             />
 
