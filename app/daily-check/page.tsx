@@ -1,8 +1,40 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import DailyCheckClient from "./components/ui";
-export const dynamic = "force-dynamic";
 
 const DailyCheckPage = () => {
+  const router = useRouter();
+  const supabase = createClient();
+  const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
+
+  useEffect(() => {
+    const checkAuth = async () => {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      if (!session) {
+        router.replace("/auth/daily-check/login");
+        return;
+      }
+
+      setIsCheckingAuth(false);
+    };
+    checkAuth();
+  }, [router, supabase]);
+
+  if (isCheckingAuth) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-black text-white">
+        <div className="text-sm text-gray-400">認証を確認しています...</div>
+      </main>
+    );
+  }
+
   return (
     <main className="flex-1 min-h-0 bg-black text-white flex justify-center items-center">
       <div className="max-w-2xl w-[95%] h-[95%] px-4 py-6 bg-gray-900 overflow-y-scroll">

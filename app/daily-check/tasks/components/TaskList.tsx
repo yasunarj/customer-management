@@ -16,13 +16,23 @@ export type Task = {
   onSun: boolean;
 };
 
-const fetcher = (url: string) => fetch(url).then((r) => r.json());
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+
+  if(!res.ok) {
+    throw new Error("failed to fetch");
+  }
+
+  return res.json();
+}
+
+
 const TaskList = () => {
   const { data, error } = useSWR("/api/daily-task", fetcher);
   if (error) return <div className="text-red-500">読み込みに失敗しました</div>;
   if (!data) return <div className="text-gray-500">読み込み中,,,</div>;
 
-  const tasks = data.tasks as Task[];
+  const tasks = (data.tasks ?? []) as Task[];
   
   if (data.tasks.length === 0) return <div className="text-gray-400">タスクがありません</div>
 
