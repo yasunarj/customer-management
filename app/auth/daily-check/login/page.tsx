@@ -73,7 +73,7 @@ const OwnerLoginPage = () => {
           onSubmit={handleSubmit}
           className="max-w-2xl w-[80%] h-[20%] px-4 py-6 mt-[30%]"
         >
-          <h1 className="text-2xl font-bold">オーナータスク</h1>
+          <h1 className="text-2xl font-bold">デイリータスク</h1>
           <p className="mt-1 text-sm text-gray-300">
             メールアドレスとパスワードを入力してください
           </p>

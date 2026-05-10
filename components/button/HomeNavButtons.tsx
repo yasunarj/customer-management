@@ -11,7 +11,7 @@ const items = [
   { href: "/auth/login", label: "予約商材一覧" },
   { href: "/safe", label: "金庫管理ページ" },
   { href: "/expiry", label: "鮮度管理ページ" },
-  { href: "/auth/daily-check/login", label: "オーナータスク" },
+  { href: "/auth/daily-check/login", label: "デイリータスク" },
 ];
 
 const HomeNavButtons = () => {
