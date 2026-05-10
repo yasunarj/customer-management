@@ -1,8 +1,8 @@
 import prisma from "@/lib/prisma";
 import Link from "next/link";
 import { jstDateKey } from "../lib/dateKey";
-
-export const dynamic = "force-dynamic";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
 const WEEK_KEYS = [
   "onSun",
@@ -28,15 +28,33 @@ const weekdayKeyFromYmd = (ymd: string): WeekKey => {
   const m = M;
   const d = D;
   if (m < 3) y -= 1;
-  const w = (y + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400) + t[m - 1] + d) % 7;
+  const w =
+    (y +
+      Math.floor(y / 4) -
+      Math.floor(y / 100) +
+      Math.floor(y / 400) +
+      t[m - 1] +
+      d) %
+    7;
   return WEEK_KEYS[w];
 };
 
 const DailyCheckHistoryPage = async () => {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+    error,
+  } = await supabase.auth.getUser();
+
+  if (!user || error) {
+    redirect("/auth/daily-check/login");
+  }
+
   const dates = Array.from({ length: 30 }, (_, i) => jstDateKey(i));
 
   const checks = await prisma.dailyTaskCheck.findMany({
-    where: { date: { in: dates } },
+    where: { date: { in: dates }, ownerId: user.id },
     select: { date: true },
   });
 
@@ -46,7 +64,7 @@ const DailyCheckHistoryPage = async () => {
   }
 
   const tasks = await prisma.dailyTask.findMany({
-    where: { isActive: true },
+    where: { isActive: true, ownerId: user.id },
     select: {
       onMon: true,
       onTue: true,
