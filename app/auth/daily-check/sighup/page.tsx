@@ -37,14 +37,14 @@ const DailyCheckSignupPage = () => {
         title: "登録が完了しました",
         description: data.session
           ? "そのままログイン状態になりました"
-          : "確認メールを送信しました。メールを確認してください",
+          : "確認メールを送信しました。メールをご確認ください",
       });
 
       if (data.session) {
-        router.push("/daily-check");
+        router.replace("/daily-check");
         return;
       }
-      router.push("/auth/daily-check/login");
+      router.replace("/auth/daily-check/login");
     } catch (e: unknown) {
       console.error(e);
       alert("通信エラーが発生しました。時間をおいてもう一度お試しください");
