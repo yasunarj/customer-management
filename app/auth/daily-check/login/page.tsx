@@ -115,7 +115,7 @@ const OwnerLoginPage = () => {
                   onClick={() => setShowPassword((prev) => !prev)}
                   className="rounded bg-gray-600 px-3 py-2 text-sm"
                 >
-                  {showPassword ? "非表示" : "表示"}
+                  {showPassword ? "非表示" : "表示　"}
                 </button>
               </div>
             </div>
