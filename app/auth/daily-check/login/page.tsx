@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/hooks/use-toast";
 import { createClient } from "@/utils/supabase/client";
+import Link from "next/link";
 
 const OwnerLoginPage = () => {
   const router = useRouter();
@@ -67,7 +68,7 @@ const OwnerLoginPage = () => {
   };
 
   return (
-    <main className="flex-1 min-h-screen bg-black text-white flex justify-center items-center">
+    <main className="flex-1 h-screen-vh bg-black text-white flex justify-center items-center">
       <div className="w-[90%] h-[90%] flex justify-center bg-gray-800">
         <form
           onSubmit={handleSubmit}
@@ -128,6 +129,15 @@ const OwnerLoginPage = () => {
                 {isLoading ? "ログイン中" : "ログイン"}
               </button>
             </div>
+          </div>
+          <div className="mt-8 text-sm text-gray-300">
+            初めて利用する方は{" "}
+            <Link
+              href="/auth/daily-check/sighup"
+              className="text-blue-400 underline hover:text-blue-300"
+            >
+              新規登録
+            </Link>
           </div>
         </form>
       </div>

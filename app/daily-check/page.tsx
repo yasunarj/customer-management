@@ -29,7 +29,7 @@ const DailyCheckPage = () => {
 
   if (isCheckingAuth) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-black text-white">
+      <main className="flex h-screen-vh items-center justify-center bg-black text-white">
         <div className="text-sm text-gray-400">認証を確認しています...</div>
       </main>
     );
