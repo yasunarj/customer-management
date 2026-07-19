@@ -59,6 +59,7 @@ const TaskEditor = ({ task, onDone }: { task: Task; onDone: () => void }) => {
 
     if (!anySelected) {
       setErr("曜日を１つ以上入力してください");
+      return;
     }
 
     setSubmitting(true);
@@ -187,7 +188,6 @@ const TaskEditor = ({ task, onDone }: { task: Task; onDone: () => void }) => {
       <div className="mt-2 flex justify-end gap-2">
         <button
           type="submit"
-          onClick={handleSubmit}
           className="rounded bg-blue-600 px-4 py-2 text-sm font-bold disabled:opacity-50"
         >
           {submitting ? "保存中..." : "保存"}
