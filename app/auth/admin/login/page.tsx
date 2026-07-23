@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -35,6 +35,13 @@ const AdminLoginPage = () => {
       password: "",
     },
   });
+
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next");
+
+  const userLoginHref = next
+    ? `/auth/login?next=${encodeURIComponent(next)}`
+    : `/auth/login`;
 
   const onSubmit = async (values: z.infer<typeof adminLoginSchema>) => {
     try {
@@ -73,7 +80,8 @@ const AdminLoginPage = () => {
 
       alert("管理者としてログインしました");
       const next = new URLSearchParams(window.location.search).get("next");
-      const safeNext = next && next.startsWith("/") ? next : null;
+      const safeNext =
+        next && next.startsWith("/") && !next.startsWith("//") ? next : null;
       router.push(safeNext ?? "/admin/dashboard");
     } finally {
       setIsLoading(false);
@@ -126,14 +134,18 @@ const AdminLoginPage = () => {
                       <FormLabel className="text-lg font-semibold">
                         パスワード
                       </FormLabel>
-                      <button type="button" onClick={() => setShowPassword((prev) => !prev)} className="text-sm px-4 border rounded">
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword((prev) => !prev)}
+                        className="text-sm px-4 border rounded"
+                      >
                         {showPassword ? "非表示" : "表示　"}
                       </button>
                     </div>
                     <FormControl>
                       <Input
                         className="p-2 text-lg"
-                        type={ showPassword ? "text" : "password" }
+                        type={showPassword ? "text" : "password"}
                         placeholder="パスワードを入力してください"
                         autoComplete="current-password"
                         {...field}
@@ -156,7 +168,7 @@ const AdminLoginPage = () => {
               </Link>
             </div>
             <div className="absolute bottom-4 right-4">
-              <Link href="/auth/login" className="text-blue-600 underline">
+              <Link href={userLoginHref} className="text-blue-600 underline">
                 ユーザー用
               </Link>
             </div>

@@ -26,33 +26,34 @@ model Reservation {
 }
 
 model SafeCheck {
-  id        Int      @id @default(autoincrement())
-  date      DateTime @unique
-  bara      Int
-  yen10000  Int
-  yen5000   Int
-  yen1000   Int
-  yen500    Int
-  yen100    Int
-  yen50     Int
-  yen10     Int
-  yen5      Int
-  yen1      Int
-  total     Int
-  createAt  DateTime @default(now())
-  updateAt  DateTime @updatedAt
+  id       Int      @id @default(autoincrement())
+  date     DateTime @unique
+  bara     Int
+  yen10000 Int
+  yen5000  Int
+  yen1000  Int
+  yen500   Int
+  yen100   Int
+  yen50    Int
+  yen10    Int
+  yen5     Int
+  yen1     Int
+  total    Int
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
 }
 
 model ProductExpiry {
-  id          Int       @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   gondolaNo   Int
   category    String
   productName String
-  expiryDate  DateTime  @db.Date
-  quantity    Int       @default(1)
-  manager     String    
-  createdAt   DateTime  @default(now())
-  updateAt    DateTime  @updatedAt
+  expiryDate  DateTime @db.Date
+  quantity    Int      @default(1)
+  manager     String
+  createdAt   DateTime @default(now())
+  updateAt    DateTime @updatedAt
+
   @@index([expiryDate])
   @@map("product_expiry")
 }
@@ -60,7 +61,7 @@ model ProductExpiry {
 model DailyTask {
   id        String   @id @default(cuid())
   ownerId   String
-  title     String   
+  title     String
   sortOrder Int      @default(0)
   isActive  Boolean  @default(true)
   onMon     Boolean  @default(true)
@@ -75,19 +76,19 @@ model DailyTask {
 
   checks DailyTaskCheck[]
 
+  @@unique([ownerId, title])
   @@index([ownerId])
   @@index([ownerId, isActive])
-  @@unique([ownerId, title])
 }
 
 model DailyTaskCheck {
-  id        String   @id @default(cuid())
+  id        String    @id @default(cuid())
   ownerId   String
-  date      String   // "YYYY-MM-DD"（JST）
+  date      String // "YYYY-MM-DD"（JST）
   taskId    String
   task      DailyTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
   checkedBy String?
-  checkedAt DateTime @default(now())
+  checkedAt DateTime  @default(now())
 
   @@unique([ownerId, date, taskId])
   @@index([ownerId, date])
@@ -101,6 +102,96 @@ model OwnerGateLimit {
   updatedAt   DateTime  @updatedAt
   createdAt   DateTime  @default(now())
 
-  @@map("owner_gate_limits")
   @@index([lockedUntil])
+  @@map("owner_gate_limits")
+}
+
+enum TrainingCategory {
+  REGISTER
+  CLEANING
+  PRODUCT_MANAGEMENT
+  OTHER
+}
+
+model Store {
+  id        String   @id @default(cuid())
+  name      String
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  employees TrainingEmployee[]
+  workItems TrainingWorkItem[]
+}
+
+model TrainingEmployee {
+  id        String    @id @default(cuid())
+  storeId   String
+  name      String
+  joinedAt  DateTime?
+  isActive  Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  store       Store                @relation(fields: [storeId], references: [id])
+  assignments TrainingAssignment[]
+
+  @@index([storeId])
+  @@index([storeId, isActive])
+}
+
+model TrainingWorkItem {
+  id          String           @id @default(cuid())
+  storeId     String
+  title       String
+  category    TrainingCategory
+  description String?
+  sortOrder   Int              @default(0)
+  isActive    Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  store       Store                @relation(fields: [storeId], references: [id])
+  assignments TrainingAssignment[]
+
+  @@unique([storeId, title])
+  @@index([storeId])
+  @@index([storeId, category])
+  @@index([storeId, isActive])
+}
+
+model TrainingAssignment {
+  id          String    @id @default(cuid())
+  employeeId  String
+  workItemId  String
+  assignedAt  DateTime  @default(now())
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  employee TrainingEmployee @relation(fields: [employeeId], references: [id], onDelete: Cascade)
+  workItem TrainingWorkItem @relation(fields: [workItemId], references: [id])
+
+  checks TrainingCheck[]
+
+  @@unique([employeeId, workItemId])
+  @@index([employeeId])
+  @@index([workItemId])
+}
+
+model TrainingCheck {
+  id           String   @id @default(cuid())
+  assignmentId String
+  checkNumber  Int
+  trainerId    String
+  trainerName  String?
+  comment      String?
+  checkedAt    DateTime @default(now())
+  createdAt    DateTime @default(now())
+
+  assignment TrainingAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+
+  @@unique([assignmentId, checkNumber])
+  @@index([assignmentId])
+  @@index([trainerId])
 }

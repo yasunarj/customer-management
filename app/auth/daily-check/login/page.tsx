@@ -68,22 +68,24 @@ const OwnerLoginPage = () => {
   };
 
   return (
-    <main className="flex-1 h-screen-vh bg-black text-white flex justify-center items-center">
-      <div className="w-[90%] h-[90%] flex justify-center bg-gray-800">
+    <main className="flex min-h-screen flex-1 items-center justify-center bg-black text-white">
+      <div className="flex min-h-[90vh] w-[90%] items-center justify-center bg-gray-800">
         <form
           onSubmit={handleSubmit}
-          className="max-w-2xl w-[80%] h-[20%] px-4 py-6 mt-[30%]"
+          className="w-[90%] max-w-2xl px-4 py-6 sm:w-[80%]"
         >
           <h1 className="text-2xl font-bold">デイリータスク</h1>
+  
           <p className="mt-1 text-sm text-gray-300">
             メールアドレスとパスワードを入力してください
           </p>
-
+  
           <div className="mt-6 flex flex-col gap-4">
             <div className="flex flex-col gap-2">
               <label htmlFor="email" className="text-sm font-medium">
                 メールアドレス
               </label>
+  
               <input
                 type="email"
                 id="email"
@@ -94,13 +96,13 @@ const OwnerLoginPage = () => {
                 className="rounded bg-gray-700 px-3 py-2 text-white"
               />
             </div>
-
+  
             <div className="flex flex-col gap-2">
               <label htmlFor="password" className="text-sm font-medium">
                 パスワード
               </label>
-
-              <div className="flex gap-2 w-full">
+  
+              <div className="flex w-full gap-2">
                 <input
                   type={showPassword ? "text" : "password"}
                   id="password"
@@ -108,28 +110,32 @@ const OwnerLoginPage = () => {
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="password"
                   autoComplete="current-password"
-                  className="flex-1 rounded bg-gray-700 px-3 py-2 text-white"
+                  className="min-w-0 flex-1 rounded bg-gray-700 px-3 py-2 text-white"
                 />
+  
                 <button
                   type="button"
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="rounded bg-gray-600 px-3 py-2 text-sm"
+                  className="shrink-0 rounded bg-gray-600 px-3 py-2 text-sm"
                 >
-                  {showPassword ? "非表示" : "表示　"}
+                  {showPassword ? "非表示" : "表示"}
                 </button>
               </div>
             </div>
-
-            <div className="w-full">
-              <button
-                type="submit"
-                disabled={isDisabled}
-                className={`w-full rounded px-4 py-2 text-sm text-white ${isDisabled ? "cursor-not-allowed bg-gray-500" : "bg-blue-700 hover:bg-blue-600"}`}
-              >
-                {isLoading ? "ログイン中" : "ログイン"}
-              </button>
-            </div>
+  
+            <button
+              type="submit"
+              disabled={isDisabled}
+              className={`w-full rounded px-4 py-2 text-sm text-white ${
+                isDisabled
+                  ? "cursor-not-allowed bg-gray-500"
+                  : "bg-blue-700 hover:bg-blue-600"
+              }`}
+            >
+              {isLoading ? "ログイン中" : "ログイン"}
+            </button>
           </div>
+  
           <div className="mt-4 text-sm text-gray-300">
             初めて利用する方は{" "}
             <Link

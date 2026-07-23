@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -39,6 +39,14 @@ const LoginPage = () => {
     },
   });
 
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next");
+
+  const adminLoginHref = next
+    ? `/auth/admin/login?next=${encodeURIComponent(next)}`
+    : `/auth/admin/login`;
+
+
   const onSubmit = async ({ email, password }: FormValues) => {
     setIsLoading(true);
     try {
@@ -70,7 +78,13 @@ const LoginPage = () => {
 
       await new Promise((r) => setTimeout(r, 50));
 
-      router.push("/user/dashboard");
+      const next = new URLSearchParams(window.location.search).get("next");
+
+      const safeNext =
+        next && next.startsWith("/") && !next.startsWith("//") ? next : null;
+
+      router.push(safeNext ?? "/user/dashboard");
+      router.refresh();
     } finally {
       setIsLoading(false);
     }
@@ -164,7 +178,7 @@ const LoginPage = () => {
 
             <div className="absolute bottom-4 right-4">
               <Link
-                href="/auth/admin/login"
+                href={adminLoginHref}
                 className="text-blue-600 underline"
               >
                 管理者用

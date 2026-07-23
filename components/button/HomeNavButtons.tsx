@@ -12,6 +12,7 @@ const items = [
   { href: "/safe", label: "金庫管理ページ" },
   { href: "/expiry", label: "鮮度管理ページ" },
   { href: "/auth/daily-check/login", label: "デイリータスク" },
+  { href: "/training", label: "教育管理"},
 ];
 
 const HomeNavButtons = () => {

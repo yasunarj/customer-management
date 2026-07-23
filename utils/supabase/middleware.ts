@@ -79,14 +79,23 @@ export async function updateSession(request: NextRequest) {
   if (!user) {
     if (
       pathname.startsWith("/user") ||
-      pathname.startsWith("/admin")
+      pathname.startsWith("/admin") ||
+      pathname.startsWith("/training")
     ) {
-      return NextResponse.redirect(new URL("/auth/login", request.url));
+      const loginUrl = new URL("/auth/login", request.url);
+
+      const nextPath =
+        request.nextUrl.pathname + request.nextUrl.search;
+
+      loginUrl.searchParams.set("next", nextPath);
+
+      return NextResponse.redirect(loginUrl);
     }
+
     return supabaseResponse;
   }
 
-  const userRole = user.user_metadata?.role || "user";
+  const userRole = user.app_metadata?.role ?? user.user_metadata?.role ?? "user";
 
   if (pathname.startsWith("/admin") && userRole !== "admin") {
     return NextResponse.redirect(new URL("/user/dashboard", request.url));

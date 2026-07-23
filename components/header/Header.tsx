@@ -1,23 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { Dialog, DialogContent, DialogTitle, DialogHeader } from "../ui/dialog";
 import { Loader2 } from "lucide-react";
-import { useLogoutOnClose } from "@/hooks/useLogoutOnClose";
 
 const Header = () => {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const router = useRouter();
   const pathname = usePathname();
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [userRole, setUserRole] = useState<string | null>(null);
-
-  const disableAutoLogout = pathname.startsWith("/daily-check");
-  useLogoutOnClose({ enabled: !disableAutoLogout });
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -40,7 +36,8 @@ const Header = () => {
         return;
       }
 
-      const role = user?.user_metadata?.role || "user";
+      const role =
+        user.app_metadata?.role ?? user.user_metadata?.role ?? "user";
       setUserRole(role);
       setIsAuthenticated(true);
 
@@ -72,7 +69,10 @@ const Header = () => {
             router.push("/auth/login");
           }
         } else {
-          const role = session.user?.user_metadata?.role || "user";
+          const role =
+            session.user.app_metadata?.role ??
+            session.user.user_metadata?.role ??
+            "user";
           setUserRole(role);
           setIsAuthenticated(true);
 
@@ -117,7 +117,7 @@ const Header = () => {
           <h2 className="text-sm sm:text-lg font-semibold">
             <Link href="/">セブンイレブンさくら卯の里４丁目店</Link>
           </h2>
-          
+
           <div className="flex items-center space-x-8 font-semibold">
             {isAuthenticated ? (
               isLoading ? (
