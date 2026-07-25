@@ -11,6 +11,7 @@ const POST = async (req: Request) => {
     password: body.password,
     ip,
     prefix: "reserve-admin",
+    expectedRole: "admin"
   });
 
   return NextResponse.json(result, { status: result.status });

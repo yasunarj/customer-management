@@ -4,11 +4,14 @@ import type { Session } from "@supabase/supabase-js";
 
 type LoginResult =
   | { ok: true; status: 200; session: Session }
-  | { ok: false; status: 401; remaining: number }
+  | { ok: false; status: 401; reason: "invalid_credentials"; remaining: number }
+  | { ok: false; status: 403; reason: "role_mismatch" }
   | { ok: false; status: 429; retry_after_sec: number };
 
-export const rateLimitLogin = async (params: { email: string, password: string, ip: string; prefix: string; }): Promise<LoginResult> => {
-  const { email, password, ip, prefix } = params;
+type AppRole = "admin" | "user";
+
+export const rateLimitLogin = async (params: { email: string, password: string, ip: string; prefix: string; expectedRole: AppRole }): Promise<LoginResult> => {
+  const { email, password, ip, prefix, expectedRole } = params;
 
   const key = `${prefix}:${email}:${ip}`;
   const now = new Date();
@@ -26,7 +29,7 @@ export const rateLimitLogin = async (params: { email: string, password: string, 
     password,
   });
 
-  if (error || !data.session) {
+  if (error || !data.session || !data.user) {
     const nextFailed = (row?.failCount ?? 0) + 1;
 
     if (nextFailed >= 3) {
@@ -47,7 +50,18 @@ export const rateLimitLogin = async (params: { email: string, password: string, 
       update: { failCount: nextFailed, lockedUntil: null },
     });
 
-    return { ok: false, status: 401, remaining: 3 - nextFailed }
+    return { ok: false, status: 401, reason: "invalid_credentials", remaining: 3 - nextFailed }
+  }
+
+
+  const role = data.user.app_metadata?.role ?? data.user.user_metadata ?? "user"
+
+  if (role !== expectedRole) {
+    return {
+      ok: false,
+      status: 403,
+      reason: "role_mismatch"
+    }
   }
 
   await prisma.ownerGateLimit.upsert({

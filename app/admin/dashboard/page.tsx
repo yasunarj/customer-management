@@ -4,6 +4,7 @@ import { adminItems } from "@/lib/adminItems";
 import { useState } from "react";
 import LoadingDialog from "@/components/dialog/LoadingDialog";
 import CarouselDashboard from "@/components/carousel/CarouselDashboard";
+import Link from "next/link";
 
 const AdminDashboardPage = () => {
   const router = useRouter();
@@ -29,6 +30,14 @@ const AdminDashboardPage = () => {
             <h2 className="text-xl sm:text-3xl text-gray-800 font-semibold">
               (管理者用)
             </h2>
+            <div>
+              <Link
+                href="/admin/invite-user"
+                className="text-blue-600 px-4 py-2 hover:text-blue-500"
+              >
+                ユーザーを招待
+              </Link>
+            </div>
           </div>
           <CarouselDashboard
             items={adminItems}

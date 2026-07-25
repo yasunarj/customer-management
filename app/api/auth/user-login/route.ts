@@ -10,7 +10,8 @@ const POST = async (req: Request) => {
     email: body.email,
     password: body.password,
     ip,
-    prefix: "reserve-user"
+    prefix: "reserve-user",
+    expectedRole: "user"
   });
 
   return NextResponse.json(result, { status: result.status });

@@ -63,6 +63,11 @@ const AdminLoginPage = () => {
         return;
       }
 
+      if (res.status === 403 && data?.reason === "role_mismatch") {
+        alert("このアカウントは管理者用ではありません。ユーザー用ログインをご利用ください");
+        return;
+      }
+
       if (res.status === 429) {
         const min = Math.ceil((data.retry_after_sec ?? 600) / 60);
         alert(`ロック中です(${min}分) `);
