@@ -110,10 +110,160 @@ const NewTrainingWorkItemPage = () => {
     <main className="min-h-screen bg-black px-4 py-8 text-white">
       <div className="mx-auto w-full max-w-2xl">
         <div className="flex items-start justify-between gap-4">
-          <div> <h1 className="text-2xl font-bold">仕事項目の新規登録</h1>
-          <p className="mt-2 text-sm text-gray-400">教育に使用する仕事項目を登録します。</p>
+          <div>
+            <h1 className="text-2xl font-bold">
+              仕事項目の新規登録
+            </h1>
+
+            <p className="mt-2 text-sm text-gray-400">
+              教育に使用する仕事項目を登録します。
+            </p>
           </div>
+
+          <Link
+            href="/training/work-items"
+            className="text-sm text-blue-400 hover:underline"
+          >
+            戻る
+          </Link>
         </div>
+
+        <form
+          onSubmit={handleSubmit}
+          className="mt-8 space-y-6 rounded-xl border border-gray-700 bg-gray-900 p-6"
+        >
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="title"
+              className="text-sm font-medium"
+            >
+              仕事項目名
+            </label>
+
+            <input
+              id="title"
+              type="text"
+              value={title}
+              onChange={(event) =>
+                setTitle(event.target.value)
+              }
+              maxLength={100}
+              placeholder="例：宅急便"
+              className="rounded bg-gray-800 px-3 py-2"
+            />
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="category"
+              className="text-sm font-medium"
+            >
+              カテゴリー
+            </label>
+
+            <select
+              id="category"
+              value={category}
+              onChange={(event) =>
+                setCategory(
+                  event.target.value as TrainingCategory,
+                )
+              }
+              className="rounded bg-gray-800 px-3 py-2"
+            >
+              {categoryOptions.map((option) => (
+                <option
+                  key={option.value}
+                  value={option.value}
+                >
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="description"
+              className="text-sm font-medium"
+            >
+              説明
+            </label>
+
+            <textarea
+              id="description"
+              value={description}
+              onChange={(event) =>
+                setDescription(event.target.value)
+              }
+              maxLength={2000}
+              rows={6}
+              placeholder="仕事の概要や注意点を入力してください"
+              className="resize-y rounded bg-gray-800 px-3 py-2"
+            />
+
+            <p className="text-right text-xs text-gray-500">
+              {description.length} / 2000
+            </p>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <label
+              htmlFor="sortOrder"
+              className="text-sm font-medium"
+            >
+              並び順
+            </label>
+
+            <input
+              id="sortOrder"
+              type="number"
+              min={0}
+              step={1}
+              value={sortOrder}
+              onFocus={(event) =>
+                event.currentTarget.select()
+              }
+              onChange={(event) =>
+                setSortOrder(
+                  Number(event.target.value),
+                )
+              }
+              className="rounded bg-gray-800 px-3 py-2"
+            />
+
+            <p className="text-xs text-gray-500">
+              数字が小さい項目ほど先に表示します。
+            </p>
+          </div>
+
+          {errorMessage && (
+            <p className="rounded bg-red-950 px-3 py-2 text-sm text-red-200">
+              {errorMessage}
+            </p>
+          )}
+
+          <div className="flex justify-end gap-3">
+            <Link
+              href="/training/work-items"
+              className="rounded bg-gray-700 px-4 py-2 text-sm hover:bg-gray-600"
+            >
+              キャンセル
+            </Link>
+
+            <button
+              type="submit"
+              disabled={isDisabled}
+              className={`rounded px-4 py-2 text-sm font-medium ${
+                isDisabled
+                  ? "cursor-not-allowed bg-gray-600 text-gray-400"
+                  : "bg-blue-700 hover:bg-blue-600"
+              }`}
+            >
+              {isLoading ? "登録中..." : "登録する"}
+            </button>
+          </div>
+        </form>
       </div>
     </main>
   );
@@ -121,7 +271,4 @@ const NewTrainingWorkItemPage = () => {
 
 export default NewTrainingWorkItemPage;
 
-// isDisabledのところで!title.trim()とする必要はありますか？
-// 空白が空いていても文字があればtitleはtrueになるのではないでしょうか？
 
-// Number.isInteger()の意味を教えてください。

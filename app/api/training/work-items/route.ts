@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
+import { TrainingCategory } from "@prisma/client";
 import prisma from "@/lib/prisma";
 import { z } from "zod";
 
@@ -30,7 +31,22 @@ const createWorkItemSchema = z.object({
     .default(0),
 });
 
-const GET = async () => {
+const trainingCategories = Object.values(TrainingCategory);
+// Object.valuesはオブジェクトの値だけを配列として取り出すメソッド
+// [
+//   "REGISTER",
+//   "CLEANING",
+//   "PRODUCT_MANAGEMENT",
+//   "OTHER"
+// ]
+// となる
+const isTrainingCategory = (value: string): value is TrainingCategory => {
+  return trainingCategories.includes(value as TrainingCategory)
+}
+// value is TrainingCategory はこの関数がtrueを返した場合に、valueはTrainingCategoryとして扱って良いということになる
+
+
+const GET = async (request: Request) => {
   try {
     // 1. ログイン状態を確認
     const supabase = await createClient();
@@ -59,27 +75,48 @@ const GET = async () => {
       );
     }
 
+    const url = new URL(request.url);
+    const categoryParam = url.searchParams.get("category");
+
+    let category: TrainingCategory | undefined;
+
+    if (categoryParam) {
+      if (!isTrainingCategory(categoryParam)) {
+        return NextResponse.json(
+          {error: "カテゴリーが正しくありません"},
+          {status: 400}
+        )
+      }
+
+      category = categoryParam;
+    }
+// 
     // 3. 店舗に紐づく仕事項目を取得
     const workItems = await prisma.trainingWorkItem.findMany({
       where: {
         storeId,
+        ...(category ? { category } : {}),
       },
       orderBy: [
-        {
-          category: "asc",
-        },
-        {
-          sortOrder: "asc",
-        },
-        {
-          createdAt: "asc",
-        },
+        { category: "asc" }, { sortOrder: "asc" }, { createdAt: "asc" },
       ],
     });
+
+    const categoryCounts = {
+      REGISTER: 0,
+      CLEANING: 0,
+      PRODUCT_MANAGEMENT: 0,
+      OTHER: 0,
+    };
+
+    for (const workItem of workItems) {
+      categoryCounts[workItem.category] += 1
+    }
 
     return NextResponse.json({
       ok: true,
       workItems,
+      categoryCounts,
     });
   } catch (error) {
     console.error("仕事項目一覧の取得エラー:", error);
