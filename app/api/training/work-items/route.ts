@@ -97,6 +97,13 @@ const GET = async (request: Request) => {
         storeId,
         ...(category ? { category } : {}),
       },
+      select: {
+        id: true,
+        title: true,
+        category: true,
+        sortOrder: true,
+        isActive: true,
+      },
       orderBy: [
         { category: "asc" }, { sortOrder: "asc" }, { createdAt: "asc" },
       ],
