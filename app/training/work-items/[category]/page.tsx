@@ -1,191 +1,123 @@
-"use client";
+import { NextResponse } from "next/server";
+import { createClient } from "@/utils/supabase/server";
+import prisma from "@/lib/prisma";
 
-import Link from "next/link";
-import { useParams } from "next/navigation";
-import useSWR from "swr";
-
-type TrainingCategory =
-  | "REGISTER"
-  | "CLEANING"
-  | "PRODUCT_MANAGEMENT"
-  | "OTHER";
-
-type CategorySlug = "register" | "cleaning" | "product-management" | "other";
-
-type TrainingWorkItem = {
-  id: string;
-  storeId: string;
-  title: string;
-  category: TrainingCategory;
-  description: string;
-  sortOrder: number;
-  isActive: boolean;
-  createAt: string;
-  updatedAt: string;
+type RouteContext = {
+  params: Promise<{
+    employeeId: string;
+  }>;
 };
 
-type WorkItemsResponse = {
-  ok: boolean;
-  workItems: TrainingWorkItem[];
-  error?: string;
-};
+export const GET = async (
+  _request: Request,
+  context: RouteContext,
+) => {
+  try {
+    // 1. ログイン状態を確認
+    const supabase = await createClient();
 
-const categoryMap: Record<CategorySlug, TrainingCategory> = {
-  register: "REGISTER",
-  cleaning: "CLEANING",
-  "product-management": "PRODUCT_MANAGEMENT", // ダブルクォーとは - を引き算にしないため
-  other: "OTHER",
-};
+    const {
+      data: { user },
+      error: userError,
+    } = await supabase.auth.getUser();
 
-const categoryLabels: Record<TrainingCategory, string> = {
-  REGISTER: "レジ",
-  CLEANING: "清掃",
-  PRODUCT_MANAGEMENT: "商品管理",
-  OTHER: "その他",
-};
+    if (userError || !user) {
+      return NextResponse.json(
+        { error: "ログインが必要です" },
+        { status: 401 },
+      );
+    }
 
-const isCategorySlug = (value: string): value is CategorySlug => {
-  return value in categoryMap;
-};
+    // 2. 店舗IDを取得
+    const storeId = process.env.TRAINING_STORE_ID;
 
-const fetcher = async (url: string): Promise<WorkItemsResponse> => {
-  const response = await fetch(url, { cache: "no-store" });
+    if (!storeId) {
+      console.error(
+        "TRAINING_STORE_IDが設定されていません",
+      );
 
-  const data: unknown = await response.json().catch(() => null);
+      return NextResponse.json(
+        { error: "店舗情報が設定されていません" },
+        { status: 500 },
+      );
+    }
 
-  if (!response.ok) {
-    const errorData =
-      data &&
-      typeof data === "object" &&
-      "error" in data &&
-      typeof data.error === "string"
-        ? data.error
-        : "仕事項目の取得に失敗しました";
+    // 3. employeeIdを取得
+    const { employeeId } = await context.params;
 
-    throw new Error(errorData);
-  }
+    // 4. 従業員が現在の店舗に存在するか確認
+    const employee =
+      await prisma.trainingEmployee.findFirst({
+        where: {
+          id: employeeId,
+          storeId,
+        },
+        select: {
+          id: true,
+        },
+      });
 
-  return data as WorkItemsResponse;
-};
+    if (!employee) {
+      return NextResponse.json(
+        { error: "従業員が見つかりません" },
+        { status: 404 },
+      );
+    }
 
-const TrainingCategoryPage = () => {
-  const params = useParams<{ category: string }>();
-  const categorySlug = params.category;
+    // 5. 割り当て済みの仕事を取得
+    const assignments =
+      await prisma.trainingAssignment.findMany({
+        where: {
+          employeeId,
+          workItem: {
+            storeId,
+          },
+        },
+        select: {
+          id: true,
+          employeeId: true,
+          workItemId: true,
+          workItem: {
+            select: {
+              id: true,
+              title: true,
+              category: true,
+              description: true,
+              sortOrder: true,
+              isActive: true,
+            },
+          },
+        },
+        orderBy: [
+          {
+            workItem: {
+              category: "asc",
+            },
+          },
+          {
+            workItem: {
+              sortOrder: "asc",
+            },
+          },
+        ],
+      });
 
-  const isValidCategory = isCategorySlug(categorySlug);
+    return NextResponse.json({
+      ok: true,
+      assignments,
+    });
+  } catch (error) {
+    console.error(
+      "教育項目一覧の取得エラー:",
+      error,
+    );
 
-  const category = isValidCategory ? categoryMap[categorySlug] : null;
-
-  const apiUrl = category
-    ? `/api/training/work-items?category=${encodeURIComponent(category)}`
-    : null;
-
-  const { data, error, isLoading } = useSWR<WorkItemsResponse>(apiUrl, fetcher);
-
-  if (!isValidCategory || !category) {
-    return (
-      <main className="min-h-screen bg-black px-4 py-8 text-white">
-        <div className="mx-auto max-w-4xl">
-          <h1 className="text-2xl font-bold">カテゴリーが見つかりません</h1>
-
-          <p className="mt-2 text-sm text-gray-400">
-            指定されたカテゴリーは存在しません。
-          </p>
-
-          <Link
-            href="/training/work-items"
-            className="mt-6 inline-block text-blue-400 hover:underline"
-          >
-            仕事項目の管理へ戻る
-          </Link>
-        </div>
-      </main>
+    return NextResponse.json(
+      {
+        error:
+          "教育項目一覧の取得に失敗しました",
+      },
+      { status: 500 },
     );
   }
-
-  return (
-    <main className="min-h-screen bg-black px-4 py-8 text-white">
-      <div className="mx-auto w-full max-w-4xl">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold">
-              {categoryLabels[category]}の仕事項目
-            </h1>
-
-            <p className="mt-2 text-sm text-gray-400">
-              {categoryLabels[category]}カテゴリーに登録されている
-              仕事項目を確認します。
-            </p>
-          </div>
-
-          <Link
-            href="/training/work-items"
-            className="text-sm text-blue-400 hover:underline"
-          >
-            カテゴリー一覧へ戻る
-          </Link>
-        </div>
-
-        {isLoading && (
-          <p className="mt-8 text-sm text-gray-400">読み込み中...</p>
-        )}
-
-        {error && (
-          <p className="mt-8 rounded bg-red-950 px-4 py-3 text-sm text-red-200">
-            {error.message}
-          </p>
-        )}
-
-        {!isLoading && !error && (data?.workItems.length ?? 0) === 0 && (
-          <div className="mt-8 rounded-xl border border-gray-700 bg-gray-900 p-6">
-            <p className="text-gray-300">
-              このカテゴリーには仕事項目が登録されていません。
-            </p>
-          </div>
-        )}
-
-        {!isLoading && !error && (data?.workItems.length ?? 0) > 0 && (
-          <div className="mt-8 space-y-3">
-            {data?.workItems.map((workItem) => (
-              <Link
-                key={workItem.id}
-                href={`/training/work-items/${categorySlug}/${workItem.id}`}
-                className={`block rounded-xl border p-4 transition ${
-                  workItem.isActive
-                    ? "border-gray-700 bg-gray-900 hover:border-gray-500 hover:bg-gray-800"
-                    : "border-gray-800 bg-gray-950 opacity-60 hover:opacity-80"
-                }`}
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <h2
-                    className={`font-semibold ${
-                      workItem.isActive ? "" : "text-gray-500 line-through"
-                    }`}
-                  >
-                    {workItem.title}
-                  </h2>
-
-                  <div className="flex shrink-0 items-center gap-3">
-                    <span
-                      className={`rounded px-2 py-0.5 text-xs ${
-                        workItem.isActive
-                          ? "bg-green-950 text-green-300"
-                          : "bg-gray-800 text-gray-400"
-                      }`}
-                    >
-                      {workItem.isActive ? "有効" : "無効"}
-                    </span>
-
-                    <span className="text-sm text-gray-400">詳細を見る →</span>
-                  </div>
-                </div>
-              </Link>
-            ))}
-          </div>
-        )}
-      </div>
-    </main>
-  );
 };
-
-export default TrainingCategoryPage;
