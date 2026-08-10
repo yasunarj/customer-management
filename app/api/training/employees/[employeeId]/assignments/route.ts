@@ -4,7 +4,7 @@ import prisma from "@/lib/prisma";
 import { z } from "zod";
 
 const createAssignmentSchema = z.object({
-  workItemId: z.string().min(1, "仕事項目を選択してください")
+  workItemIds: z.array(z.string().min(1, "仕事項目IDが正しくありません")).min(1, "仕事項目を１つ以上選択してください")
 });
 
 type RouteContext = {
@@ -206,7 +206,11 @@ export const POST = async (
       );
     }
 
-    const { workItemId } = result.data;
+    const { workItemIds } = result.data;
+    const uniqueWorkItemIds = [
+      ...new Set(workItemIds),
+    ];
+
 
     // 7. 従業員を確認
     const employee =
@@ -232,80 +236,90 @@ export const POST = async (
     }
 
     // 8. 仕事項目を確認
-    const workItem =
-      await prisma.trainingWorkItem.findFirst({
-        where: {
-          id: workItemId,
-          storeId,
-          isActive: true,
-        },
-        select: {
-          id: true,
-        },
-      });
-
-    if (!workItem) {
-      return NextResponse.json(
-        {
-          error:
-            "有効な仕事項目が見つかりません",
-        },
-        { status: 404 },
-      );
-    }
-
-    // 9. すでに割り当て済みか確認
-    const existingAssignment =
-      await prisma.trainingAssignment.findFirst({
-        where: {
-          employeeId,
-          workItemId,
-        },
-        select: {
-          id: true,
-        },
-      });
-
-    if (existingAssignment) {
-      return NextResponse.json(
-        {
-          error:
-            "この仕事項目はすでに割り当てられています",
-        },
-        { status: 409 },
-      );
-    }
-
-    // 10. Assignmentを作成
-    const assignment =
-      await prisma.trainingAssignment.create({
-        data: {
-          employeeId,
-          workItemId,
-        },
-        select: {
-          id: true,
-          employeeId: true,
-          workItemId: true,
-          workItem: {
-            select: {
-              id: true,
-              title: true,
-              category: true,
-              sortOrder: true,
-              isActive: true,
-            },
-          },
-        },
-      });
-
-    return NextResponse.json(
-      {
-        ok: true,
-        assignment,
+    const workItems =
+  await prisma.trainingWorkItem.findMany({
+    where: {
+      id: {
+        in: uniqueWorkItemIds,
       },
-      { status: 201 },
-    );
+      storeId,
+      isActive: true,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+if (
+  workItems.length !== uniqueWorkItemIds.length
+) {
+  return NextResponse.json(
+    {
+      error:
+        "存在しない、または無効な仕事項目が含まれています",
+    },
+    { status: 400 },
+  );
+}
+
+// すでに割り当て済みの仕事を取得
+const existingAssignments =
+  await prisma.trainingAssignment.findMany({
+    where: {
+      employeeId,
+      workItemId: {
+        in: uniqueWorkItemIds,
+      },
+    },
+    select: {
+      workItemId: true,
+    },
+  });
+
+const existingWorkItemIds = new Set(
+  existingAssignments.map(
+    (assignment) => assignment.workItemId,
+  ),
+);
+
+// 未割り当てのものだけ残す
+const newWorkItemIds =
+  uniqueWorkItemIds.filter(
+    (workItemId) =>
+      !existingWorkItemIds.has(workItemId),
+  );
+
+if (newWorkItemIds.length === 0) {
+  return NextResponse.json(
+    {
+      error:
+        "選択した仕事項目はすべて割り当て済みです",
+    },
+    { status: 409 },
+  );
+}
+
+// 一括登録
+const createResult =
+  await prisma.trainingAssignment.createMany({
+    data: newWorkItemIds.map(
+      (workItemId) => ({
+        employeeId,
+        workItemId,
+      }),
+    ),
+  });
+
+return NextResponse.json(
+  {
+    ok: true,
+    createdCount: createResult.count,
+    skippedCount:
+      uniqueWorkItemIds.length -
+      newWorkItemIds.length,
+  },
+  { status: 201 },
+);
   } catch (error) {
     console.error(
       "教育項目の割り当てエラー:",
