@@ -45,15 +45,38 @@ type AssignmentResponse = {
   }>;
 };
 
-const categoryLabels: Record<
-  TrainingCategory,
-  string
-> = {
+type Assignment = {
+  id: string;
+  employeeId: string;
+  workItemId: string;
+  workItem: {
+    id: string;
+    title: string;
+    category: TrainingCategory;
+    sortOrder: number;
+    isActive: boolean;
+  };
+};
+
+type AssignmentsResponse = {
+  ok: boolean;
+  assignments: Assignment[];
+  error?: string;
+};
+
+const categoryLabels: Record<TrainingCategory, string> = {
   REGISTER: "レジ",
   CLEANING: "清掃",
   PRODUCT_MANAGEMENT: "商品管理",
   OTHER: "その他",
 };
+
+const categoryOrder: TrainingCategory[] = [
+  "REGISTER",
+  "CLEANING",
+  "PRODUCT_MANAGEMENT",
+  "OTHER",
+];
 
 const fetcher = async (url: string) => {
   const response = await fetch(url, {
@@ -63,9 +86,7 @@ const fetcher = async (url: string) => {
   const data = await response.json().catch(() => null);
 
   if (!response.ok) {
-    throw new Error(
-      data?.error ?? "データの取得に失敗しました",
-    );
+    throw new Error(data?.error ?? "データの取得に失敗しました");
   }
 
   return data;
@@ -80,26 +101,17 @@ const TrainingEmployeeAssignPage = () => {
 
   const employeeId = params.employeeId;
 
-  const supabase = useMemo(
-    () => createClient(),
-    [],
-  );
+  const supabase = useMemo(() => createClient(), []);
 
-  const [userRole, setUserRole] = useState<
-    "admin" | "user" | null
-  >(null);
+  const [userRole, setUserRole] = useState<"admin" | "user" | null>(null);
 
-  const [isCheckingRole, setIsCheckingRole] =
-    useState(true);
+  const [isCheckingRole, setIsCheckingRole] = useState(true);
 
-  const [selectedWorkItemId, setSelectedWorkItemId] =
-    useState("");
+  const [selectedWorkItemIds, setSelectedWorkItemIds] = useState<string[]>([]);
 
-  const [isSubmitting, setIsSubmitting] =
-    useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [errorMessage, setErrorMessage] =
-    useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const {
     data: employeeData,
@@ -107,9 +119,7 @@ const TrainingEmployeeAssignPage = () => {
     isLoading: isEmployeeLoading,
   } = useSWR<EmployeeResponse>(
     employeeId
-      ? `/api/training/employees/${encodeURIComponent(
-          employeeId,
-        )}`
+      ? `/api/training/employees/${encodeURIComponent(employeeId)}`
       : null,
     fetcher,
   );
@@ -118,8 +128,16 @@ const TrainingEmployeeAssignPage = () => {
     data: workItemsData,
     error: workItemsError,
     isLoading: isWorkItemsLoading,
-  } = useSWR<WorkItemsResponse>(
-    "/api/training/work-items",
+  } = useSWR<WorkItemsResponse>("/api/training/work-items", fetcher);
+
+  const {
+    data: assignmentsData,
+    error: assignmentsError,
+    isLoading: isAssignmentsLoading,
+  } = useSWR<AssignmentsResponse>(
+    employeeId
+      ? `/api/training/employees/${encodeURIComponent(employeeId)}/assignments`
+      : null,
     fetcher,
   );
 
@@ -136,13 +154,9 @@ const TrainingEmployeeAssignPage = () => {
       }
 
       const role =
-        user.app_metadata?.role ??
-        user.user_metadata?.role ??
-        "user";
+        user.app_metadata?.role ?? user.user_metadata?.role ?? "user";
 
-      setUserRole(
-        role === "admin" ? "admin" : "user",
-      );
+      setUserRole(role === "admin" ? "admin" : "user");
 
       setIsCheckingRole(false);
     };
@@ -150,11 +164,24 @@ const TrainingEmployeeAssignPage = () => {
     checkRole();
   }, [supabase]);
 
+  const assignedWorkItemIds = new Set(
+    assignmentsData?.assignments.map((assignment) => assignment.workItemId) ??
+      [],
+  );
+
+  const handleToggleWorkItem = (workItemId: string) => {
+    setSelectedWorkItemIds((currentIds) => {
+      if (currentIds.includes(workItemId)) {
+        return currentIds.filter((id) => id !== workItemId);
+      }
+
+      return [...currentIds, workItemId];
+    });
+  };
+
   const handleSubmit = async () => {
-    if (!selectedWorkItemId) {
-      setErrorMessage(
-        "仕事項目を選択してください",
-      );
+    if (selectedWorkItemIds.length === 0) {
+      setErrorMessage("仕事項目を選択してください");
       return;
     }
 
@@ -163,48 +190,39 @@ const TrainingEmployeeAssignPage = () => {
 
     try {
       const response = await fetch(
-        `/api/training/employees/${encodeURIComponent(
-          employeeId,
-        )}/assignments`,
+        `/api/training/employees/${encodeURIComponent(employeeId)}/assignments`,
         {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            workItemId: selectedWorkItemId,
+            workItemIds: selectedWorkItemIds,
           }),
         },
       );
 
-      const responseData =
-        (await response
-          .json()
-          .catch(() => null)) as
-          | AssignmentResponse
-          | null;
+      const responseData = (await response
+        .json()
+        .catch(() => null)) as AssignmentResponse | null;
 
       if (response.status === 401) {
         router.replace(
-          `/auth/login?next=${encodeURIComponent(
-            window.location.pathname,
-          )}`,
+          `/auth/login?next=${encodeURIComponent(window.location.pathname)}`,
         );
         return;
       }
 
       if (response.status === 403) {
         setErrorMessage(
-          responseData?.error ??
-            "仕事を割り当てられるのは管理者だけです",
+          responseData?.error ?? "仕事を割り当てられるのは管理者だけです",
         );
         return;
       }
 
       if (response.status === 409) {
         setErrorMessage(
-          responseData?.error ??
-            "この仕事項目はすでに割り当てられています",
+          responseData?.error ?? "この仕事項目はすでに割り当てられています",
         );
         return;
       }
@@ -219,55 +237,38 @@ const TrainingEmployeeAssignPage = () => {
       }
 
       if (!response.ok || !responseData?.ok) {
-        setErrorMessage(
-          responseData?.error ??
-            "仕事の割り当てに失敗しました",
-        );
+        setErrorMessage(responseData?.error ?? "仕事の割り当てに失敗しました");
         return;
       }
 
-      router.push(
-        `/training/employees/${employeeId}`,
-      );
+      router.push(`/training/employees/${employeeId}`);
 
       router.refresh();
     } catch (error) {
-      console.error(
-        "仕事の割り当てエラー:",
-        error,
-      );
+      console.error("仕事の割り当てエラー:", error);
 
-      setErrorMessage(
-        "通信エラーが発生しました",
-      );
+      setErrorMessage("通信エラーが発生しました");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (
-    isCheckingRole ||
-    isEmployeeLoading ||
-    isWorkItemsLoading
-  ) {
+  if (isCheckingRole || isEmployeeLoading || isWorkItemsLoading || isAssignmentsLoading) {
     return (
       <main className="min-h-screen bg-black px-4 py-8 text-white">
         <div className="mx-auto max-w-4xl">
-          <p className="text-gray-400">
-            読み込み中...
-          </p>
+          <p className="text-gray-400">読み込み中...</p>
         </div>
       </main>
     );
   }
 
-  if (employeeError || workItemsError) {
+  if (employeeError || workItemsError || assignmentsError) {
     return (
       <main className="min-h-screen bg-black px-4 py-8 text-white">
         <div className="mx-auto max-w-4xl">
           <p className="rounded bg-red-950 p-4 text-red-200">
-            {employeeError?.message ??
-              workItemsError?.message}
+            {employeeError?.message ?? workItemsError?.message ?? assignmentsError?.message}
           </p>
         </div>
       </main>
@@ -278,9 +279,7 @@ const TrainingEmployeeAssignPage = () => {
     return (
       <main className="min-h-screen bg-black px-4 py-8 text-white">
         <div className="mx-auto max-w-4xl">
-          <h1 className="text-2xl font-bold">
-            割り当て権限がありません
-          </h1>
+          <h1 className="text-2xl font-bold">割り当て権限がありません</h1>
 
           <Link
             href={`/training/employees/${employeeId}`}
@@ -296,22 +295,16 @@ const TrainingEmployeeAssignPage = () => {
   const employee = employeeData?.employee;
 
   const workItems =
-    workItemsData?.workItems.filter(
-      (workItem) => workItem.isActive,
-    ) ?? [];
+    workItemsData?.workItems.filter((workItem) => workItem.isActive) ?? [];
 
   return (
     <main className="min-h-screen bg-black px-4 py-8 text-white">
       <div className="mx-auto w-full max-w-4xl">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm text-gray-400">
-              {employee?.name}
-            </p>
+            <p className="text-sm text-gray-400">{employee?.name}</p>
 
-            <h1 className="mt-1 text-2xl font-bold">
-              仕事を割り当てる
-            </h1>
+            <h1 className="mt-1 text-2xl font-bold">仕事を割り当てる</h1>
           </div>
 
           <Link
@@ -323,38 +316,68 @@ const TrainingEmployeeAssignPage = () => {
         </div>
 
         <section className="mt-8 rounded-xl border border-gray-700 bg-gray-900 p-6">
-          <label
-            htmlFor="workItem"
-            className="text-sm font-medium"
-          >
+          <label htmlFor="workItem" className="text-sm font-medium">
             覚える仕事
           </label>
 
-          <select
-            id="workItem"
-            value={selectedWorkItemId}
-            onChange={(event) =>
-              setSelectedWorkItemId(
-                event.target.value,
-              )
-            }
-            className="mt-2 w-full rounded border border-gray-700 bg-gray-800 px-3 py-2"
-          >
-            <option value="">
-              仕事項目を選択してください
-            </option>
+          <div className="mt-6 space-y-8">
+            {categoryOrder.map((category) => {
+              const categoryWorkItems = workItems.filter(
+                (workItem) => workItem.category === category,
+              );
 
-            {workItems.map((workItem) => (
-              <option
-                key={workItem.id}
-                value={workItem.id}
-              >
-                {categoryLabels[workItem.category]}
-                {" - "}
-                {workItem.title}
-              </option>
-            ))}
-          </select>
+              if (categoryWorkItems.length === 0) {
+                return null;
+              }
+
+              return (
+                <section key={category}>
+                  <h2 className="mb-3 text-lg font-semibold">
+                    {categoryLabels[category]}
+                  </h2>
+
+                  <div className="space-y-2">
+                    {categoryWorkItems.map((workItem) => {
+                      const isAlreadyAssigned = assignedWorkItemIds.has(
+                        workItem.id,
+                      );
+                      const isChecked =
+                        isAlreadyAssigned ||
+                        selectedWorkItemIds.includes(workItem.id);
+
+                      return (
+                        <label
+                          key={workItem.id}
+                          className={`flex items-center gap-3 rounded-lg border px-4 py-3 ${
+                            isAlreadyAssigned
+                              ? "border-green-900 bg-green-950/30"
+                              : "cursor-pointer border-gray-700 bg-gray-800 hover:border-gray-500"
+                          }`}
+                        >
+                          <input
+                            type="checkbox"
+                            checked={isChecked}
+                            disabled={isAlreadyAssigned}
+                            onChange={() => handleToggleWorkItem(workItem.id)}
+                            className="h-4 w-4"
+                          />
+
+                          <div>
+                            <span>{workItem.title}</span>
+                            {isAlreadyAssigned && (
+                              <p className="mt-1 text-xs text-green-400">
+                                割り当て済み
+                              </p>
+                            )}
+                          </div>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </section>
+              );
+            })}
+          </div>
 
           {errorMessage && (
             <p className="mt-4 rounded bg-red-950 px-3 py-2 text-sm text-red-200">
@@ -373,20 +396,16 @@ const TrainingEmployeeAssignPage = () => {
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={
-                isSubmitting ||
-                !selectedWorkItemId
-              }
+              disabled={isSubmitting || selectedWorkItemIds.length === 0}
               className={`rounded px-4 py-2 text-sm font-medium ${
-                isSubmitting ||
-                !selectedWorkItemId
+                isSubmitting || selectedWorkItemIds.length === 0
                   ? "cursor-not-allowed bg-gray-600 text-gray-400"
                   : "bg-blue-700 hover:bg-blue-600"
               }`}
             >
               {isSubmitting
                 ? "割り当て中..."
-                : "割り当てる"}
+                : `${selectedWorkItemIds.length}件を割り当てる`}
             </button>
           </div>
         </section>
