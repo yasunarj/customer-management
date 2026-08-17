@@ -109,7 +109,7 @@ const TrainingEmployeesPage = () => {
   const employees = data?.employees ?? [];
 
   return (
-    <main className="min-h-screen bg-black px-4 py-8 text-white">
+    <main className="min-h-screen bg-black px-4 py-8 text-white overflow-y-scroll">
       <div className="mx-auto w-full max-w-4xl">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -125,9 +125,9 @@ const TrainingEmployeesPage = () => {
           {userRole === "admin" && (
             <Link
               href="/training/employees/new"
-              className="rounded bg-blue-700 px-4 py-2 text-sm font-medium hover:bg-blue-600"
+              className="rounded bg-blue-700 px-2 py-3 text-sm font-medium hover:bg-blue-600"
             >
-              従業員を登録
+              従業員登録
             </Link>
           )}
         </div>

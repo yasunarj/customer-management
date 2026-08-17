@@ -8,6 +8,12 @@ const inviteUserSchema = z.object({
     .string()
     .trim()
     .email("有効なメールアドレスを入力してください"),
+
+  userName: z
+    .string()
+    .trim()
+    .min(1, "名前を入力してください")
+    .max(100, "名前は100文字以内で入力してください"),
 });
 
 export async function POST(request: Request) {
@@ -54,13 +60,17 @@ export async function POST(request: Request) {
       );
     }
 
-    const { email } = result.data;
+    const { email, userName } = result.data;
 
     // 4. 招待メールを送信
     const { data: inviteData, error: inviteError } =
-      await supabaseAdmin.auth.admin.inviteUserByEmail(email, {
-        redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/set-password`,
-      });
+      await supabaseAdmin.auth.admin.inviteUserByEmail(email,
+        {
+          data: {
+            userName,
+          },
+          redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/set-password`,
+        });
 
     if (inviteError || !inviteData.user) {
       console.error("招待エラー:", inviteError);

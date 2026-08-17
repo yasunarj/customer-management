@@ -37,14 +37,6 @@ type EmployeeResponse = {
   error?: string;
 };
 
-type AssignmentResponse = {
-  ok?: boolean;
-  error?: string;
-  issues?: Array<{
-    message: string;
-  }>;
-};
-
 type Assignment = {
   id: string;
   employeeId: string;
@@ -107,7 +99,11 @@ const TrainingEmployeeAssignPage = () => {
 
   const [isCheckingRole, setIsCheckingRole] = useState(true);
 
+  const [initialWorkItemIds, setInitialWorkItemIds] = useState<string[]>([]);
+
   const [selectedWorkItemIds, setSelectedWorkItemIds] = useState<string[]>([]);
+
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -134,6 +130,7 @@ const TrainingEmployeeAssignPage = () => {
     data: assignmentsData,
     error: assignmentsError,
     isLoading: isAssignmentsLoading,
+    mutate: mutateAssignments,
   } = useSWR<AssignmentsResponse>(
     employeeId
       ? `/api/training/employees/${encodeURIComponent(employeeId)}/assignments`
@@ -164,10 +161,20 @@ const TrainingEmployeeAssignPage = () => {
     checkRole();
   }, [supabase]);
 
-  const assignedWorkItemIds = new Set(
-    assignmentsData?.assignments.map((assignment) => assignment.workItemId) ??
-      [],
-  );
+  useEffect(() => {
+    if (!assignmentsData || isInitialized) {
+      return;
+    }
+
+    const assignedWorkItemIds = assignmentsData.assignments.map(
+      (assignment) => assignment.workItemId,
+    );
+
+    setInitialWorkItemIds(assignedWorkItemIds);
+    setSelectedWorkItemIds(assignedWorkItemIds);
+
+    setIsInitialized(true);
+  }, [assignmentsData, isInitialized]);
 
   const handleToggleWorkItem = (workItemId: string) => {
     setSelectedWorkItemIds((currentIds) => {
@@ -179,9 +186,17 @@ const TrainingEmployeeAssignPage = () => {
     });
   };
 
+  const addedWorkItemIds = selectedWorkItemIds.filter(
+    (id) => !initialWorkItemIds.includes(id),
+  );
+
+  const removedWorkItemIds = initialWorkItemIds.filter(
+    (id) => !selectedWorkItemIds.includes(id),
+  );
+
   const handleSubmit = async () => {
-    if (selectedWorkItemIds.length === 0) {
-      setErrorMessage("仕事項目を選択してください");
+    if (addedWorkItemIds.length === 0 && removedWorkItemIds.length === 0) {
+      setErrorMessage("変更された仕事項目がありません");
       return;
     }
 
@@ -189,63 +204,132 @@ const TrainingEmployeeAssignPage = () => {
     setErrorMessage("");
 
     try {
-      const response = await fetch(
-        `/api/training/employees/${encodeURIComponent(employeeId)}/assignments`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+      // 1. 割り当て解除
+      if (removedWorkItemIds.length > 0) {
+        const deleteResponse = await fetch(
+          `/api/training/employees/${encodeURIComponent(
+            employeeId,
+          )}/assignments`,
+          {
+            method: "DELETE",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              workItemIds: removedWorkItemIds,
+            }),
           },
-          body: JSON.stringify({
-            workItemIds: selectedWorkItemIds,
-          }),
-        },
-      );
-
-      const responseData = (await response
-        .json()
-        .catch(() => null)) as AssignmentResponse | null;
-
-      if (response.status === 401) {
-        router.replace(
-          `/auth/login?next=${encodeURIComponent(window.location.pathname)}`,
         );
-        return;
+
+        const deleteResponseData = await deleteResponse
+          .json()
+          .catch(() => null);
+
+        if (deleteResponse.status === 401) {
+          router.replace(
+            `/auth/login?next=${encodeURIComponent(window.location.pathname)}`,
+          );
+          return;
+        }
+
+        if (deleteResponse.status === 403) {
+          setErrorMessage(
+            deleteResponseData?.error ??
+              "仕事の割り当てを解除できるのは管理者だけです",
+          );
+          return;
+        }
+
+        if (deleteResponse.status === 409) {
+          setErrorMessage(
+            deleteResponseData?.error ??
+              "チェック履歴がある仕事は割り当て解除できません",
+          );
+          return;
+        }
+
+        if (deleteResponse.status === 400) {
+          setErrorMessage(
+            deleteResponseData?.issues?.[0]?.message ??
+              deleteResponseData?.error ??
+              "解除する仕事項目を確認してください",
+          );
+          return;
+        }
+
+        if (!deleteResponse.ok) {
+          setErrorMessage(
+            deleteResponseData?.error ?? "仕事の割り当て解除に失敗しました",
+          );
+          return;
+        }
       }
 
-      if (response.status === 403) {
-        setErrorMessage(
-          responseData?.error ?? "仕事を割り当てられるのは管理者だけです",
+      // 2. 新しい仕事を割り当て
+      if (addedWorkItemIds.length > 0) {
+        const postResponse = await fetch(
+          `/api/training/employees/${encodeURIComponent(
+            employeeId,
+          )}/assignments`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              workItemIds: addedWorkItemIds,
+            }),
+          },
         );
-        return;
+
+        const postResponseData = await postResponse.json().catch(() => null);
+
+        if (postResponse.status === 401) {
+          router.replace(
+            `/auth/login?next=${encodeURIComponent(window.location.pathname)}`,
+          );
+          return;
+        }
+
+        if (postResponse.status === 403) {
+          setErrorMessage(
+            postResponseData?.error ?? "仕事を割り当てられるのは管理者だけです",
+          );
+          return;
+        }
+
+        if (postResponse.status === 409) {
+          setErrorMessage(
+            postResponseData?.error ?? "仕事項目はすでに割り当てられています",
+          );
+          return;
+        }
+
+        if (postResponse.status === 400) {
+          setErrorMessage(
+            postResponseData?.issues?.[0]?.message ??
+              postResponseData?.error ??
+              "追加する仕事項目を確認してください",
+          );
+          return;
+        }
+
+        if (!postResponse.ok || !postResponseData?.ok) {
+          setErrorMessage(
+            postResponseData?.error ?? "仕事の割り当てに失敗しました",
+          );
+          return;
+        }
       }
 
-      if (response.status === 409) {
-        setErrorMessage(
-          responseData?.error ?? "この仕事項目はすでに割り当てられています",
-        );
-        return;
-      }
+      // 3. 最新のAssignmentを再取得して
+      // SWRキャッシュを更新
+      await mutateAssignments();
 
-      if (response.status === 400) {
-        setErrorMessage(
-          responseData?.issues?.[0]?.message ??
-            responseData?.error ??
-            "入力内容を確認してください",
-        );
-        return;
-      }
-
-      if (!response.ok || !responseData?.ok) {
-        setErrorMessage(responseData?.error ?? "仕事の割り当てに失敗しました");
-        return;
-      }
-
+      // 4. 詳細画面へ
       router.push(`/training/employees/${employeeId}`);
-
-      router.refresh();
     } catch (error) {
-      console.error("仕事の割り当てエラー:", error);
+      console.error("仕事の割り当て変更エラー:", error);
 
       setErrorMessage("通信エラーが発生しました");
     } finally {
@@ -253,7 +337,12 @@ const TrainingEmployeeAssignPage = () => {
     }
   };
 
-  if (isCheckingRole || isEmployeeLoading || isWorkItemsLoading || isAssignmentsLoading) {
+  if (
+    isCheckingRole ||
+    isEmployeeLoading ||
+    isWorkItemsLoading ||
+    isAssignmentsLoading
+  ) {
     return (
       <main className="min-h-screen bg-black px-4 py-8 text-white">
         <div className="mx-auto max-w-4xl">
@@ -268,7 +357,9 @@ const TrainingEmployeeAssignPage = () => {
       <main className="min-h-screen bg-black px-4 py-8 text-white">
         <div className="mx-auto max-w-4xl">
           <p className="rounded bg-red-950 p-4 text-red-200">
-            {employeeError?.message ?? workItemsError?.message ?? assignmentsError?.message}
+            {employeeError?.message ??
+              workItemsError?.message ??
+              assignmentsError?.message}
           </p>
         </div>
       </main>
@@ -298,13 +389,13 @@ const TrainingEmployeeAssignPage = () => {
     workItemsData?.workItems.filter((workItem) => workItem.isActive) ?? [];
 
   return (
-    <main className="min-h-screen bg-black px-4 py-8 text-white">
+    <main className="min-h-screen bg-black px-4 py-8 text-white overflow-y-scroll">
       <div className="mx-auto w-full max-w-4xl">
         <div className="flex items-start justify-between gap-4">
           <div>
             <p className="text-sm text-gray-400">{employee?.name}</p>
 
-            <h1 className="mt-1 text-2xl font-bold">仕事を割り当てる</h1>
+            <h1 className="mt-1 text-2xl font-bold">仕事を割り当てを編集</h1>
           </div>
 
           <Link
@@ -338,18 +429,21 @@ const TrainingEmployeeAssignPage = () => {
 
                   <div className="space-y-2">
                     {categoryWorkItems.map((workItem) => {
-                      const isAlreadyAssigned = assignedWorkItemIds.has(
+                      const isChecked = selectedWorkItemIds.includes(
                         workItem.id,
                       );
-                      const isChecked =
-                        isAlreadyAssigned ||
-                        selectedWorkItemIds.includes(workItem.id);
+                      const isInitiallyAssigned = initialWorkItemIds.includes(
+                        workItem.id,
+                      );
+                      const isNewlyAdded = !isInitiallyAssigned && isChecked;
+
+                      const isRemoved = isInitiallyAssigned && !isChecked;
 
                       return (
                         <label
                           key={workItem.id}
                           className={`flex items-center gap-3 rounded-lg border px-4 py-3 ${
-                            isAlreadyAssigned
+                            isChecked
                               ? "border-green-900 bg-green-950/30"
                               : "cursor-pointer border-gray-700 bg-gray-800 hover:border-gray-500"
                           }`}
@@ -357,16 +451,25 @@ const TrainingEmployeeAssignPage = () => {
                           <input
                             type="checkbox"
                             checked={isChecked}
-                            disabled={isAlreadyAssigned}
                             onChange={() => handleToggleWorkItem(workItem.id)}
                             className="h-4 w-4"
                           />
 
                           <div>
                             <span>{workItem.title}</span>
-                            {isAlreadyAssigned && (
+                            {isInitiallyAssigned && isChecked && (
                               <p className="mt-1 text-xs text-green-400">
                                 割り当て済み
+                              </p>
+                            )}
+                            {isNewlyAdded && (
+                              <p className="mt-1 text-xs text-blue-400">
+                                新しく割り当て
+                              </p>
+                            )}
+                            {isRemoved && (
+                              <p className="mt-1 text-xs text-red-400">
+                                割り当て解除予定
                               </p>
                             )}
                           </div>
@@ -396,16 +499,20 @@ const TrainingEmployeeAssignPage = () => {
             <button
               type="button"
               onClick={handleSubmit}
-              disabled={isSubmitting || selectedWorkItemIds.length === 0}
+              disabled={
+                isSubmitting ||
+                (addedWorkItemIds.length === 0 &&
+                  removedWorkItemIds.length === 0)
+              }
               className={`rounded px-4 py-2 text-sm font-medium ${
-                isSubmitting || selectedWorkItemIds.length === 0
+                isSubmitting || (addedWorkItemIds.length === 0 && removedWorkItemIds.length === 0)
                   ? "cursor-not-allowed bg-gray-600 text-gray-400"
                   : "bg-blue-700 hover:bg-blue-600"
               }`}
             >
               {isSubmitting
-                ? "割り当て中..."
-                : `${selectedWorkItemIds.length}件を割り当てる`}
+                ? "保存中..."
+                : `変更を保存`}
             </button>
           </div>
         </section>

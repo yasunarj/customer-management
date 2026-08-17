@@ -8,6 +8,7 @@ const InviteUserPage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [userName, setUserName] = useState<string>("");
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -24,6 +25,7 @@ const InviteUserPage = () => {
         },
         body: JSON.stringify({
           email: email.trim(),
+          userName: userName.trim(),
         }),
       });
 
@@ -57,6 +59,22 @@ const InviteUserPage = () => {
         </p>
 
         <div className="mt-6 flex flex-col gap-2">
+          <label htmlFor="userName" className="text-sm font-medium">
+            名前
+          </label>
+          <input
+            type="text"
+            id="userName"
+            value={userName}
+            onChange={(e) => setUserName(e.target.value)}
+            placeholder="高橋 靖也"
+            autoComplete="off"
+            required
+            className="rounded bg-gray-700 px-3 py-2"
+          />
+        </div>
+
+        <div className="mt-6 flex flex-col gap-2">
           <label htmlFor="email" className="text-sm font-medium">
             メールアドレス
           </label>
@@ -87,13 +105,16 @@ const InviteUserPage = () => {
 
         <button
           type="submit"
-          disabled={isLoading || !email.trim()}
+          disabled={isLoading || !email.trim() || !userName.trim()}
           className="mt-6 w-full rounded bg-blue-700 px-4 py-2 font-medium hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-500"
         >
           {isLoading ? "送信中..." : "招待メールを送信"}
         </button>
         <div className="flex justify-center mt-4">
-          <Link href="/admin/dashboard" className="text-center text-blue-600 hover:text-blue-500">
+          <Link
+            href="/admin/dashboard"
+            className="text-center text-blue-600 hover:text-blue-500"
+          >
             戻る
           </Link>
         </div>
