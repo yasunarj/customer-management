@@ -3,6 +3,13 @@ import Link from "next/link";
 import { useState } from "react";
 import { useParams } from "next/navigation";
 import useSWR from "swr";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 
 type TrainingCategory =
   | "REGISTER"
@@ -197,6 +204,10 @@ const TrainingEmployeeDetailPage = () => {
     return null;
   }
 
+  const incompleteAssignments = assignments?.filter(
+    (assignment) => assignment.completedAt === null,
+  );
+
   return (
     <main className="min-h-screen bg-black px-4 py-8 text-white overflow-y-scroll">
       <div className="mx-auto w-full max-w-4xl">
@@ -261,8 +272,14 @@ const TrainingEmployeeDetailPage = () => {
             >
               仕事を割り当てる
             </Link>
-          </div>
 
+            <Link
+              href={`/training/employees/${employee.id}/completed`}
+              className="rounded border border-gray-600 px-4 py-2 text-center text-sm text-gray-300 hover:bg-gray-800"
+            >
+              完了した項目へ
+            </Link>
+          </div>
           {checkErrorMessage && (
             <p className="mt-4 rounded bg-red-950 px-3 py-2 text-sm text-red-200">
               {checkErrorMessage}
@@ -276,9 +293,15 @@ const TrainingEmployeeDetailPage = () => {
                   まだ仕事が割り当てられていません。
                 </p>
               </div>
+            ) : incompleteAssignments.length === 0 ? (
+              <div className="rounded-lg border border-dashed border-gray-700 p-6">
+                <p className="text-sm text-gray-500">
+                  未習得の仕事項目はありません。
+                </p>
+              </div>
             ) : (
               categoryOrder.map((category) => {
-                const categoryAssignments = assignments.filter(
+                const categoryAssignments = incompleteAssignments.filter(
                   (assignment) => assignment.workItem.category === category,
                 );
 
@@ -301,6 +324,14 @@ const TrainingEmployeeDetailPage = () => {
                         const isChecking =
                           checkingAssignmentId === assignment.id;
 
+                        const firstCheck = assignment.checks.find(
+                          (check) => check.checkNumber === 1,
+                        );
+
+                        const secondCheck = assignment.checks.find(
+                          (check) => check.checkNumber === 2,
+                        );
+
                         return (
                           <div
                             key={assignment.id}
@@ -317,32 +348,95 @@ const TrainingEmployeeDetailPage = () => {
                                 </p>
                               </div>
 
-                              {isCompleted && (
-                                <span className="rounded bg-green-950 px-2 py-1 text-xs text-green-300">
-                                  習得済み
-                                </span>
-                              )}
+                              <Sheet>
+                                <SheetTrigger asChild>
+                                  <button
+                                    type="button"
+                                    className="text-xs text-blue-400 hover:underline"
+                                  >
+                                    詳細を見る
+                                  </button>
+                                </SheetTrigger>
+
+                                <SheetContent
+                                  side="right"
+                                  className="w-[90%] overflow-y-auto bg-gray-900 text-white sm:max-w-lg"
+                                >
+                                  <SheetHeader>
+                                    <SheetTitle className="text-left text-xl text-white">
+                                      {assignment.workItem.title}
+                                    </SheetTitle>
+                                  </SheetHeader>
+
+                                  <div className="mt-6 space-y-6">
+                                    <div>
+                                      <p className="text-sm text-gray-500">
+                                        カテゴリー
+                                      </p>
+
+                                      <p className="mt-1">
+                                        {
+                                          categoryLabels[
+                                            assignment.workItem.category
+                                          ]
+                                        }
+                                      </p>
+                                    </div>
+
+                                    <div>
+                                      <p className="text-sm text-gray-500">
+                                        詳細内容
+                                      </p>
+
+                                      <p className="mt-2 whitespace-pre-wrap leading-7 text-gray-200">
+                                        {assignment.workItem.description ||
+                                          "詳細内容は登録されていません。"}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </SheetContent>
+                              </Sheet>
                             </div>
 
                             <div className="mt-4 flex flex-col gap-2">
                               <label className="flex items-center gap-2 text-sm">
                                 <input
                                   type="checkbox"
-                                  checked={checkCount >= 1}
+                                  checked={Boolean(firstCheck)}
                                   readOnly
                                   className="h-4 w-4"
                                 />
-                                1回目
+                                <span className="w-14">1回目</span>
+                                <span className="text-gray-300">
+                                  {firstCheck?.trainerName ?? ""}
+                                </span>
+                                {firstCheck && (
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(
+                                      firstCheck.checkedAt,
+                                    ).toLocaleDateString("ja-JP")}
+                                  </span>
+                                )}
                               </label>
 
                               <label className="flex items-center gap-2 text-sm">
                                 <input
                                   type="checkbox"
-                                  checked={checkCount >= 2}
+                                  checked={Boolean(secondCheck)}
                                   readOnly
                                   className="h-4 w-4"
                                 />
-                                2回目
+                                <span className="w-14">2回目</span>
+                                <span className="text-gray-300">
+                                  {secondCheck?.trainerName ?? ""}
+                                </span>
+                                {secondCheck && (
+                                  <span className="text-xs text-gray-500">
+                                    {new Date(
+                                      secondCheck.checkedAt,
+                                    ).toLocaleDateString("ja-JP")}
+                                  </span>
+                                )}
                               </label>
                             </div>
 
@@ -354,8 +448,10 @@ const TrainingEmployeeDetailPage = () => {
                                 className="mt-4 rounded bg-blue-700 px-4 py-2 text-sm font-medium hover:bg-blue-600 disabled:cursor-not-allowed disabled:bg-gray-600"
                               >
                                 {isChecking
-                                  ? "登録中..." : checkCount === 0 ? "チェックを登録"
-                                  : "次のチェックを登録"}
+                                  ? "登録中..."
+                                  : checkCount === 0
+                                    ? "チェックを登録"
+                                    : "次のチェックを登録"}
                               </button>
                             )}
                           </div>

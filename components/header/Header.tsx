@@ -125,7 +125,7 @@ const Header = () => {
               ) : (
                 <div className="flex gap-2 sm:gap-4 items-center">
                   <p className="text-sm sm:text-md">
-                    ({userRole === "admin" ? "管理者" : "ユーザー"})
+                    {userRole === "admin" ? "(AD)" : ""}
                   </p>
                   <button
                     onClick={handleLogout}

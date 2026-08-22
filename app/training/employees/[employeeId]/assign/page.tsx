@@ -37,6 +37,11 @@ type EmployeeResponse = {
   error?: string;
 };
 
+type TrainingCheck = {
+  id: string;
+  checkNumber: number;
+};
+
 type Assignment = {
   id: string;
   employeeId: string;
@@ -48,6 +53,7 @@ type Assignment = {
     sortOrder: number;
     isActive: boolean;
   };
+  checks: TrainingCheck[];
 };
 
 type AssignmentsResponse = {
@@ -193,6 +199,19 @@ const TrainingEmployeeAssignPage = () => {
   const removedWorkItemIds = initialWorkItemIds.filter(
     (id) => !selectedWorkItemIds.includes(id),
   );
+
+  const handleSelectAll = () => {
+    const allWorkItemIds = workItems.map((workItem) => workItem.id);
+    setSelectedWorkItemIds(allWorkItemIds);
+  };
+
+  const handleDeselectAll = () => {
+    const lockedWorkItemIds =
+      assignmentsData?.assignments
+        .filter((assignment) => assignment.checks.length > 0)
+        .map((assignment) => assignment.workItemId) ?? [];
+    setSelectedWorkItemIds(lockedWorkItemIds);
+  };
 
   const handleSubmit = async () => {
     if (addedWorkItemIds.length === 0 && removedWorkItemIds.length === 0) {
@@ -407,9 +426,25 @@ const TrainingEmployeeAssignPage = () => {
         </div>
 
         <section className="mt-8 rounded-xl border border-gray-700 bg-gray-900 p-6">
-          <label htmlFor="workItem" className="text-sm font-medium">
-            覚える仕事
-          </label>
+          <div className="flex items-center justify-between gap-4">
+            <span className="text-sm font-medium">覚える仕事</span>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleSelectAll}
+                className="rounded bg-blue-700 px-3 py-2 text-sm hover:bg-blue-600"
+              >
+                全て選択
+              </button>
+              <button
+                type="button"
+                onClick={handleDeselectAll}
+                className="rounded bg-gray-700 px-3 py-2 text-sm hover:bg-gray-600"
+              >
+                全て解除
+              </button>
+            </div>
+          </div>
 
           <div className="mt-6 space-y-8">
             {categoryOrder.map((category) => {
@@ -439,6 +474,12 @@ const TrainingEmployeeAssignPage = () => {
 
                       const isRemoved = isInitiallyAssigned && !isChecked;
 
+                      const assignment = assignmentsData?.assignments.find(
+                        (assignment) => assignment.workItemId === workItem.id,
+                      );
+
+                      const hasCheck = (assignment?.checks.length ?? 0) > 0;
+
                       return (
                         <label
                           key={workItem.id}
@@ -451,6 +492,7 @@ const TrainingEmployeeAssignPage = () => {
                           <input
                             type="checkbox"
                             checked={isChecked}
+                            disabled={hasCheck}
                             onChange={() => handleToggleWorkItem(workItem.id)}
                             className="h-4 w-4"
                           />
@@ -460,6 +502,11 @@ const TrainingEmployeeAssignPage = () => {
                             {isInitiallyAssigned && isChecked && (
                               <p className="mt-1 text-xs text-green-400">
                                 割り当て済み
+                                {hasCheck && (
+                                  <p className="text-red-400">
+                                    ※チェック履歴があるため解除できません
+                                  </p>
+                                )}
                               </p>
                             )}
                             {isNewlyAdded && (
@@ -505,14 +552,14 @@ const TrainingEmployeeAssignPage = () => {
                   removedWorkItemIds.length === 0)
               }
               className={`rounded px-4 py-2 text-sm font-medium ${
-                isSubmitting || (addedWorkItemIds.length === 0 && removedWorkItemIds.length === 0)
+                isSubmitting ||
+                (addedWorkItemIds.length === 0 &&
+                  removedWorkItemIds.length === 0)
                   ? "cursor-not-allowed bg-gray-600 text-gray-400"
                   : "bg-blue-700 hover:bg-blue-600"
               }`}
             >
-              {isSubmitting
-                ? "保存中..."
-                : `変更を保存`}
+              {isSubmitting ? "保存中..." : `変更を保存`}
             </button>
           </div>
         </section>
