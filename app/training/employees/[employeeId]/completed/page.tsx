@@ -113,7 +113,7 @@ const TrainingEmployeeCompletedPage = () => {
 
   if (isEmployeeLoading || isAssignmentsLoading) {
     return (
-      <main className="min-h-screen bg-black px-4 py-8 text-white">
+      <main className="h-screen-vh bg-black px-4 py-8 text-white">
         <div className="mx-auto max-w-4xl">
           <p className="text-sm text-gray-400">読み込み中...</p>
         </div>
@@ -123,7 +123,7 @@ const TrainingEmployeeCompletedPage = () => {
 
   if (employeeError || assignmentsError) {
     return (
-      <main className="min-h-screen bg-black px-4 py-8 text-white">
+      <main className="h-screen-vh bg-black px-4 py-8 text-white">
         <div className="mx-auto max-w-4xl">
           <p className="rounded bg-red-950 px-4 py-3 text-sm text-red-200">
             {employeeError?.message ??
@@ -147,7 +147,7 @@ const TrainingEmployeeCompletedPage = () => {
   );
 
   return (
-    <main className="min-h-screen bg-black px-4 py-8 text-white overflow-y-scroll">
+    <main className="h-screen-vh bg-black px-4 py-8 text-white overflow-y-scroll">
       <div className="mx-auto w-full max-w-4xl">
         <div className="flex items-start justify-between gap-4">
           <div>

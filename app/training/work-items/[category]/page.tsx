@@ -84,7 +84,7 @@ const TrainingCategoryPage = () => {
 
   if (!isValidCategory || !category) {
     return (
-      <main className="min-h-screen bg-black px-4 py-8 text-white">
+      <main className="h-screen-vh bg-black px-4 py-8 text-white">
         <div className="mx-auto max-w-4xl">
           <h1 className="text-2xl font-bold">カテゴリーが見つかりません</h1>
 

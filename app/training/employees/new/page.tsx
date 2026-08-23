@@ -188,7 +188,7 @@ const TrainingEmployeeNewPage = () => {
 
   if (isCheckingRole) {
     return (
-      <main className="min-h-screen bg-black px-4 py-8 text-white">
+      <main className="h-screen-vh bg-black px-4 py-8 text-white">
         <div className="mx-auto max-w-2xl">
           <p className="text-sm text-gray-400">
             読み込み中...
@@ -200,7 +200,7 @@ const TrainingEmployeeNewPage = () => {
 
   if (userRole !== "admin") {
     return (
-      <main className="min-h-screen bg-black px-4 py-8 text-white">
+      <main className="h-screen-vh bg-black px-4 py-8 text-white">
         <div className="mx-auto max-w-2xl">
           <h1 className="text-2xl font-bold">
             登録権限がありません
@@ -222,7 +222,7 @@ const TrainingEmployeeNewPage = () => {
   }
 
   return (
-    <main className="min-h-screen bg-black px-4 py-8 text-white">
+    <main className="h-screen-vh bg-black px-4 py-8 text-white">
       <div className="mx-auto w-full max-w-2xl">
         <div className="flex items-start justify-between gap-4">
           <div>

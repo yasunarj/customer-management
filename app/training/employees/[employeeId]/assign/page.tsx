@@ -363,7 +363,7 @@ const TrainingEmployeeAssignPage = () => {
     isAssignmentsLoading
   ) {
     return (
-      <main className="min-h-screen bg-black px-4 py-8 text-white">
+      <main className="h-screen-vh bg-black px-4 py-8 text-white">
         <div className="mx-auto max-w-4xl">
           <p className="text-gray-400">読み込み中...</p>
         </div>
@@ -373,7 +373,7 @@ const TrainingEmployeeAssignPage = () => {
 
   if (employeeError || workItemsError || assignmentsError) {
     return (
-      <main className="min-h-screen bg-black px-4 py-8 text-white">
+      <main className="h-screen-vh bg-black px-4 py-8 text-white">
         <div className="mx-auto max-w-4xl">
           <p className="rounded bg-red-950 p-4 text-red-200">
             {employeeError?.message ??
@@ -387,7 +387,7 @@ const TrainingEmployeeAssignPage = () => {
 
   if (userRole !== "admin") {
     return (
-      <main className="min-h-screen bg-black px-4 py-8 text-white">
+      <main className="h-screen-vh bg-black px-4 py-8 text-white">
         <div className="mx-auto max-w-4xl">
           <h1 className="text-2xl font-bold">割り当て権限がありません</h1>
 
@@ -408,7 +408,7 @@ const TrainingEmployeeAssignPage = () => {
     workItemsData?.workItems.filter((workItem) => workItem.isActive) ?? [];
 
   return (
-    <main className="min-h-screen bg-black px-4 py-8 text-white overflow-y-scroll">
+    <main className="h-screen-vh bg-black px-4 py-8 text-white overflow-y-scroll">
       <div className="mx-auto w-full max-w-4xl">
         <div className="flex items-start justify-between gap-4">
           <div>
