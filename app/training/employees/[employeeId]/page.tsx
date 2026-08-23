@@ -217,7 +217,7 @@ const TrainingEmployeeDetailPage = () => {
       : Math.round((completedCount / assignments.length) * 100);
 
   return (
-    <main className="min-h-screen bg-black px-4 py-8 text-white">
+    <main className="min-h-screen bg-black px-4 py-8 text-white overflow-y-auto">
       <div className="mx-auto w-full max-w-4xl">
         <div className="flex gap-4 items-start justify-between">
           <div>
