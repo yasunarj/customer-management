@@ -53,7 +53,7 @@ const categories: Array<{
   {
     value: "PRODUCT_MANAGEMENT",
     label: "商品管理",
-    href: "/training/work-items/product-manager",
+    href: "/training/work-items/product-management",
     description: "品出しや鮮度管理などの項目を管理します",
   },
   {

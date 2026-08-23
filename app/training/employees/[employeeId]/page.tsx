@@ -207,6 +207,14 @@ const TrainingEmployeeDetailPage = () => {
   const incompleteAssignments = assignments?.filter(
     (assignment) => assignment.completedAt === null,
   );
+  const incompleteCount = incompleteAssignments.length;
+
+  const completedCount = assignments.length - incompleteCount;
+
+  const progressRate =
+    assignments.length === 0
+      ? 0
+      : Math.round((completedCount / assignments.length) * 100);
 
   return (
     <main className="min-h-screen bg-black px-4 py-8 text-white overflow-y-scroll">
@@ -259,9 +267,21 @@ const TrainingEmployeeDetailPage = () => {
         <section className="mt-8 rounded-xl border border-gray-700 bg-gray-900 p-4">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
-              <h2 className="text-lg font-semibold">教育項目</h2>
+              <div className="flex items-center gap-3">
+                <h2 className="text-lg font-semibold">教育項目</h2>
 
-              <p className="mt-1 text-sm text-gray-400">
+                <span className="rounded-full bg-yellow-950 px-3 py-1 text-xs text-yellow-300">
+                  未完了 {incompleteCount}件
+                </span>
+
+                <span className="rounded-full bg-green-950 px-3 py-1 text-xs text-green-300">進捗率 {progressRate}%</span>
+              </div>
+
+              <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-gray-700">
+                <div className="h-full bg-green-600 transition-all" style={{width: `${progressRate}%`}} />
+              </div>
+
+              <p className="mt-3 text-sm text-gray-400">
                 この従業員が覚える仕事を管理します。
               </p>
             </div>
@@ -360,7 +380,7 @@ const TrainingEmployeeDetailPage = () => {
 
                                 <SheetContent
                                   side="right"
-                                  className="w-[90%] overflow-y-auto bg-gray-900 text-white sm:max-w-lg"
+                                  className="w-[95%] overflow-y-auto bg-gray-900 text-white sm:max-w-lg"
                                 >
                                   <SheetHeader>
                                     <SheetTitle className="text-left text-xl text-white">
@@ -388,7 +408,7 @@ const TrainingEmployeeDetailPage = () => {
                                         詳細内容
                                       </p>
 
-                                      <p className="mt-2 whitespace-pre-wrap leading-7 text-gray-200">
+                                      <p className="mt-2 whitespace-pre-wrap leading-7 text-gray-200 text-sm">
                                         {assignment.workItem.description ||
                                           "詳細内容は登録されていません。"}
                                       </p>

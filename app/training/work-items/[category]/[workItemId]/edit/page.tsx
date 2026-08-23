@@ -363,7 +363,7 @@ const TrainingWorkItemEditPage = () => {
   }
 
   return (
-    <main className="min-h-screen bg-black px-4 py-8 text-white">
+    <main className="min-h-screen bg-black px-4 py-8 text-white overflow-y-scroll">
       <div className="mx-auto w-full max-w-2xl">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -455,7 +455,7 @@ const TrainingWorkItemEditPage = () => {
               maxLength={2000}
               rows={12}
               placeholder="作業手順や注意点を入力してください"
-              className="resize-y rounded bg-gray-800 px-3 py-2 leading-7"
+              className="resize-y rounded bg-gray-800 px-3 py-2 leading-7 text-sm"
             />
 
             <p className="text-right text-xs text-gray-500">
