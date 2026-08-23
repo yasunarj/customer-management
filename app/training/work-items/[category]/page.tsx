@@ -104,7 +104,7 @@ const TrainingCategoryPage = () => {
   }
 
   return (
-    <main className="min-h-screen bg-black px-4 py-8 text-white">
+    <main className="h-screen-vh bg-black px-4 py-8 text-white">
       <div className="mx-auto w-full max-w-4xl">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div>
