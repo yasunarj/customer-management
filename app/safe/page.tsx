@@ -2,25 +2,51 @@ import Link from "next/link";
 
 const SafekeepingCalculationPage = () => {
   return (
-    <div className="h-screen-vh bg-blue-200 flex justify-center items-center">
-      <div className="flex flex-col gap-24 text-center max-w-[900px] w-[80%] h-[80%] bg-white rounded-xl p-4 ">
-        <div className="flex flex-col gap-20 h-full overflow-y-scroll">
-          <div>
-            <h1 className="text-4xl text-gray-800 mt-4 font-bold">金庫管理</h1>
-          </div>
-          <div>
-            <ul className="flex flex-col gap-8 text-3xl text-blue-700">
-              <li className="underline underline-offset-4 hover:text-blue-900">
-                <Link href="/safe/input">金庫内金額の入力</Link>
-              </li>
-              <li className="underline underline-offset-4 hover:text-blue-900">
-                <Link href="/safe/history">金庫内金額の表示</Link>
-              </li>
-            </ul>
-          </div>
+    <main className="min-h-screen bg-black px-4 py-8 text-white">
+      <div className="mx-auto w-full max-w-4xl">
+        <div>
+          <p className="text-sm text-gray-400">金庫管理</p>
+
+          <h1 className="mt-1 text-2xl font-bold">
+            金庫管理メニュー
+          </h1>
         </div>
+
+        <section className="mt-8 rounded-xl border border-gray-700 bg-gray-900 p-6">
+          <p className="text-sm text-gray-400">
+            金庫内の金額入力や履歴確認を行います。
+          </p>
+
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <Link
+              href="/safe/input"
+              className="rounded-lg border border-gray-700 bg-gray-800 px-5 py-6 transition hover:border-blue-500 hover:bg-gray-700"
+            >
+              <h2 className="text-lg font-semibold">
+                金庫内金額の入力
+              </h2>
+
+              <p className="mt-2 text-sm text-gray-400">
+                現在の金庫内金額を登録します。
+              </p>
+            </Link>
+
+            <Link
+              href="/safe/history"
+              className="rounded-lg border border-gray-700 bg-gray-800 px-5 py-6 transition hover:border-blue-500 hover:bg-gray-700"
+            >
+              <h2 className="text-lg font-semibold">
+                金庫内金額の表示
+              </h2>
+
+              <p className="mt-2 text-sm text-gray-400">
+                過去に登録した金額を確認します。
+              </p>
+            </Link>
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 };
 
