@@ -137,18 +137,18 @@ const InputForm = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="mt-2 px-4 max-w-[520px] mx-auto h-full "
-    >
+    <form onSubmit={handleSubmit} className="mx-auto w-full max-w-xl">
       {/* 金種ごとのInput */}
-      <div className=" mx-auto max-w-[400px] sm:p-2 h-full flex flex-col justify-between pb-2">
+      <div className="space-y-2">
         {values.map((value: ValueState, index) => (
-          <div key={index}>
-            <div className="flex items-center gap-3">
+          <div
+            key={index}
+            className="rounded-lg border border-gray-700 bg-gray-800 p-1"
+          >
+            <div className="flex items-center gap-4">
               <Label
                 htmlFor={`yen-${index}`}
-                className="text-md sm:text-lg w-[40%]"
+                className="text-sm font-medium text-gray-200 sm:text-base w-[40%]"
               >
                 {value.name}
               </Label>
@@ -166,42 +166,50 @@ const InputForm = () => {
                 id={`yen-${index}`}
                 value={value.yen !== null ? value.yen : ""}
                 placeholder="0"
-                className="text-right"
+                className="bg-gray-900 text-right text-white border-gray-600 placeholder:text-gray-600"
                 onChange={(e) =>
                   handleChange(e, value.name, index, value.error)
                 }
               />
             </div>
-            <p className="text-sm text-right text-red-600">
+            <p className="mt-1 text-sm text-right text-red-600">
               {value.error ? value.error : ""}
             </p>
           </div>
         ))}
 
-        <div>
-          <div className="flex justify-between mx-auto max-w-[400px] px-2 py-4">
+        <div className="rounded-lg border border-gray-700 bg-gray-800 p-2">
+          <div className="flex items-center justify-between ">
             <p>合計金額</p>
             <p
-              className={`text-[18px] ${
-                total === 300000 ? "text-blue-600" : "text-red-600"
+              className={`text-xl font-bold ${
+                total === 300000 ? "text-green-400" : "text-red-400"
               }`}
             >
-              {total ? total : ""}
-              <span className="text-gray-800">円</span>
+              {total !== null ? total.toLocaleString("ja-JP") : "0"}
+              <span className="text-gray-400 text-sm font-normal">円</span>
             </p>
           </div>
           {/* 送信ボタン */}
-          <div className="flex gap-4 justify-center mx-auto max-w-[400px] mb-2">
+          <div className="mt-2 flex gap-4 justify-end mx-auto max-w-[400px] mb-2">
             <Button
               type="button"
-              className="text-md w-[40%]"
+              variant="outline"
+              className="w-36 border-gray-600 bg-transparent text-gray-200 hover:bg-gray-800 hover:text-white"
               onClick={handleReset}
             >
               リセット
             </Button>
-            <Button type="submit" className="text-md w-[40%]">
+            <Button
+              type="submit"
+              disabled={isSending}
+              className="w-36 bg-blue-700 px-6 hover:bg-blue-600"
+            >
               {isSending ? (
-                <Loader2 className="animate-spin h-10 w-10" strokeWidth={3} />
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  送信中...
+                </>
               ) : (
                 "送信"
               )}
@@ -209,7 +217,9 @@ const InputForm = () => {
           </div>
         </div>
       </div>
-      <p className="text-red-600 text-center text-sm mt-1">{errorMessage}</p>
+      {errorMessage && (
+        <p className="mt-1 rounded bg-red-950 px-3 py-2 text-center test-sm text-red-200">{errorMessage}</p>
+      )}
     </form>
   );
 };
