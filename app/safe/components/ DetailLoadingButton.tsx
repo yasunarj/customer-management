@@ -18,7 +18,7 @@ const DetailLoadingButton = ({ id }: { id: number }) => {
       }}
       className="underline underline-offset-4 hover:text-black"
     >
-      { loadingId === id ? <Loader2 className="h-5 w-5 animate-spain" /> : "詳細"}
+      { loadingId === id ? <Loader2 className="h-4 w-4 animate-spain" /> : "詳細"}
     </button>
   );
 };
