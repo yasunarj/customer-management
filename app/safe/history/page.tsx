@@ -18,7 +18,7 @@ const SafeCheckHistoryPage = async () => {
           </div>
         </div>
 
-        <section className="mt-4 h-[95%] overflow-y-scroll rounded-xl border border-gray-700 bg-gray-900">
+        <section className="mt-2 h-[94%] overflow-y-scroll rounded-xl border border-gray-700 bg-gray-900">
           <table className="table-auto w-full mx-auto border-collapse text-gray-700 text-sm">
             <thead className="bg-gray-800 text-gray-300">
               <tr>
