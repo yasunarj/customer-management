@@ -90,7 +90,7 @@ const SafeCheckDetailPage = async (props: SafeCheckDetailPage) => {
             {safeCheckItems.map((item) => (
               <div
                 key={item.label}
-                className="flex items-center justify-between rounded-lg border border-gray-700 bg-gray-800 px-4 py-1.5 sm:px-4 sm:py-3"
+                className="flex items-center justify-between rounded-lg border border-gray-700 bg-gray-800 px-4 py-2 sm:px-4 sm:py-3"
               >
                 <span className="text-gray-300 text-sm">{item.label}</span>
 
