@@ -4,7 +4,7 @@ import { safeMenuList } from "../lib/safeMenuList";
 
 const SafekeepingCalculationInputPage = () => {
   return (
-    <main className="min-h-screen bg-black px-4 py-4 text-white overflow-y-scroll">
+    <main className="h-screen-vh bg-black px-4 py-4 text-white overflow-y-scroll">
       <div className="mx-auto w-full max-w-4xl">
         <div className="flex items-start justify-between gap-4">
           <div>
