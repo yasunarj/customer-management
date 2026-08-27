@@ -8,7 +8,7 @@ const SafeCheckHistoryPage = async () => {
 
   return (
     <div className="h-screen-vh overflow-hidden bg-black px-2 py-2 text-white">
-      <div className="mx-auto w-[90%] h-[98%] max-w-4xl">
+      <div className="mx-auto w-[95%] h-[98%] max-w-4xl">
         <div className="mt-1 flex items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold">金庫精算の履歴一覧</h1>
@@ -18,7 +18,7 @@ const SafeCheckHistoryPage = async () => {
           </div>
         </div>
 
-        <section className="mt-4 h-[90%] overflow-y-scroll rounded-xl border border-gray-700 bg-gray-900">
+        <section className="mt-4 h-[95%] overflow-y-scroll rounded-xl border border-gray-700 bg-gray-900">
           <table className="table-auto w-full mx-auto border-collapse text-gray-700 text-sm">
             <thead className="bg-gray-800 text-gray-300">
               <tr>
@@ -66,3 +66,4 @@ const SafeCheckHistoryPage = async () => {
 };
 
 export default SafeCheckHistoryPage;
+
