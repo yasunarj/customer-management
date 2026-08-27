@@ -86,13 +86,13 @@ const SafeCheckDetailPage = async (props: SafeCheckDetailPage) => {
         </div>
 
         <section className="mt-4 rounded-xl border border-gray-700 bg-gray-900 p-4 sm:p-6">
-          <div className="mx-auto max-w-xl space-y-3">
+          <div className="mx-auto max-w-xl space-y-1 sm:space-y-3">
             {safeCheckItems.map((item) => (
               <div
                 key={item.label}
-                className="flex items-center justify-between rounded-lg border border-gray-700 bg-gray-800 px-4 py3"
+                className="flex items-center justify-between rounded-lg border border-gray-700 bg-gray-800 px-4 py-1.5 sm:px-4 sm:py-3"
               >
-                <span className="text-gray-300">{item.label}</span>
+                <span className="text-gray-300 text-sm">{item.label}</span>
 
                 <span>
                   {item.value !== null
