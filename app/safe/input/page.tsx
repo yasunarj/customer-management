@@ -8,8 +8,6 @@ const SafekeepingCalculationInputPage = () => {
       <div className="mx-auto w-full max-w-4xl">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm text-gray-400">金庫管理</p>
-
             <h1 className="mt-1 text-2xl font-bold">金額入力フォーム</h1>
 
             <p className="mt-2 text-sm text-gray-400">

@@ -139,11 +139,11 @@ const InputForm = () => {
   return (
     <form onSubmit={handleSubmit} className="mx-auto w-full max-w-xl">
       {/* 金種ごとのInput */}
-      <div className="space-y-2">
+      <div className="space-y-1">
         {values.map((value: ValueState, index) => (
           <div
             key={index}
-            className="rounded-lg border border-gray-700 bg-gray-800 p-1"
+            className="rounded-lg border border-gray-700 bg-gray-800 px-2"
           >
             <div className="flex items-center gap-4">
               <Label
