@@ -64,7 +64,15 @@ const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
   }, [detailData]);
 
   if (!detailStates) {
-    return <div className="h-screen-vh">データが存在しません</div>;
+    return (
+      <main className="h-screen-vh bg-black px-4 py-8 text-white">
+        <div className="mx-auto max-w-4xl">
+          <p className="rounded-xl border border-gray-700 bg-gray-900 p-6 text-center text-gray-400">
+            データが存在しません
+          </p>
+        </div>
+      </main>
+    );
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -127,7 +135,7 @@ const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
     e: React.ChangeEvent<HTMLInputElement>,
     name: string,
     index: number,
-    error: string
+    error: string,
   ) => {
     const newYen = Number(e.target.value);
 
@@ -145,95 +153,137 @@ const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
   };
 
   return (
-    <div className="h-screen-vh overflow-hidden bg-blue-200 flex justify-center items-center">
-      <form
-        onSubmit={handleSubmit}
-        className="mt-2 max-w-[520px] w-[90%] h-[98%] bg-white p-2 rounded-xl shadow-2xl"
-      >
-        <div className="flex flex-col h-full">
-          <h2 className="relative mt-2 text-center text-2xl font-bold text-gray-800">
-            修正フォーム
-            <div className="absolute top-1 right-4">
-              <SheetMenu menuList={safeMenuList} />
-            </div>
-          </h2>
-          {/* 金種ごとのInput */}
-          <div className="w-[95%] max-w-[520px] mx-auto mt-2 border-2 border-gray-400 p-4 pb-0 overflow-y-scroll flex-1">
-            <div className="flex flex-col justify-between max-w-[400px] mx-auto h-full">
-              <div className="flex-1 flex flex-col justify-between">
-                {detailStates.map((state: DetailState, index: number) => {
-                  return (
-                    <div
-                      key={state.name}
-                      className="flex flex-col justify-between"
-                    >
-                      <div className="flex items-center justify-between">
-                        <Label
-                          htmlFor={"bara"}
-                          className="text-md sm:text-lg w-full"
-                        >
-                          {state.name}
-                        </Label>
-                        <Input
-                          ref={(el: HTMLInputElement | null) => {
-                            if (el) inputRefs.current[index] = el;
-                          }}
-                          type="number"
-                          onKeyDown={(e) => {
-                            if (e.key === "Enter") {
-                              e.preventDefault();
-                              inputRefs.current[index + 1]?.focus();
-                            }
-                          }}
-                          id={"bara"}
-                          value={state.yen}
-                          placeholder="0"
-                          className="text-right"
-                          onChange={(e) =>
-                            handleChange(e, state.name, index, state.error)
-                          }
-                        />
-                      </div>
-                      <p className="text-sm text-right text-red-600">
-                        {state.error ? state.error : ""}
-                      </p>
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="py-2 mt-2 sm:py-4 flex justify-between max-w-[400px] mx-auto w-full">
-                <p>合計金額</p>
-                <p
-                  className={`text-[18px] ${
-                    total === 300000 ? "text-blue-600" : "text-red-600"
-                  }`}
-                >
-                  {total}
-                  <span className="text-gray-800">円</span>
-                </p>
-              </div>
-              {/* 送信ボタン */}
-              <div className="flex justify-center py-2">
-                <Button type="submit" className="text-md w-[40%]">
-                  {isEditing ? (
-                    <Loader2
-                      className="animate-spin h-10 w-10"
-                      strokeWidth={3}
-                    />
-                  ) : (
-                    "更新"
-                  )}
-                </Button>
-              </div>
-            </div>
-            <p className="text-red-600 text-center text-sm mt-1">
-              {errorMessage}
-            </p>
+    <main className="h-screen-vh bg-black px-4 py-4 text-white">
+      <div className="mx-auto w-full max-w-4xl">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="mt-1 text-2xl font-bold">修正フォーム</h1>
+          </div>
+          <div className="text-white">
+            <SheetMenu menuList={safeMenuList} />
           </div>
         </div>
-      </form>
-    </div>
+
+        <form
+          onSubmit={handleSubmit}
+          className="mt-4 rounded-xl border border-gray-700 bg-gray-900 p-4 sm:p-6"
+        >
+          <div className="space-y-1 sm:space-y-3">
+            {detailStates.map((state: DetailState, index: number) => (
+              <div
+                key={state.name}
+                className="rounded-lg border border-gray-700 bg-gray-800 px-4 py-1 sm:py-3"
+              >
+                <div className="flex items-center gap-4">
+                  <Label
+                    htmlFor={`yen-${index}`}
+                    className="w-[40%] text-sm font-medium text-gray-200 sm-text-base
+                  "
+                  >
+                    {state.name}
+                  </Label>
+
+                  <Input
+                    ref={(el: HTMLInputElement | null) => {
+                      if (el) {
+                        inputRefs.current[index] = el;
+                      }
+                    }}
+                    type="number"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        inputRefs.current[index + 1]?.focus();
+                      }
+                    }}
+                    id={`yen-${index}`}
+                    value={state.yen}
+                    placeholder="0"
+                    className="border-gray-600 bg-gray-900 text-right text-white placeholder:text-gray-600"
+                    onChange={(e) =>
+                      handleChange(e, state.name, index, state.error)
+                    }
+                  />
+                </div>
+
+                {state.error && (
+                  <p className="mt-1 text-right text-sm text-red-400">
+                    {state.error}
+                  </p>
+                )}
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 rounded-lg border-border-gray-700 bg-gray-800 px-4 py-2 sm:p-4">
+            <div className="flex items-center justify-between">
+              <p className="font-medium text-gray-300">合計金額</p>
+              <p
+                className={`text-xl font-bold ${total === 300000 ? "text-green-400" : "text-red-400"}`}
+              >
+                {total.toLocaleString("ja-JP")}
+
+                <span className="ml-1 text-sm font-normal text-gray-400">
+                  円
+                </span>
+              </p>
+            </div>
+          </div>
+
+          {errorMessage && (
+            <p className="mt-4 rounded bg-red-950 px-3 py-2 text-center text-sm text-red-200">
+              {errorMessage}
+            </p>
+          )}
+
+          <div className="mt-4 flex justify-end gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => router.back()}
+              disabled={isEditing}
+              className="w-32 border-gray-600 bg-transparent text-gray-200 hover:bg-gray-800 hover:text-white"
+            >
+              キャンセル
+            </Button>
+
+            <Button
+              type="submit"
+              disabled={isEditing}
+              className="w-32 bg-blue-700 hover:bg-blue-600"
+            >
+              {isEditing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  更新中
+                </>
+              ) : (
+                "更新"
+              )}
+            </Button>
+          </div>
+        </form>
+      </div>
+    </main>
   );
 };
 
 export default EditForm;
+
+{
+  /* <Input
+  ref={(el: HTMLInputElement | null) => {
+    if (el) {
+      inputRefs.current[index] = el;
+    }
+  }}
+  type="number"
+  onKeyDown={(e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      inputRefs.current[index + 1]?.focus();
+    }
+  }}
+/>; */
+}
+// こちらの意味を忘れてしまったので教えてください。入力後にEnterを押すと下のInput欄に移動するような設定の内容でしょうか？
