@@ -19,7 +19,9 @@ const ProductRegistrationPage = () => {
           </div>
         </div>
 
-        <section className="mt-8 rounded-xl border border-gray-700 bg-gray-900 p-4 sm:p-6"><ExpiryInputForm /></section>
+        <section className="mt-4 rounded-xl border border-gray-700 bg-gray-900 p-4 sm:p-6">
+          <ExpiryInputForm />
+        </section>
       </div>
     </div>
   );

@@ -310,12 +310,12 @@ const ExpiryInputForm = () => {
           </p>
         )}
 
-        <div className="flex flex-wrap justify-end gap-3 pt-2">
+        <div className="flex flex-wrap justify-between gap-3 pt-2">
           <Button
             type="button"
             variant="outline"
             disabled={isBusy}
-            className="w-32 border-gray-600 bg-transparent text-gray-200 hover:bg-gray-800 hover:text-white"
+            className="w-24 border-gray-600 bg-transparent text-gray-200 hover:bg-gray-800 hover:text-white"
             onClick={() => {
               if (window.confirm("リセットしますか？")) {
                 resetForm();
@@ -328,7 +328,7 @@ const ExpiryInputForm = () => {
             type="button"
             variant="outline"
             disabled={isBusy}
-            className="w-32 border-gray-600 bg-transparent text-gray-200 hover:bg-gray-800 hover:text-white"
+            className="w-24 border-gray-600 bg-transparent text-gray-200 hover:bg-gray-800 hover:text-white"
             onClick={async () => {
               setIsNavigating(true);
               router.push("/expiry/productList");
@@ -343,7 +343,7 @@ const ExpiryInputForm = () => {
               "一覧へ"
             )}
           </Button>
-          <Button type="submit" disabled={isBusy} className="w-32 bg-blue-600">
+          <Button type="submit" disabled={isBusy} className="w-24 bg-blue-600">
             {isSubmitting ? (
               <>
                 <Loader2 className="animate-spin h-5 w-5" />
