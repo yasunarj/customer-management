@@ -140,6 +140,13 @@ const ExpiryInputForm = () => {
       setIsSubmitting(false);
     }
   };
+
+  const fieldClassName =
+    "border-gray-600 bg-gray-900 text-right text-white placeholder:text-gray-600";
+
+  const fieldWrapperClassName =
+    "rounded-lg border border-gray-700 bg-gray-800 p-3";
+
   return (
     <form
       onSubmit={handleSubmit}
@@ -156,112 +163,139 @@ const ExpiryInputForm = () => {
           e.stopPropagation();
         }
       }}
-      className="max-w-[520px] mx-auto p-4 h-full"
+      className="mx-auto w-full max-w-xl"
     >
-      <div className="flex flex-col justify-between mt-2 gap-2 h-full">
-        <div className="flex items-center gap-3 ">
-          <Label htmlFor="manager" className="w-[40%] text-[16px] font-bold">
-            担当者
-          </Label>
-          <Input
-            id="manager"
-            type="text"
-            value={form.manager}
-            onChange={(e) => handleChange(e, "manager")}
-            className="text-right"
-            ref={(el) => {
-              inputRefs.current[0] = el;
-            }}
-            onKeyDown={(e) => handleKeyDown(e, 0)}
-            onCompositionStart={() => (isComposingRef.current = true)}
-            onCompositionEnd={() => (isComposingRef.current = false)}
-          />
+      <div className="space-y-4">
+        <div className={fieldWrapperClassName}>
+          <div className="flex items-center gap-4">
+            <Label
+              htmlFor="manager"
+              className="w-[35%] font-medium text-gray-200 sm:text-base"
+            >
+              担当者
+            </Label>
+            <Input
+              id="manager"
+              type="text"
+              value={form.manager}
+              onChange={(e) => handleChange(e, "manager")}
+              className={fieldClassName}
+              ref={(el) => {
+                inputRefs.current[0] = el;
+              }}
+              onKeyDown={(e) => handleKeyDown(e, 0)}
+              onCompositionStart={() => (isComposingRef.current = true)}
+              onCompositionEnd={() => (isComposingRef.current = false)}
+            />
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Label htmlFor="gondolaNo" className="w-[40%] text-[16px] font-bold">
-            ゴンドラ
-          </Label>
-          <Input
-            id="gondolaNo"
-            type="number"
-            value={form.gondolaNo}
-            onChange={(e) => handleChange(e, "gondolaNo")}
-            className="text-right"
-            ref={(el) => {
-              inputRefs.current[1] = el;
-            }}
-            onKeyDown={(e) => handleKeyDown(e, 1)}
-          />
+
+        <div className={fieldWrapperClassName}>
+          <div className="flex items-center gap-4">
+            <Label
+              htmlFor="gondolaNo"
+              className="w-[35%] text-sm font-medium text-gray-200 sm:text-base"
+            >
+              ゴンドラ
+            </Label>
+            <Input
+              id="gondolaNo"
+              type="number"
+              value={form.gondolaNo}
+              onChange={(e) => handleChange(e, "gondolaNo")}
+              className={fieldClassName}
+              ref={(el) => {
+                inputRefs.current[1] = el;
+              }}
+              onKeyDown={(e) => handleKeyDown(e, 1)}
+            />
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Label htmlFor="category" className="w-[40%] text-[18px] font-bold">
-            分類
-          </Label>
-          <Input
-            id="category"
-            type="text"
-            value={form.category}
-            onChange={(e) => handleChange(e, "category")}
-            className="text-right"
-            ref={(el) => {
-              inputRefs.current[2] = el;
-            }}
-            onKeyDown={(e) => handleKeyDown(e, 2)}
-            onCompositionStart={() => (isComposingRef.current = true)}
-            onCompositionEnd={() => (isComposingRef.current = false)}
-          />
+
+        <div className={fieldWrapperClassName}>
+          <div className="flex items-center gap-4">
+            <Label
+              htmlFor="category"
+              className="w-[35%] text-sm font-medium text-gray-200 sm:text-base"
+            >
+              分類
+            </Label>
+            <Input
+              id="category"
+              type="text"
+              value={form.category}
+              onChange={(e) => handleChange(e, "category")}
+              className={fieldClassName}
+              ref={(el) => {
+                inputRefs.current[2] = el;
+              }}
+              onKeyDown={(e) => handleKeyDown(e, 2)}
+              onCompositionStart={() => (isComposingRef.current = true)}
+              onCompositionEnd={() => (isComposingRef.current = false)}
+            />
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Label
-            htmlFor="productName"
-            className="w-[40%] text-[18px] font-bold"
-          >
-            商品名
-          </Label>
-          <Input
-            id="productName"
-            type="text"
-            value={form.productName}
-            onChange={(e) => handleChange(e, "productName")}
-            className="text-right text-sm"
-            ref={(el) => {
-              inputRefs.current[3] = el;
-            }}
-            onKeyDown={(e) => handleKeyDown(e, 3)}
-            onCompositionStart={() => (isComposingRef.current = true)}
-            onCompositionEnd={() => (isComposingRef.current = false)}
-          />
+
+        <div className={fieldWrapperClassName}>
+          <div className="flex items-center gap-4">
+            <Label
+              htmlFor="productName"
+              className="w-[35%] text-sm font-medium text-gray-200 sm:text-base"
+            >
+              商品名
+            </Label>
+            <Input
+              id="productName"
+              type="text"
+              value={form.productName}
+              onChange={(e) => handleChange(e, "productName")}
+              className={`${fieldClassName} text-sm`}
+              ref={(el) => {
+                inputRefs.current[3] = el;
+              }}
+              onKeyDown={(e) => handleKeyDown(e, 3)}
+              onCompositionStart={() => (isComposingRef.current = true)}
+              onCompositionEnd={() => (isComposingRef.current = false)}
+            />
+          </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Label htmlFor="quantity" className="w-[40%] text-[18px] font-bold">
-            個数
-          </Label>
-          <Input
-            id="quantity"
-            type="number"
-            value={form.quantity}
-            onChange={(e) => handleChange(e, "quantity")}
-            className="text-right"
-            ref={(el) => {
-              inputRefs.current[4] = el;
-            }}
-            onKeyDown={(e) => handleKeyDown(e, 4)}
-          />
+
+        <div className={fieldWrapperClassName}>
+          <div className="flex items-center gap-4">
+            <Label
+              htmlFor="quantity"
+              className="w-[35%] font-medium text-gray-200 sm:text-base"
+            >
+              個数
+            </Label>
+            <Input
+              id="quantity"
+              type="number"
+              value={form.quantity}
+              onChange={(e) => handleChange(e, "quantity")}
+              className={fieldClassName}
+              ref={(el) => {
+                inputRefs.current[4] = el;
+              }}
+              onKeyDown={(e) => handleKeyDown(e, 4)}
+            />
+          </div>
         </div>
-        <div className="flex items-center gap-3 w-full">
-          <Label
-            htmlFor="expiryDate"
-            className="w-[27.3%] text-[18px] font-bold"
-          >
-            消費期限
-          </Label>
-          <div className="relative flex-1 min-w-0">
+
+        <div className={fieldWrapperClassName}>
+          <div className="flex items-center gap-4">
+            <Label
+              htmlFor="expiryDate"
+              className="w-[35%] text-sm font-medium text-gray-200 sm:text-base"
+            >
+              消費期限
+            </Label>
             <Input
               id="expiryDate"
               type="date"
               value={form.expiryDate}
               onChange={(e) => handleChange(e, "expiryDate")}
-              className="text-right"
+              className={fieldClassName}
               ref={(el) => {
                 inputRefs.current[5] = el;
               }}
@@ -270,45 +304,56 @@ const ExpiryInputForm = () => {
           </div>
         </div>
 
-        <div>
-          <div className="flex gap-4 justify-center mt-6">
-            <Button
-              type="button"
-              disabled={isBusy}
-              className="w-[30%]"
-              onClick={() => {
-                if (window.confirm("リセットしますか？")) {
-                  resetForm();
-                }
-              }}
-            >
-              リセット
-            </Button>
-            <Button
-              type="button"
-              className="w-[30%]"
-              disabled={isBusy}
-              onClick={async () => {
-                setIsNavigating(true);
-                router.push("/expiry/productList");
-              }}
-            >
-              {isNavigating ? (
+        {errorMessage && (
+          <p className="rounded bg-red-950 px-3 py-2 text-center text-sm text-red-200">
+            {errorMessage}
+          </p>
+        )}
+
+        <div className="flex flex-wrap justify-end gap-3 pt-2">
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isBusy}
+            className="w-32 border-gray-600 bg-transparent text-gray-200 hover:bg-gray-800 hover:text-white"
+            onClick={() => {
+              if (window.confirm("リセットしますか？")) {
+                resetForm();
+              }
+            }}
+          >
+            リセット
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            disabled={isBusy}
+            className="w-32 border-gray-600 bg-transparent text-gray-200 hover:bg-gray-800 hover:text-white"
+            onClick={async () => {
+              setIsNavigating(true);
+              router.push("/expiry/productList");
+            }}
+          >
+            {isNavigating ? (
+              <>
+                <Loader2 className="animate-spin h-4 w-4" />
+                移動中...
+              </>
+            ) : (
+              "一覧へ"
+            )}
+          </Button>
+          <Button type="submit" disabled={isBusy} className="w-32 bg-blue-600">
+            {isSubmitting ? (
+              <>
                 <Loader2 className="animate-spin h-5 w-5" />
-              ) : (
-                "一覧に戻る"
-              )}
-            </Button>
-            <Button type="submit" disabled={isBusy} className="w-[30%]">
-              {isSubmitting ? (
-                <Loader2 className="animate-spin h-5 w-5" />
-              ) : (
-                "登録する"
-              )}
-            </Button>
-          </div>
+                登録中...
+              </>
+            ) : (
+              "登録する"
+            )}
+          </Button>
         </div>
-        <p className="text-center text-red-600 text-sm mt-2">{errorMessage}</p>
       </div>
     </form>
   );

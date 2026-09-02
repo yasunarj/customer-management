@@ -215,7 +215,7 @@ const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
             ))}
           </div>
 
-          <div className="mt-4 rounded-lg border-border-gray-700 bg-gray-800 px-4 py-2 sm:p-4">
+          <div className="mt-2 rounded-lg border-border-gray-700 bg-gray-800 px-4 py-2 sm:p-4">
             <div className="flex items-center justify-between">
               <p className="font-medium text-gray-300">合計金額</p>
               <p
@@ -236,7 +236,7 @@ const EditForm = ({ detailData }: { detailData: DetailDataProps }) => {
             </p>
           )}
 
-          <div className="mt-4 flex justify-end gap-3">
+          <div className="mt-2 flex justify-end gap-3">
             <Button
               type="button"
               variant="outline"

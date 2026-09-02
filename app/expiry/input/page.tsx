@@ -4,20 +4,22 @@ import ExpiryInputForm from "../components/ExpiryInputForm";
 
 const ProductRegistrationPage = () => {
   return (
-    <div className="h-screen-vh flex justify-center items-center bg-yellow-200 overflow-y-hidden">
-      <div className="bg-white max-w-[900px] w-[95%] h-[98%] rounded-xl p-2 shadow-2xl flex flex-col">
-        <div className="flex flex-col gap-1 text-center">
-          <h1 className="relative text-2xl mt-2 font-bold text-gray-800">
-            商品登録フォーム
-            <div className="absolute top-1 right-4">
-              <SheetMenu menuList={expiryMenuList} />
-            </div>
-          </h1>
-          <p>入力後、送信ボタンを押してください</p>
+    <div className="h-screen-vh bg-black px-4 py-8 text-white">
+      <div className="mx-auto w-full max-w-4xl">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h1 className="mt-1 text-2xl font-bold">商品登録フォーム</h1>
+            <p className="mt-2 text-sm text-gray-400">
+              入力後、登録ボタンを押してください
+            </p>
+          </div>
+
+          <div className="text-white">
+            <SheetMenu menuList={expiryMenuList} />
+          </div>
         </div>
-        <div className="flex-1 border-2 border-gray-400 overflow-y-scroll">
-          <ExpiryInputForm />
-        </div>
+
+        <section className="mt-8 rounded-xl border border-gray-700 bg-gray-900 p-4 sm:p-6"><ExpiryInputForm /></section>
       </div>
     </div>
   );
