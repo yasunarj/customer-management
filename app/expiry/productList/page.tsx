@@ -23,7 +23,7 @@ const ProductListPage = async () => {
           </div>
         </div>
 
-        <section className="mt-4 h-[94%] rounded-xl border border-gray-700 bg-gray-900">
+        <section className="mt-2 h-[96%] rounded-xl border border-gray-700 bg-gray-900">
           <ProductListClient initial={initial} />
         </section>
       </div>
