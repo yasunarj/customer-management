@@ -11,17 +11,23 @@ const ProductListPage = async () => {
   }));
 
   return (
-    <div className="h-screen-vh overflow-hidden bg-yellow-200 flex justify-center items-center">
-      <div className="bg-white w-[98%] h-[98%] max-w-[900px] rounded-xl shadow-2xl">
-        <h1 className="relative text-2xl text-gray-800 font-bold text-center mt-4">
-          鮮度商品一覧
-          <div className="absolute top-1 right-4">
+    <main className="h-screen-vh bg-black px-4 py-8 text-white overflow-hidden">
+      <div className="mx-auto h-full w-full max-w-4xl">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h1 className="mt-1 text-2xl font-bold">鮮度商品一覧</h1>
+          </div>
+
+          <div className="text-white">
             <SheetMenu menuList={expiryMenuList} />
           </div>
-        </h1>
-        <ProductListClient initial={initial} />
+        </div>
+
+        <section className="mt-4 h-[94%] rounded-xl border border-gray-700 bg-gray-900">
+          <ProductListClient initial={initial} />
+        </section>
       </div>
-    </div>
+    </main>
   );
 };
 
