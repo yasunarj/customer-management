@@ -40,7 +40,7 @@ const ProductDeleteButton = ({ id }: { id: number }) => {
 
       mutate(`/api/expiry/${id}`, undefined, false);
 
-      await mutate(LIST_KEY)
+      await mutate(LIST_KEY);
 
       router.push("/expiry/productList");
     } catch (e) {
@@ -51,9 +51,13 @@ const ProductDeleteButton = ({ id }: { id: number }) => {
   };
 
   return (
-    <Button className="text-lg w-[40%]" onClick={handleDelete}>
+    <Button
+      className="text-lg w-32 text-white bg-gray-700 hover:bg-gray-600"
+      onClick={handleDelete}
+      disabled={isDeleting}
+    >
       {isDeleting ? (
-        <Loader2 className="animate-spin h-10 w-10 strokeWidth={3}" />
+        <Loader2 className="animate-spin h-5 w-5 strokeWidth={3}" />
       ) : (
         "完了(削除)"
       )}
@@ -62,4 +66,3 @@ const ProductDeleteButton = ({ id }: { id: number }) => {
 };
 
 export default ProductDeleteButton;
-

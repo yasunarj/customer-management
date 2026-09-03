@@ -15,60 +15,90 @@ const ProductDetailClient = ({
 }) => {
   const { item, loading, error, isValidating } = useExpiryDetail(id, initial);
 
-  if (loading) return <p className="text-center">読み込み中...</p>;
+  if (loading)
+    return (
+      <p className="py-10 text-center text-sm text-gray-400">読み込み中...</p>
+    );
   if (error || !item)
-    return <p className="text-center text-red-700">取得に失敗しました</p>;
+    return (
+      <p className="rounded bg-red-950 px-4 py-3 text-center text-sm text-red-200">
+        取得に失敗しました
+      </p>
+    );
 
   const expired = new Date() > new Date(item.expiryDate);
 
+  const detailItems = [
+    {
+      label: "商品名",
+      value: item.productName,
+    },
+    {
+      label: "消費期限",
+      value: new Date(item.expiryDate).toLocaleDateString("ja-JP"),
+      isExpired: expired,
+    },
+    {
+      label: "個数",
+      value: item.quantity,
+    },
+    {
+      label: "分類No",
+      value: item.category,
+    },
+    {
+      label: "ゴンドラNo",
+      value: item.gondolaNo,
+    },
+    {
+      label: "登録者",
+      value: item.manager || "未登録",
+    },
+  ];
+
   return (
-    <div className="border-2 border-gray-400 w-[90%] max-w-[520px] mx-auto my-4 flex-1 overflow-y-scroll flex flex-col">
-      <div className="flex flex-col justify-between w-full max-w-[400px] mx-auto py-4 px-4 flex-1 gap-2">
-        <div className="border-b-2">
-          <h3 className="text-lg text-gray-800 font-bold">商品名</h3>
-          <p className="text-end text-sm">{item.productName}</p>
-        </div>
-        <div className="border-b-2 flex justify-between items-center">
-          <h3 className="text-lg text-gray-800 font-bold">消費期限</h3>
-          <p
-            className={`text-end ${
-              expired
-                ? "text-red-700"
-                : ""
-            }`}
-          >
-            {new Date(item.expiryDate).toLocaleDateString("ja-JP")}
-          </p>
-        </div>
-        <div className="border-b-2 flex justify-between items-center">
-          <h3 className="text-lg text-gray-800 font-bold">個数</h3>
-          <p className="text-end">{item.quantity}</p>
-        </div>
-        <div className="border-b-2 flex justify-between items-center">
-          <h3 className="text-lg text-gray-800 font-bold">分類No</h3>
-          <p className="text-end">{item.category}</p>
-        </div>
-        <div className="border-b-2 flex justify-between items-center">
-          <h3 className="text-lg text-gray-800 font-bold">ゴンドラNo</h3>
-          <p className="text-end">{item.gondolaNo}</p>
-        </div>
-        <div className="border-b-2 flex justify-between items-center">
-          <h3 className="text-lg text-gray-800 font-bold">登録者</h3>
-          <p className="text-end">{item.manager}</p>
-        </div>
+    <div className="h-full w-full mx-auto max-w-4xl">
+      <div className="p-4 flex flex-col justify-between h-[85%]">
+        {detailItems.map((detail) =>
+          detail.label === "商品名" ? (
+            <div
+              key={detail.label}
+              className="border-b border-gray-700 px-4 mt-4"
+            >
+              <p className=" text-gray-400 font-medium">{detail.label}</p>
+              <p
+                className={`my-2 text-right font-medium ${detail.isExpired ? "text-red-400" : "text-gray-200"}`}
+              >
+                {detail.value}
+              </p>
+            </div>
+          ) : (
+            <div
+              key={detail.label}
+              className="flex items-center justify-between gap-4  border-b border-gray-700  px-4 py-6"
+            >
+              <span className=" text-gray-400 font-medium">{detail.label}</span>
+              <span
+                className={`text-right font-medium ${detail.isExpired ? "text-red-400" : "text-gray-200"}`}
+              >
+                {detail.value}
+              </span>
+            </div>
+          ),
+        )}
       </div>
 
-      <div className="w-full flex justify-center gap-8 my-2 max-w-[400px] mx-auto">
-        <Link
-          href={`/expiry/${id}/edit`}
-          className="w-[40%] bg-red-700 rounded-xl"
-        >
-          <Button className="text-lg w-[100%]">編集</Button>
+      <div className="mt-4 flex justify-center gap-8">
+        <Link href={`/expiry/${id}/edit`}>
+          <Button
+            type="button"
+            className="w-32 bg-blue-600 hover:bg-blue-600 text-lg"
+          >
+            編集
+          </Button>
         </Link>
         <ProductDeleteButton id={id} />
       </div>
-
-      {isValidating && <p className="text-xs text-center text-gray-500">更新中...</p>}
     </div>
   );
 };

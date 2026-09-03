@@ -35,7 +35,7 @@ const ProductListClient = ({ initial }: { initial: ExpiryItem[] }) => {
   }
 
   return (
-    <div className="h-[98%] overflow-y-scroll">
+    <div className="h-[98%] overflow-y-scroll rounded-xl">
       <table className="w-full border-collapse text-sm">
         <thead className="bg-gray-800 text-gray-300">
           <tr>

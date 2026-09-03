@@ -14,9 +14,14 @@ const ProductDetailPage = async (props: ProductDetailProps) => {
   const productData = await getProductDetailData(productId);
   if (!productData) {
     return (
-      <div className="text-2xl mt-4 text-center h-screen-vh">
+      <main className="h-screen-vh bg-black px-4 py-8 text-white">
+        <div className="mx-auto max-w-4xl">
+          <p className="rounded-xl border border-gray-700 bg-gray-900 p-6 text-center text-gray-400">
+            データがありません
+          </p>
+        </div>
         データがありません
-      </div>
+      </main>
     );
   }
   const initial = {
@@ -25,17 +30,21 @@ const ProductDetailPage = async (props: ProductDetailProps) => {
   };
 
   return (
-    <div className="h-screen-vh overflow-hidden bg-yellow-200 flex justify-center items-center">
-      <div className="bg-white w-[90%] h-[95%] rounded-xl overflow-y-scroll shadow-2xl">
-        <div className="h-full flex flex-col">
-          <h1 className="relative text-gray-800 text-2xl text-center font-bold mt-4">
-            商品詳細データ
-            <div className="absolute top-1 right-4">
-              <SheetMenu menuList={expiryMenuList} />
-            </div>
-          </h1>
-          <ProductDetailClient id={productId} initial={initial} />
+    <div className="h-screen-vh bg-black px-4 py-4 text-white">
+      <div className="mx-auto w-full h-[98%] max-w-4xl">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h1 className="mt-1 text-2xl font-bold">商品詳細データ</h1>
+          </div>
+
+          <div className="text-white">
+            <SheetMenu menuList={expiryMenuList} />
+          </div>
+
         </div>
+          <section className="mt-2 h-[96%] rounded-xl border border-gray-700 bg-gray-900">
+            <ProductDetailClient id={productId} initial={initial} />
+          </section>
       </div>
     </div>
   );
