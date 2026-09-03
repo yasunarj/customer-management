@@ -13,13 +13,15 @@ const ExpiryDataEditPage = async ({
   const productData = await getProductDetailData(productId);
   if (!productData) {
     return (
-      <div className="h-screen-vh flex justify-center items-center bg-yellow-200">
-        <div className="bg-white max-w-[900px] w-[95%] h-[98%] rounded-xl p-2 shadow-2xl flex flex-col items-center justify-center">
-          <p className="text-lg font-bold text-gray-600">
-            データが存在しません
-          </p>
+      <div className="h-screen-vh bg-black px-4 py-4 text-white">
+      <div className="mx-auto h-full w-full max-w-4xl">
+        <div className="rounded-xl h-full border border-gray-700 bg-gray-900 p-6">
+          <div className="h-[98%] w-[98%] flex justify-center items-center">
+            <p className="text-lg font-semibold text-gray-400">データが存在しません...</p>
+          </div>
         </div>
       </div>
+    </div>
     );
   }
 
@@ -29,22 +31,23 @@ const ExpiryDataEditPage = async ({
   };
 
   return (
-    <div className="h-screen-vh flex justify-center items-center bg-yellow-200 overflow-y-hidden">
-      <div className="bg-white max-w-[900px] w-[95%] h-[98%] rounded-xl p-2 shadow-2xl flex flex-col">
-        <div className="flex flex-col gap-1 text-center">
-          <h1 className="relative text-2xl mt-2 font-bold text-gray-800">
-            修正フォーム
-            <div className="absolute top-1 right-4">
-              <SheetMenu menuList={expiryMenuList} />
-            </div>
-          </h1>
-          <p>入力後、送信ボタンを押してください</p>
+    <main className="h-screen-vh bg-black px-4 py-4 text-white overflow-hidden">
+      <div className="mx-auto h-full w-full max-w-4xl">
+        <div className="flex items-center justify-between gap-4">
+          <div>
+            <h1 className="mt-1 text-2xl font-bold">修正フォーム</h1>
+          </div>
+
+          <div className="text-white">
+            <SheetMenu menuList={expiryMenuList} />
+          </div>
         </div>
-        <div className="flex-1 border-2 border-gray-400 overflow-y-scroll">
+
+        <section className="mt-2 h-[94%] rounded-xl border border-gray-700 bg-gray-900 p-4 sm:p-6">
           <ExpiryEdit initial={initial} />
-        </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 };
 

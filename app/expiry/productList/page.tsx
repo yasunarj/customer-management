@@ -11,7 +11,7 @@ const ProductListPage = async () => {
   }));
 
   return (
-    <main className="h-screen-vh bg-black px-4 py-8 text-white overflow-hidden">
+    <main className="h-screen-vh bg-black px-4 py-4 text-white overflow-hidden">
       <div className="mx-auto h-full w-full max-w-4xl">
         <div className="flex items-center justify-between gap-4">
           <div>

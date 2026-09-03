@@ -63,7 +63,7 @@ const ProductDetailClient = ({
           detail.label === "商品名" ? (
             <div
               key={detail.label}
-              className="border-b border-gray-700 px-4 mt-4"
+              className="rounded-lg border border-gray-700 px-4 pt-4  bg-gray-800"
             >
               <p className=" text-gray-400 font-medium">{detail.label}</p>
               <p
@@ -75,7 +75,7 @@ const ProductDetailClient = ({
           ) : (
             <div
               key={detail.label}
-              className="flex items-center justify-between gap-4  border-b border-gray-700  px-4 py-6"
+              className="rounded-lg flex items-center justify-between gap-4  border border-gray-700 px-4 py-6 bg-gray-800"
             >
               <span className=" text-gray-400 font-medium">{detail.label}</span>
               <span
