@@ -99,6 +99,9 @@ const ProductDetailClient = ({
         </Link>
         <ProductDeleteButton id={id} />
       </div>
+      {isValidating && (
+        <p className="mt-3 text-center text-xs text-gray-500">更新中...</p>
+      )}
     </div>
   );
 };
