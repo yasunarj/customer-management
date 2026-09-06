@@ -11,6 +11,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { Input } from "@/components/ui/input";
 
 type TrainingCategory =
   | "REGISTER"
@@ -99,6 +100,10 @@ const TrainingEmployeeDetailPage = () => {
     string | null
   >(null);
   const [checkErrorMessage, setCheckErrorMessage] = useState<string>("");
+  const [searchText, setSearchText] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<
+    TrainingCategory | "ALL"
+  >("ALL");
 
   const params = useParams<{
     employeeId: string;
@@ -217,14 +222,95 @@ const TrainingEmployeeDetailPage = () => {
       ? 0
       : Math.round((completedCount / assignments.length) * 100);
 
+  const filteredAssignments = incompleteAssignments.filter((assignment) => {
+    const matchesCategory =
+      selectedCategory === "ALL" ||
+      assignment.workItem.category === selectedCategory;
+
+    const matchesSearch = assignment.workItem.title
+      .toLowerCase()
+      .includes(searchText.toLowerCase());
+
+    return matchesCategory && matchesSearch;
+  });
+
   return (
     <main className="h-screen-vh bg-black px-4 py-8 text-white overflow-y-auto">
       <div className="mx-auto w-full max-w-4xl">
         <div className="flex gap-4 items-start justify-between">
-          <div>
-            <p className="text-sm text-gray-400">従業員詳細</p>
-
+          <div className="flex items-center gap-3">
             <h1 className="mt-1 text-2xl font-bold">{employee.name}</h1>
+            <Sheet>
+              <SheetTrigger asChild>
+                <button className="rounded border border-gray-600 px-3 py-1 text-sm text-gray-300 hover:bg-gray-800">
+                  情報
+                </button>
+              </SheetTrigger>
+
+              <SheetContent
+                side="right"
+                className="w-[90%] overflow-y-auto bg-gray-900 text-white sm:max-w-md"
+              >
+                <SheetHeader>
+                  <SheetTitle className="text-left text-xl text-white">
+                    {employee.name}
+                  </SheetTitle>
+                </SheetHeader>
+
+                <div className="mt-6 space-y-6">
+                  <section className="mt-4 rounded-xl border border-gray-700 bg-gray-900 p-4">
+                    <div className="flex items-center gap-8">
+                      <div>
+                        <p className="text-sm text-gray-500">入社日</p>
+
+                        <p className="mt-1">
+                          {employee.joinedAt
+                            ? new Date(employee.joinedAt).toLocaleDateString(
+                                "ja-JP",
+                              )
+                            : "未登録"}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-sm text-gray-500">登録日</p>
+
+                        <p className="mt-1">
+                          {new Date(employee.createdAt).toLocaleDateString(
+                            "ja-JP",
+                          )}
+                        </p>
+                      </div>
+
+                      <div>
+                        <p className="text-sm text-gray-500">最終更新日</p>
+
+                        <p className="mt-1">
+                          {new Date(employee.updatedAt).toLocaleDateString(
+                            "ja-JP",
+                          )}
+                        </p>
+                      </div>
+                    </div>
+                  </section>
+                  <div className="flex flex-col gap-3">
+                    <Link
+                      href={`/training/employees/${employee.id}/assign`}
+                      className="rounded bg-blue-700 px-4 py-2 text-center text-sm font-medium hover:bg-blue-600"
+                    >
+                      仕事を割り当てる
+                    </Link>
+
+                    <Link
+                      href={`/training/employees/${employee.id}/completed`}
+                      className="rounded border border-gray-600 px-4 py-2 text-center text-sm text-gray-300 hover:bg-gray-800"
+                    >
+                      完了した項目へ
+                    </Link>
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
 
           <Link
@@ -236,36 +322,6 @@ const TrainingEmployeeDetailPage = () => {
         </div>
 
         <section className="mt-4 rounded-xl border border-gray-700 bg-gray-900 p-4">
-          <div className="flex items-center gap-8">
-            <div>
-              <p className="text-sm text-gray-500">入社日</p>
-
-              <p className="mt-1">
-                {employee.joinedAt
-                  ? new Date(employee.joinedAt).toLocaleDateString("ja-JP")
-                  : "未登録"}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-sm text-gray-500">登録日</p>
-
-              <p className="mt-1">
-                {new Date(employee.createdAt).toLocaleDateString("ja-JP")}
-              </p>
-            </div>
-
-            <div>
-              <p className="text-sm text-gray-500">最終更新日</p>
-
-              <p className="mt-1">
-                {new Date(employee.updatedAt).toLocaleDateString("ja-JP")}
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <section className="mt-8 rounded-xl border border-gray-700 bg-gray-900 p-4">
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <div className="flex items-center gap-3">
@@ -291,26 +347,74 @@ const TrainingEmployeeDetailPage = () => {
                 この従業員が覚える仕事を管理します。
               </p>
             </div>
-
-            <Link
-              href={`/training/employees/${employee.id}/assign`}
-              className="rounded bg-blue-700 px-4 py-2 text-center text-sm font-medium hover:bg-blue-600"
-            >
-              仕事を割り当てる
-            </Link>
-
-            <Link
-              href={`/training/employees/${employee.id}/completed`}
-              className="rounded border border-gray-600 px-4 py-2 text-center text-sm text-gray-300 hover:bg-gray-800"
-            >
-              完了した項目へ
-            </Link>
           </div>
           {checkErrorMessage && (
             <p className="mt-4 rounded bg-red-950 px-3 py-2 text-sm text-red-200">
               {checkErrorMessage}
             </p>
           )}
+
+          <div className="mt-6 space-y-4">
+            <Input
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              placeholder="仕事項目を検索"
+              className="border-gray-600 bg-gray-800 text-white"
+            />
+
+            <div className="flex justify-between">
+              <button
+                className={
+                  selectedCategory === "ALL"
+                    ? "rounded bg-blue-700 px-2 py-2 text-sm"
+                    : "rounded bg-gray-800 px-2 py-2 text-sm text-gray-300"
+                }
+                onClick={(e) => setSelectedCategory("ALL")}
+              >
+                すべて
+              </button>
+              <button
+                className={
+                  selectedCategory === "REGISTER"
+                    ? "rounded bg-blue-700 px-2 py-2 text-sm"
+                    : "rounded bg-gray-800 px-2 py-2 text-sm text-gray-300"
+                }
+                onClick={() => setSelectedCategory("REGISTER")}
+              >
+                レジ
+              </button>
+              <button
+                className={
+                  selectedCategory === "CLEANING"
+                    ? "rounded bg-blue-700 px-2 py-2 text-sm"
+                    : "rounded bg-gray-800 px-2 py-2 text-sm text-gray-300"
+                }
+                onClick={() => setSelectedCategory("CLEANING")}
+              >
+                清掃
+              </button>
+              <button
+                className={
+                  selectedCategory === "PRODUCT_MANAGEMENT"
+                    ? "rounded bg-blue-700 px-2 py-2 text-sm"
+                    : "rounded bg-gray-800 px-2 py-2 text-sm text-gray-300"
+                }
+                onClick={() => setSelectedCategory("PRODUCT_MANAGEMENT")}
+              >
+                商品管理
+              </button>
+              <button
+                className={
+                  selectedCategory === "OTHER"
+                    ? "rounded bg-blue-700 px-2 py-2 text-sm"
+                    : "rounded bg-gray-800 px-2 py-2 text-sm text-gray-300"
+                }
+                onClick={() => setSelectedCategory("OTHER")}
+              >
+                その他
+              </button>
+            </div>
+          </div>
 
           <div className="mt-6 space-y-8">
             {assignments.length === 0 ? (
@@ -327,7 +431,7 @@ const TrainingEmployeeDetailPage = () => {
               </div>
             ) : (
               categoryOrder.map((category) => {
-                const categoryAssignments = incompleteAssignments.filter(
+                const categoryAssignments = filteredAssignments.filter(
                   (assignment) => assignment.workItem.category === category,
                 );
 
@@ -337,8 +441,9 @@ const TrainingEmployeeDetailPage = () => {
 
                 return (
                   <section key={category}>
-                    <h3 className="mb-3 text-lg font-semibold">
-                      {categoryLabels[category]}
+                    <h3 className="mb-3 text-lg flex items-center gap-2 font-semibold">
+                      <span>{categoryLabels[category]}</span>
+                      <span className="rounded-full bg-gray-700 px-2 py-0.5 text-xs font-normal text-gray-300">{categoryAssignments.length}件</span>
                     </h3>
 
                     <div className="space-y-3">
