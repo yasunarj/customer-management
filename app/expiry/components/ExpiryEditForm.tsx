@@ -182,7 +182,7 @@ const ExpiryEditForm = ({
               type="text"
               value={editFormState.productName}
               onChange={(e) => handleChange(e, "productName")}
-              className={`${fieldClassName} text-sm`}
+              className={`${fieldClassName} text-right text-sm`}
               ref={(el) => {
                 inputRefs.current[0] = el;
               }}
