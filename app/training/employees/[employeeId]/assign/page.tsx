@@ -500,14 +500,14 @@ const TrainingEmployeeAssignPage = () => {
                           <div>
                             <span>{workItem.title}</span>
                             {isInitiallyAssigned && isChecked && (
-                              <p className="mt-1 text-xs text-green-400">
+                              <div className="mt-1 text-xs text-green-400">
                                 割り当て済み
                                 {hasCheck && (
                                   <p className="text-red-400">
                                     ※チェック履歴があるため解除できません
                                   </p>
                                 )}
-                              </p>
+                              </div>
                             )}
                             {isNewlyAdded && (
                               <p className="mt-1 text-xs text-blue-400">

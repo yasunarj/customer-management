@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import useSWR from "swr";
 import {
   Sheet,
+  SheetClose,
   SheetContent,
   SheetHeader,
   SheetTitle,
@@ -274,11 +275,16 @@ const TrainingEmployeeDetailPage = () => {
                   未完了 {incompleteCount}件
                 </span>
 
-                <span className="rounded-full bg-green-950 px-3 py-1 text-xs text-green-300">進捗率 {progressRate}%</span>
+                <span className="rounded-full bg-green-950 px-3 py-1 text-xs text-green-300">
+                  進捗率 {progressRate}%
+                </span>
               </div>
 
               <div className="mt-2 h-3 w-full overflow-hidden rounded-full bg-gray-700">
-                <div className="h-full bg-green-600 transition-all" style={{width: `${progressRate}%`}} />
+                <div
+                  className="h-full bg-green-600 transition-all"
+                  style={{ width: `${progressRate}%` }}
+                />
               </div>
 
               <p className="mt-3 text-sm text-gray-400">
@@ -382,38 +388,42 @@ const TrainingEmployeeDetailPage = () => {
                                   side="right"
                                   className="w-[95%] overflow-y-auto bg-gray-900 text-white sm:max-w-lg"
                                 >
-                                  <SheetHeader>
-                                    <SheetTitle className="text-left text-xl text-white">
-                                      {assignment.workItem.title}
-                                    </SheetTitle>
-                                  </SheetHeader>
+                                  <SheetClose asChild>
+                                    <div className="min-h-full cursor-pointer">
+                                      <SheetHeader>
+                                        <SheetTitle className="text-left text-xl text-white">
+                                          {assignment.workItem.title}
+                                        </SheetTitle>
+                                      </SheetHeader>
 
-                                  <div className="mt-6 space-y-6">
-                                    <div>
-                                      <p className="text-sm text-gray-500">
-                                        カテゴリー
-                                      </p>
+                                      <div className="mt-6 space-y-6">
+                                        <div>
+                                          <p className="text-sm text-gray-500">
+                                            カテゴリー
+                                          </p>
 
-                                      <p className="mt-1">
-                                        {
-                                          categoryLabels[
-                                            assignment.workItem.category
-                                          ]
-                                        }
-                                      </p>
+                                          <p className="mt-1">
+                                            {
+                                              categoryLabels[
+                                                assignment.workItem.category
+                                              ]
+                                            }
+                                          </p>
+                                        </div>
+
+                                        <div>
+                                          <p className="text-sm text-gray-500">
+                                            詳細内容
+                                          </p>
+
+                                          <p className="mt-2 whitespace-pre-wrap leading-7 text-gray-200 text-sm">
+                                            {assignment.workItem.description ||
+                                              "詳細内容は登録されていません。"}
+                                          </p>
+                                        </div>
+                                      </div>
                                     </div>
-
-                                    <div>
-                                      <p className="text-sm text-gray-500">
-                                        詳細内容
-                                      </p>
-
-                                      <p className="mt-2 whitespace-pre-wrap leading-7 text-gray-200 text-sm">
-                                        {assignment.workItem.description ||
-                                          "詳細内容は登録されていません。"}
-                                      </p>
-                                    </div>
-                                  </div>
+                                  </SheetClose>
                                 </SheetContent>
                               </Sheet>
                             </div>
