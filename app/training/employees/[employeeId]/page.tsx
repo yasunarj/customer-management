@@ -369,7 +369,7 @@ const TrainingEmployeeDetailPage = () => {
                     ? "rounded bg-blue-700 px-2 py-2 text-sm"
                     : "rounded bg-gray-800 px-2 py-2 text-sm text-gray-300"
                 }
-                onClick={(e) => setSelectedCategory("ALL")}
+                onClick={() => setSelectedCategory("ALL")}
               >
                 すべて
               </button>
