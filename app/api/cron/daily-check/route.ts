@@ -140,7 +140,7 @@ const GET = async (req: Request) => {
     await sendMail({
       to: email,
       subject: `【未完了】本日のチェック漏れ (${date})`,
-      text: `以下が未チェックです。\n\n${lines}${reminderText}\n\n (自動通知)`,
+      text: `以下が未チェックです。\n\n${lines}${reminderText}\n\n (自動通知)` ,
     });
 
     mailResults.push({
