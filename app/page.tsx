@@ -17,7 +17,7 @@ export default function Home() {
             地域No1のお店を作り
           </h2>
           <h3 className="text-gray-300 text-2xl sm:text-3xl md:text-4xl font-semibold ml-8 sm:ml-16 md:ml-24">
-            お客様には最高の満足を
+            お客様には最高の満足を(テスト)
           </h3>
         </div>
         <HomeNavButtons />
