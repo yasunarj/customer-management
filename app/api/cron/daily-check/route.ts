@@ -3,6 +3,7 @@ import prisma from "@/lib/prisma";
 import supabaseAdmin from "@/lib/supabaseAdmin";
 import { jstDateKey, jstWeekdayKey } from "@/app/daily-check/lib/dateKey";
 import { sendMail } from "@/app/lp/lib/mailer";
+import generateReminder from "@/app/daily-check/lib/server/generateReminder";
 
 export const dynamic = "force-dynamic";
 
@@ -128,10 +129,18 @@ const GET = async (req: Request) => {
     const email = data.user.email;
     const lines = missing.map((t, i) => `${i + 1}. ${t.title}`).join("\n");
 
+    const reminder = await generateReminder({
+      date,
+      totalTasks: ownerTasks.length,
+      missingTaskNames: missing.map((task) => task.title)
+    });
+
+    const reminderText = reminder ? `\n\n${reminder}` : "";
+
     await sendMail({
       to: email,
       subject: `【未完了】本日のチェック漏れ (${date})`,
-      text: `以下が未チェックです。\n\n${lines}\n\n (自動通知)`,
+      text: `以下が未チェックです。\n\n${lines}${reminderText}\n\n (自動通知)`,
     });
 
     mailResults.push({
