@@ -102,6 +102,48 @@ const GET = async (req: Request) => {
 
     const missing = ownerTasks.filter((task) => !checkedSet.has(task.id));
 
+    const completedTasks = ownerTasks.length - missing.length;
+    const achieved = missing.length === 0;
+
+    const latestResult = await prisma.dailyCheckResult.findFirst({
+      where: {
+        ownerId,
+        date: {
+          lt: date,
+        },
+      },
+      orderBy: {
+        date: "desc",
+      },
+    });
+
+    const streak = achieved
+      ? (latestResult?.streak ?? 0) + 1
+      : 0;
+
+    await prisma.dailyCheckResult.upsert({
+      where: {
+        ownerId_date: {
+          ownerId,
+          date,
+        }
+      },
+      update: {
+        achieved,
+        totalTasks: ownerTasks.length,
+        completedTasks,
+        streak,
+      },
+      create: {
+        ownerId,
+        date,
+        achieved,
+        totalTasks: ownerTasks.length,
+        completedTasks,
+        streak,
+      },
+    });
+
     if (missing.length === 0) {
       mailResults.push({
         ownerId,
@@ -140,7 +182,7 @@ const GET = async (req: Request) => {
     await sendMail({
       to: email,
       subject: `【未完了】本日のチェック漏れ (${date})`,
-      text: `以下が未チェックです。\n\n${lines}${reminderText}\n\n (自動通知)` ,
+      text: `以下が未チェックです。\n\n${lines}${reminderText}\n\n (自動通知)`,
     });
 
     mailResults.push({

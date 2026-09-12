@@ -95,6 +95,20 @@ model DailyTaskCheck {
   @@index([taskId])
 }
 
+model DailyCheckResult {
+  id             String   @id @default(cuid())
+  ownerId        String
+  date           String
+  achieved       Boolean
+  totalTasks     Int
+  completedTasks Int
+  streak         Int
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@unique([ownerId, date])
+}
+
 model OwnerGateLimit {
   key         String    @id
   failCount   Int       @default(0)
