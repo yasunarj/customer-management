@@ -10,6 +10,7 @@ const DailyCheckPage = () => {
   const router = useRouter();
   const supabase = createClient();
   const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
+  const [streak, setStreak] = useState<number>(0);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -27,6 +28,21 @@ const DailyCheckPage = () => {
     checkAuth();
   }, [router, supabase]);
 
+  useEffect(() => {
+    const fetchStreak = async () => {
+      const res = await fetch("/api/daily-check/streak");
+
+      if (!res.ok) {
+        return;
+      }
+
+      const data = await res.json();
+      setStreak(data.streak);
+    };
+
+    fetchStreak();
+  }, []);
+
   if (isCheckingAuth) {
     return (
       <main className="flex h-screen-vh items-center justify-center bg-black text-white">
@@ -38,7 +54,16 @@ const DailyCheckPage = () => {
   return (
     <main className="flex-1 min-h-0 bg-black text-white flex justify-center items-center">
       <div className="max-w-2xl w-[95%] h-[95%] px-4 py-6 bg-gray-900 overflow-y-scroll">
-        <h1 className="text-2xl font-bold">本日のチェック</h1>
+        <div className="flex justify-between">
+          <h1 className="text-2xl font-bold">本日のチェック</h1>
+          {streak > 0 ? (
+            <p className="text-lg font-semibold">
+              🔥 現在 {streak} 日連続達成中
+            </p>
+          ) : (
+            <p>今日から連続達成を始めましょう！</p>
+          )}
+        </div>
         <p className="mt-2 text-sm text-gray-200">
           チェックは自動保存されます。未完了があると23時にメール通知されます。
         </p>
