@@ -80,7 +80,8 @@ export async function updateSession(request: NextRequest) {
     if (
       pathname.startsWith("/user") ||
       pathname.startsWith("/admin") ||
-      pathname.startsWith("/training")
+      pathname.startsWith("/training") ||
+      pathname.startsWith("/daily-check")
     ) {
       const loginUrl = new URL("/auth/login", request.url);
 

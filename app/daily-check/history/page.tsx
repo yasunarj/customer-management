@@ -48,7 +48,7 @@ const DailyCheckHistoryPage = async () => {
   } = await supabase.auth.getUser();
 
   if (!user || error) {
-    redirect("/auth/daily-check/login");
+    redirect("/auth/login?next=/daily-check/history");
   }
 
   const dates = Array.from({ length: 30 }, (_, i) => jstDateKey(i));

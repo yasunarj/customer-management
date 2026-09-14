@@ -14,194 +14,219 @@ type TaskRow = {
 };
 
 const GET = async (req: Request) => {
-  const auth = req.headers.get("authorization");
+  try {
+    const auth = req.headers.get("authorization");
 
-  if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
-    return NextResponse.json(
-      { ok: false, error: "unauthorized" },
-      { status: 401 }
-    );
-  }
-
-  const date = jstDateKey();
-  const wk = jstWeekdayKey();
-
-  const tasks = await prisma.dailyTask.findMany({
-    where: {
-      isActive: true,
-      [wk]: true,
-    },
-    orderBy: [{ ownerId: "asc" }, { sortOrder: "asc" }, { createdAt: "asc" }],
-    select: {
-      id: true,
-      title: true,
-      ownerId: true,
+    if (!process.env.CRON_SECRET || auth !== `Bearer ${process.env.CRON_SECRET}`) {
+      return NextResponse.json(
+        { ok: false, error: "unauthorized" },
+        { status: 401 }
+      );
     }
-  });
 
-  if (tasks.length === 0) {
+    const date = jstDateKey();
+    const wk = jstWeekdayKey();
+
+    const tasks = await prisma.dailyTask.findMany({
+      where: {
+        isActive: true,
+        [wk]: true,
+      },
+      orderBy: [{ ownerId: "asc" }, { sortOrder: "asc" }, { createdAt: "asc" }],
+      select: {
+        id: true,
+        title: true,
+        ownerId: true,
+      }
+    });
+
+    if (tasks.length === 0) {
+      return NextResponse.json({
+        ok: true,
+        date,
+        weekday: wk,
+        mailedUsers: 0,
+        message: "no tasks today",
+      });
+    }
+
+    const checks = await prisma.dailyTaskCheck.findMany({
+      where: {
+        date,
+      },
+      select: {
+        taskId: true,
+        ownerId: true,
+      }
+    });
+
+    const tasksByOwner = new Map<string, TaskRow[]>();  //例　map.set("userA", ["発注", "日報"])
+    for (const task of tasks) {
+      const list = tasksByOwner.get(task.ownerId) ?? [];
+      list.push(task);
+      tasksByOwner.set(task.ownerId, list);
+    }
+    //最終的なtaskByOwnerの値（例）
+    // tasksByOwner = {
+    //   "userA" => [
+    //     { id: "t1", title: "発注", ownerId: "userA" },
+    //     { id: "t2", title: "日報", ownerId: "userA" }
+    //   ],
+    //   "userB" => [
+    //     { id: "t3", title: "清掃", ownerId: "userB" }
+    //   ]
+    // }
+
+    const checkedTaskIdsByOwner = new Map<string, Set<string>>();
+    for (const check of checks) {
+      const set = checkedTaskIdsByOwner.get(check.ownerId) ?? new Set<string>();
+      set.add(check.taskId);
+      checkedTaskIdsByOwner.set(check.ownerId, set);
+    }
+    // Setは重複した値を入れない箱
+    //最終的なcheckedTaskIdsByOwnerの値（例）
+    // checkedTaskIdsByOwner = {
+    //   "userA" => Set { "t1" },
+    //   "userB" => Set { "t3" },
+    // }
+
+    const mailResults: Array<{
+      ownerId: string;
+      email: string | null;
+      missingCount: number;
+      mailed: boolean;
+      reason?: string;
+    }> = [];
+
+    for (const [ownerId, ownerTasks] of tasksByOwner.entries()) {
+      try {
+
+        const checkedSet = checkedTaskIdsByOwner.get(ownerId) ?? new Set<string>();
+
+        const missing = ownerTasks.filter((task) => !checkedSet.has(task.id));
+
+        const completedTasks = ownerTasks.length - missing.length;
+        const achieved = missing.length === 0;
+
+        const existingResult = await prisma.dailyCheckResult.findUnique({
+          where: {
+            ownerId_date: {
+              ownerId,
+              date,
+            },
+          },
+        });
+
+        if (!existingResult) {
+          const latestResult = await prisma.dailyCheckResult.findFirst({
+            where: {
+              ownerId,
+              date: {
+                lt: date,
+              },
+            },
+            orderBy: {
+              date: "desc",
+            },
+          });
+
+          const streak = achieved ? (latestResult?.streak ?? 0) + 1 : 0;
+
+          await prisma.dailyCheckResult.create({
+            data: {
+              ownerId,
+              date,
+              achieved,
+              totalTasks: ownerTasks.length,
+              completedTasks,
+              streak,
+            }
+          });
+        }
+
+        if (missing.length === 0) {
+          mailResults.push({
+            ownerId,
+            email: null,
+            missingCount: 0,
+            mailed: false,
+            reason: "no missing tasks",
+          });
+          continue;
+        }
+
+        const { data, error } = await supabaseAdmin.auth.admin.getUserById(ownerId);
+
+        if (error || !data?.user?.email) {
+          mailResults.push({
+            ownerId,
+            email: null,
+            missingCount: missing.length,
+            mailed: false,
+            reason: "email not found",
+          });
+
+          continue;
+        }
+
+        const email = data.user.email;
+        const lines = missing.map((t, i) => `${i + 1}. ${t.title}`).join("\n");
+
+        const reminder = await generateReminder({
+          date,
+          totalTasks: ownerTasks.length,
+          missingTaskNames: missing.map((task) => task.title)
+        });
+
+        const reminderText = reminder ? `\n\n${reminder}` : "";
+
+        await sendMail({
+          to: email,
+          subject: `【未完了】本日のチェック漏れ (${date})`,
+          text: `以下が未チェックです。\n\n${lines}${reminderText}\n\n (自動通知)`,
+        });
+
+        mailResults.push({
+          ownerId,
+          email,
+          missingCount: missing.length,
+          mailed: true,
+        });
+      } catch (e) {
+        console.error(`daily-check cron error ownerId=${ownerId}`, e);
+
+        mailResults.push({
+          ownerId,
+          email: null,
+          missingCount: 0,
+          mailed: false,
+          reason: "processing failed",
+        });
+
+        continue;
+      }
+    }
+
+    const mailedUsers = mailResults.filter((r) => r.mailed).length;
+
     return NextResponse.json({
       ok: true,
       date,
       weekday: wk,
-      mailedUsers: 0,
-      message: "no tasks today",
-    });
+      mailedUsers,
+      results: mailResults,
+    })
+  } catch (e) {
+    console.error("daily-check cron error", e);
+
+    return NextResponse.json(
+      {
+        ok: false,
+        error: "internal error",
+      },
+      { status: 500 }
+    )
   }
-
-  const checks = await prisma.dailyTaskCheck.findMany({
-    where: {
-      date,
-    },
-    select: {
-      taskId: true,
-      ownerId: true,
-    }
-  });
-
-  const tasksByOwner = new Map<string, TaskRow[]>();  //例　map.set("userA", ["発注", "日報"])
-  for (const task of tasks) {
-    const list = tasksByOwner.get(task.ownerId) ?? [];
-    list.push(task);
-    tasksByOwner.set(task.ownerId, list);
-  }
-  //最終的なtaskByOwnerの値（例）
-  // tasksByOwner = {
-  //   "userA" => [
-  //     { id: "t1", title: "発注", ownerId: "userA" },
-  //     { id: "t2", title: "日報", ownerId: "userA" }
-  //   ],
-  //   "userB" => [
-  //     { id: "t3", title: "清掃", ownerId: "userB" }
-  //   ]
-  // }
-
-  const checkedTaskIdsByOwner = new Map<string, Set<string>>();
-  for (const check of checks) {
-    const set = checkedTaskIdsByOwner.get(check.ownerId) ?? new Set<string>();
-    set.add(check.taskId);
-    checkedTaskIdsByOwner.set(check.ownerId, set);
-  }
-  // Setは重複した値を入れない箱
-  //最終的なcheckedTaskIdsByOwnerの値（例）
-  // checkedTaskIdsByOwner = {
-  //   "userA" => Set { "t1" },
-  //   "userB" => Set { "t3" },
-  // }
-
-  const mailResults: Array<{
-    ownerId: string;
-    email: string | null;
-    missingCount: number;
-    mailed: boolean;
-    reason?: string;
-  }> = [];
-
-  for (const [ownerId, ownerTasks] of tasksByOwner.entries()) {
-    const checkedSet = checkedTaskIdsByOwner.get(ownerId) ?? new Set<string>();
-
-    const missing = ownerTasks.filter((task) => !checkedSet.has(task.id));
-
-    const completedTasks = ownerTasks.length - missing.length;
-    const achieved = missing.length === 0;
-
-    const latestResult = await prisma.dailyCheckResult.findFirst({
-      where: {
-        ownerId,
-        date: {
-          lt: date,
-        },
-      },
-      orderBy: {
-        date: "desc",
-      },
-    });
-
-    const streak = achieved
-      ? (latestResult?.streak ?? 0) + 1
-      : 0;
-
-    await prisma.dailyCheckResult.upsert({
-      where: {
-        ownerId_date: {
-          ownerId,
-          date,
-        }
-      },
-      update: {
-        achieved,
-        totalTasks: ownerTasks.length,
-        completedTasks,
-        streak,
-      },
-      create: {
-        ownerId,
-        date,
-        achieved,
-        totalTasks: ownerTasks.length,
-        completedTasks,
-        streak,
-      },
-    });
-
-    if (missing.length === 0) {
-      mailResults.push({
-        ownerId,
-        email: null,
-        missingCount: 0,
-        mailed: false,
-        reason: "no missing tasks",
-      });
-      continue;
-    }
-
-    const { data, error } = await supabaseAdmin.auth.admin.getUserById(ownerId);
-
-    if (error || !data?.user?.email) {
-      mailResults.push({
-        ownerId,
-        email: null,
-        missingCount: missing.length,
-        mailed: false,
-        reason: "email not found",
-      });
-      continue;
-    }
-
-    const email = data.user.email;
-    const lines = missing.map((t, i) => `${i + 1}. ${t.title}`).join("\n");
-
-    const reminder = await generateReminder({
-      date,
-      totalTasks: ownerTasks.length,
-      missingTaskNames: missing.map((task) => task.title)
-    });
-
-    const reminderText = reminder ? `\n\n${reminder}` : "";
-
-    await sendMail({
-      to: email,
-      subject: `【未完了】本日のチェック漏れ (${date})`,
-      text: `以下が未チェックです。\n\n${lines}${reminderText}\n\n (自動通知)`,
-    });
-
-    mailResults.push({
-      ownerId,
-      email,
-      missingCount: missing.length,
-      mailed: true,
-    });
-  }
-
-  const mailedUsers = mailResults.filter((r) => r.mailed).length;
-
-  return NextResponse.json({
-    ok: true,
-    date,
-    weekday: wk,
-    mailedUsers,
-    results: mailResults,
-  })
 };
 
 export { GET };

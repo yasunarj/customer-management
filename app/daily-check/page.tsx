@@ -1,71 +1,53 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { createClient } from "@/utils/supabase/client";
 import Link from "next/link";
 import DailyCheckClient from "./components/ui";
 
 const DailyCheckPage = () => {
-  const router = useRouter();
-  const supabase = createClient();
-  const [isCheckingAuth, setIsCheckingAuth] = useState<boolean>(true);
-  const [streak, setStreak] = useState<number>(0);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      if (!session) {
-        router.replace("/auth/daily-check/login");
-        return;
-      }
-
-      setIsCheckingAuth(false);
-    };
-    checkAuth();
-  }, [router, supabase]);
+  const [streak, setStreak] = useState<number | null>(null);
+  const [streakError, setStreakError] = useState("");
 
   useEffect(() => {
     const fetchStreak = async () => {
-      const res = await fetch("/api/daily-check/streak");
+      try {
+        const res = await fetch("/api/daily-check/streak");
 
-      if (!res.ok) {
-        return;
+        if (!res.ok) {
+          setStreakError("連続記録の取得に失敗しました");
+          return;
+        }
+
+        const data = await res.json();
+        setStreak(data.streak);
+      } catch (e) {
+        console.error("streak fetch error:", e);
+        setStreakError("連続記録の取得に失敗しました");
       }
-
-      const data = await res.json();
-      setStreak(data.streak);
     };
 
     fetchStreak();
   }, []);
-
-  if (isCheckingAuth) {
-    return (
-      <main className="flex h-screen-vh items-center justify-center bg-black text-white">
-        <div className="text-sm text-gray-400">認証を確認しています...</div>
-      </main>
-    );
-  }
 
   return (
     <main className="flex-1 min-h-0 bg-black text-white flex justify-center items-center">
       <div className="max-w-2xl w-[95%] h-[95%] px-4 py-6 bg-gray-900 overflow-y-scroll">
         <div className="flex justify-between">
           <h1 className="text-2xl font-bold">本日のチェック</h1>
-          {streak > 0 ? (
-            <p className="text-lg font-semibold">
-              🔥 現在 {streak} 日連続達成中
+          {streakError ? (
+            <p className="text-sm text-red-400">
+              連続記録を取得できませんでした
             </p>
+          ) : streak === null ? (
+            <p className="text-sm text-gray-400">連続記録を読み込み中...</p>
+          ) : streak > 0 ? (
+            <p className="text-lg font-semibold">🔥 {streak} 日連続達成中</p>
           ) : (
-            <p>今日から連続達成を始めましょう！</p>
+            <p>今日から連続記録を始めましょう！</p>
           )}
         </div>
-        <p className="mt-2 text-sm text-gray-200">
-          チェックは自動保存されます。未完了があると23時にメール通知されます。
+        <p className="mt-2 text-xs text-gray-400">
+          チェックは自動保存され、23時に未完了通知と連続記録の判定を行います。
         </p>
 
         <div className="mt-6">
