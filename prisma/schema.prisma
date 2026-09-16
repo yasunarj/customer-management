@@ -109,7 +109,7 @@ model DailyCheckResult {
   @@unique([ownerId, date])
 }
 
-model OwnerGateLimit {
+model LoginRateLimit {
   key         String    @id
   failCount   Int       @default(0)
   lockedUntil DateTime?

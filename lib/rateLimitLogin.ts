@@ -16,7 +16,7 @@ export const rateLimitLogin = async (params: { email: string, password: string, 
   const key = `${prefix}:${email}:${ip}`;
   const now = new Date();
 
-  const row = await prisma.ownerGateLimit.findUnique({ where: { key } });
+  const row = await prisma.loginRateLimit.findUnique({ where: { key } });
 
   if (row?.lockedUntil && row.lockedUntil > now) {
     const remainSec = Math.ceil((row.lockedUntil.getTime() - now.getTime()) / 1000);
@@ -35,7 +35,7 @@ export const rateLimitLogin = async (params: { email: string, password: string, 
     if (nextFailed >= 3) {
       const lockedUntil = new Date(now.getTime() + 10 * 60 * 1000);
 
-      await prisma.ownerGateLimit.upsert({
+      await prisma.loginRateLimit.upsert({
         where: { key },
         create: { key, failCount: 0, lockedUntil },
         update: { failCount: 0, lockedUntil },
@@ -44,7 +44,7 @@ export const rateLimitLogin = async (params: { email: string, password: string, 
       return { ok: false, status: 429, retry_after_sec: 600 };
     }
 
-    await prisma.ownerGateLimit.upsert({
+    await prisma.loginRateLimit.upsert({
       where: { key },
       create: { key, failCount: nextFailed, lockedUntil: null },
       update: { failCount: nextFailed, lockedUntil: null },
@@ -64,7 +64,7 @@ export const rateLimitLogin = async (params: { email: string, password: string, 
     }
   }
 
-  await prisma.ownerGateLimit.upsert({
+  await prisma.loginRateLimit.upsert({
     where: { key },
     create: { key, failCount: 0, lockedUntil: null },
     update: { failCount: 0, lockedUntil: null },

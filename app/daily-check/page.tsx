@@ -94,7 +94,7 @@ const DailyCheckPage = () => {
           ) : streak === null ? (
             <p className="text-sm text-gray-400">連続記録を読み込み中...</p>
           ) : streak > 0 ? (
-            <p className="text-lg">🔥 {streak} 日連続達成中</p>
+            <p className="text-lg">🔥 連続達成 {streak} 日</p>
           ) : (
             <p>今日から連続記録を始めましょう！</p>
           )}

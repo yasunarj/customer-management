@@ -11,7 +11,6 @@ function isPublicPath(pathname: string) {
   );
 }
 
-
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
     request,
@@ -40,41 +39,18 @@ export async function updateSession(request: NextRequest) {
     }
   );
 
-  const host = request.headers.get("host") ?? "";
   const pathname = request.nextUrl.pathname;
 
   // 公開パスは常にスルー
   if (isPublicPath(pathname)) return supabaseResponse;
 
-  // *サブドメイン判定
-  const isOwnerHost = host.startsWith("owner.");
-  // const isReserveHost = host.startsWith("reserve.");
-
-
   const { data: userData } = await supabase.auth.getUser();
   const user = userData?.user ?? null;
 
   // ─────────────────────────────────────────────
-  // owner.example.com 側のルール
-  // ─────────────────────────────────────────────
-
-  if (isOwnerHost) {
-    const needsAuth = pathname.startsWith("/owner-task");
-
-    if (needsAuth && !user) {
-      const url = new URL("/auth/admin/login", request.url);
-      const nextPath = request.nextUrl.pathname + request.nextUrl.search;
-      url.searchParams.set("next", nextPath);
-      return NextResponse.redirect(url);
-    }
-
-    return supabaseResponse;
-  }
-
-  // ─────────────────────────────────────────────
   // reserve.example.com（または既存ドメイン）側のルール
   // ─────────────────────────────────────────────
-  // いまの挙動を維持：/user /admin のみガード
+  // 認証が必要なページをガード
 
   if (!user) {
     if (

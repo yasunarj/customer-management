@@ -93,20 +93,24 @@ const GET = async (req: Request) => {
     const mailResults: Array<{
       ownerId: string;
       email: string | null;
-      missingCount: number;
+      missingCount: number | null;
       mailed: boolean;
       reason?: string;
     }> = [];
 
     for (const [ownerId, ownerTasks] of tasksByOwner.entries()) {
+      let missingCount: number | null = null;
+
       try {
 
         const checkedSet = checkedTaskIdsByOwner.get(ownerId) ?? new Set<string>();
 
         const missing = ownerTasks.filter((task) => !checkedSet.has(task.id));
+        
+        missingCount = missing.length;
 
         const completedTasks = ownerTasks.length - missing.length;
-        const achieved = missing.length === 0;
+        const achieved = missingCount === 0;
 
         const existingResult = await prisma.dailyCheckResult.findUnique({
           where: {
@@ -144,7 +148,7 @@ const GET = async (req: Request) => {
           });
         }
 
-        if (missing.length === 0) {
+        if (missingCount === 0) {
           mailResults.push({
             ownerId,
             email: null,
@@ -161,7 +165,7 @@ const GET = async (req: Request) => {
           mailResults.push({
             ownerId,
             email: null,
-            missingCount: missing.length,
+            missingCount,
             mailed: false,
             reason: "email not found",
           });
@@ -189,16 +193,16 @@ const GET = async (req: Request) => {
         mailResults.push({
           ownerId,
           email,
-          missingCount: missing.length,
+          missingCount,
           mailed: true,
         });
       } catch (e) {
         console.error(`daily-check cron error ownerId=${ownerId}`, e);
-
+        
         mailResults.push({
           ownerId,
           email: null,
-          missingCount: 0,
+          missingCount,
           mailed: false,
           reason: "processing failed",
         });
@@ -208,12 +212,17 @@ const GET = async (req: Request) => {
     }
 
     const mailedUsers = mailResults.filter((r) => r.mailed).length;
+    const failedUsers = mailResults.filter((result) => result.reason === "processing failed").length;
+
+    const partialFailure = failedUsers > 0;
 
     return NextResponse.json({
       ok: true,
       date,
       weekday: wk,
       mailedUsers,
+      failedUsers,
+      partialFailure,
       results: mailResults,
     })
   } catch (e) {
