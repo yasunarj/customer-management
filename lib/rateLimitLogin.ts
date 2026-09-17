@@ -54,7 +54,7 @@ export const rateLimitLogin = async (params: { email: string, password: string, 
   }
 
 
-  const role = data.user.app_metadata?.role ?? data.user.user_metadata ?? "user"
+  const role = data.user.app_metadata?.role ?? "user"
 
   if (role !== expectedRole) {
     return {

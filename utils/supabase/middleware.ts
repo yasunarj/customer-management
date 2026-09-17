@@ -72,7 +72,7 @@ export async function updateSession(request: NextRequest) {
     return supabaseResponse;
   }
 
-  const userRole = user.app_metadata?.role ?? user.user_metadata?.role ?? "user";
+  const userRole = user.app_metadata?.role ?? "user";
 
   if (pathname.startsWith("/admin") && userRole !== "admin") {
     return NextResponse.redirect(new URL("/user/dashboard", request.url));

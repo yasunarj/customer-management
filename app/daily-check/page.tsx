@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import DailyCheckClient from "./components/ui";
 import {
@@ -17,10 +18,17 @@ const DailyCheckPage = () => {
   const [streak, setStreak] = useState<number | null>(null);
   const [streakError, setStreakError] = useState("");
 
+  const router = useRouter();
+
   useEffect(() => {
     const fetchStreak = async () => {
       try {
         const res = await fetch("/api/daily-check/streak");
+
+        if (res.status === 401) {
+          router.push("/auth/login?next=/daily-check");
+          return;
+        }
 
         if (!res.ok) {
           setStreakError("連続記録の取得に失敗しました");
@@ -36,7 +44,7 @@ const DailyCheckPage = () => {
     };
 
     fetchStreak();
-  }, []);
+  }, [router]);
 
   return (
     <main className="flex-1 min-h-0 bg-black text-white flex justify-center items-center">
