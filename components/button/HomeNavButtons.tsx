@@ -56,7 +56,7 @@ const HomeNavButtons = () => {
       return;
     }
 
-    const role = user.app_metadata?.role ?? user.user_metadata?.role ?? "user";
+    const role = user.app_metadata?.role ?? "user";
 
     if (role === "admin") {
       router.push("/admin/dashboard");

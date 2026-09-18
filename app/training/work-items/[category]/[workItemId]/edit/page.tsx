@@ -144,9 +144,7 @@ const TrainingWorkItemEditPage = () => {
       }
 
       const role =
-        user.app_metadata?.role ??
-        user.user_metadata?.role ??
-        "user";
+        user.app_metadata?.role ?? "user";
 
       setUserRole(
         role === "admin" ? "admin" : "user",

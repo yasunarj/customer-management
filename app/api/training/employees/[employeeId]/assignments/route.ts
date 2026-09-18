@@ -165,9 +165,7 @@ export const POST = async (
 
     // 2. 管理者権限を確認
     const role =
-      user.app_metadata?.role ??
-      user.user_metadata?.role ??
-      "user";
+      user.app_metadata?.role ?? "user";
 
     if (role !== "admin") {
       return NextResponse.json(
@@ -374,9 +372,7 @@ export const DELETE = async (
 
     // 2. 管理者権限を確認
     const role =
-      user.app_metadata?.role ??
-      user.user_metadata?.role ??
-      "user";
+      user.app_metadata?.role ?? "user";
 
     if (role !== "admin") {
       return NextResponse.json(

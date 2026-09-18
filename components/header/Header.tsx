@@ -37,7 +37,7 @@ const Header = () => {
       }
 
       const role =
-        user.app_metadata?.role ?? user.user_metadata?.role ?? "user";
+        user.app_metadata?.role ?? "user";
       setUserRole(role);
       setIsAuthenticated(true);
 
@@ -69,10 +69,7 @@ const Header = () => {
             router.push("/auth/login");
           }
         } else {
-          const role =
-            session.user.app_metadata?.role ??
-            session.user.user_metadata?.role ??
-            "user";
+          const role = session.user.app_metadata?.role ?? "user";
           setUserRole(role);
           setIsAuthenticated(true);
 

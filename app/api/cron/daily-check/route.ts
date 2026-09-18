@@ -46,6 +46,9 @@ const GET = async (req: Request) => {
         date,
         weekday: wk,
         mailedUsers: 0,
+        failedUsers: 0,
+        partialFailure: false,
+        results: [],
         message: "no tasks today",
       });
     }
@@ -106,7 +109,7 @@ const GET = async (req: Request) => {
         const checkedSet = checkedTaskIdsByOwner.get(ownerId) ?? new Set<string>();
 
         const missing = ownerTasks.filter((task) => !checkedSet.has(task.id));
-        
+
         missingCount = missing.length;
 
         const completedTasks = ownerTasks.length - missing.length;
@@ -159,9 +162,22 @@ const GET = async (req: Request) => {
           continue;
         }
 
-        const { data, error } = await supabaseAdmin.auth.admin.getUserById(ownerId);
+        const { data, error } =
+          await supabaseAdmin.auth.admin.getUserById(ownerId);
 
-        if (error || !data?.user?.email) {
+        if (error) {
+          mailResults.push({
+            ownerId,
+            email: null,
+            missingCount,
+            mailed: false,
+            reason: "user fetch failed",
+          });
+
+          continue;
+        }
+
+        if (!data?.user?.email) {
           mailResults.push({
             ownerId,
             email: null,
@@ -198,7 +214,7 @@ const GET = async (req: Request) => {
         });
       } catch (e) {
         console.error(`daily-check cron error ownerId=${ownerId}`, e);
-        
+
         mailResults.push({
           ownerId,
           email: null,
@@ -212,7 +228,11 @@ const GET = async (req: Request) => {
     }
 
     const mailedUsers = mailResults.filter((r) => r.mailed).length;
-    const failedUsers = mailResults.filter((result) => result.reason === "processing failed").length;
+    const failedUsers = mailResults.filter(
+      (result) =>
+        result.reason === "processing failed" ||
+        result.reason === "user fetch failed"
+    ).length;
 
     const partialFailure = failedUsers > 0;
 
