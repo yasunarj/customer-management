@@ -8,19 +8,38 @@ const DailyCheckClient = () => {
   const [date, setDate] = useState<string>("");
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [loadError, setLoadError] = useState("");
   const [savingId, setSavingId] = useState<string | null>(null);
 
   const doneCount = useMemo(() => {
     return tasks.filter((t) => t.checked).length;
   }, [tasks]);
 
-  const load = async () => {
+  const load = async (): Promise<boolean> => {
     setLoading(true);
-    const res = await fetch("/api/daily-check/today", { cache: "no-store" });
-    const data = await res.json();
-    setDate(data.date);
-    setTasks(data.tasks ?? []);
-    setLoading(false);
+    setLoadError("");
+
+    try {
+      const res = await fetch("/api/daily-check/today", { cache: "no-store" });
+
+      if (!res.ok) {
+        throw new Error("タスクの取得に失敗しました");
+      }
+
+      const data = await res.json();
+
+      setDate(data.date);
+      setTasks(data.tasks ?? []);
+
+      return true;
+    } catch (e) {
+      console.error("タスク取得エラー：", e);
+      setLoadError("タスクの取得に失敗しました");
+
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -39,32 +58,59 @@ const DailyCheckClient = () => {
       prev.map((t) => (t.id === taskId ? { ...t, checked: next } : t)),
     );
 
-    const res = await fetch("/api/daily-check/toggle", {
-      method: "POST",
-      headers: {
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({ taskId }),
-    });
+    try {
+      const res = await fetch("/api/daily-check/toggle", {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify({ taskId }),
+      });
 
-    if (!res.ok) {
-      await load();
-      alert("保存に失敗しました。再読み込みしました。");
+      if (!res.ok) {
+        throw new Error("タスクのチェックに失敗しました。");
+      }
+
+      const data = await res.json();
+
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === taskId ? { ...t, checked: data.checked } : t,
+        ),
+      );
+    } catch (e) {
+      console.error("チェック保存エラー:", e);
+
+      // 楽観的更新で変更したチェックを元に戻す
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === taskId ? { ...t, checked: current.checked } : t,
+        ),
+      );
+
+      // DBに保存されている状態を再取得する
+      const reloaded = await load();
+
+      if (reloaded) {
+        alert("保存結果を再取得しました。時間をおいて再読み込みしてください。");
+      } else {
+        alert("保存結果を確認できませんでした。通信状態を確認して、再読み込みしてください")
+      }
+    } finally {
       setSavingId(null);
-      return;
     }
-
-    const data = await res.json();
-
-    setTasks((prev) =>
-      prev.map((t) => (t.id === taskId ? { ...t, checked: data.checked } : t))
-    );
-
-    setSavingId(null);
   };
 
   if (loading) {
     return <div className="text-sm text-gray-500">読み込み中...</div>;
+  }
+
+  if (loadError) {
+    return (
+      <div role="alert" className="text-sm text-red-500">
+        {loadError}
+      </div>
+    );
   }
 
   return (
@@ -85,7 +131,7 @@ const DailyCheckClient = () => {
             <input
               type="checkbox"
               checked={t.checked}
-              disabled={savingId === t.id}
+              disabled={savingId !== null}
               onChange={() => toggle(t.id)}
               className="h-5 w-5 accent-blue-600"
             />

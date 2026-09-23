@@ -31,11 +31,21 @@ describe("HeaderAuth", () => {
       .mockImplementation(
         () =>
           new Promise((resolve) =>
-            setTimeout(() => resolve({ error: null }), 500)
-          )
+            setTimeout(() => resolve({ error: null }), 500),
+          ),
       );
     mockGetUser = jest.fn().mockResolvedValue({
-      data: { user: { user_metadata: { role: "user" } } },
+      data: {
+        user: {
+          app_metadata: {
+            role: "admin",
+          },
+          user_metadata: {
+            userName: "テスト管理者",
+          },
+        },
+      },
+      error: null,
     });
     mockPathname = jest.fn().mockReturnValue("/");
 
@@ -110,7 +120,7 @@ describe("HeaderAuth", () => {
 
     await waitFor(() => {
       expect(window.alert).toHaveBeenCalledWith(
-        "ログアウトに失敗しました: 失敗"
+        "ログアウトに失敗しました: 失敗",
       );
     });
   });
