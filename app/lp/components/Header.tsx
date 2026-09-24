@@ -3,9 +3,26 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import {
+  Sheet,
+  SheetTrigger,
+  SheetContent,
+  SheetTitle,
+  SheetHeader,
+  SheetClose,
+} from "@/components/ui/sheet";
+
+const menuItems = [
+  { href: "/lp#about", label: "ABOUT" },
+  { href: "/lp#staff", label: "STAFF" },
+  { href: "/lp#contact", label: "CONTACT" },
+  { href: "/lp#recruit", label: "採用情報" },
+];
 
 const LandingPageHeader = () => {
   const [visible, setVisible] = useState<boolean>(false);
+  const [open, setOpen] = useState<boolean>(false);
+
   useEffect(() => {
     const handleScroll = () => {
       setVisible(window.scrollY < 2000);
@@ -15,6 +32,8 @@ const LandingPageHeader = () => {
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  console.log(open);
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50
@@ -82,7 +101,82 @@ const LandingPageHeader = () => {
                   </Link>
                 </li>
               </ul>
-              <div className="flex flex-col relative sm:hidden right-4 top-[-6px] cursor-pointer">
+
+              <div className="sm:hidden mr-2">
+                <Sheet open={open} onOpenChange={setOpen}>
+                  <SheetTrigger asChild>
+                    <button
+                      type="button"
+                      aria-label="メニューを開く"
+                      className="bg-blue-400 p-0.5 rounded-sm transition-all duration-500 ease-in-out hover:rounded-lg hover-bg-blue-500 group"
+                    >
+                      <span className="block border-[0.5px]  border-white px-2 py-[5px] text-xs font-semibold text-white rounded-sm transition-all duration-500 ease-in-out group-hover:rounded-lg">
+                        MENU
+                      </span>
+                    </button>
+                  </SheetTrigger>
+
+                  <SheetContent
+                    side="right"
+                    className="w-full sm:max-w-none border-none p-0 bg-transparent"
+                  >
+                    <SheetHeader>
+                      <SheetTitle className="sr-only">
+                        ナビゲーションメニュー
+                      </SheetTitle>
+                    </SheetHeader>
+
+                    <div className="relative h-full w-full overflow-hidden">
+                      <div className="absolute inset-0 bg-[url('/images/NavMenu.png')] bg-cover bg-center bg-no-repeat"></div>
+                      <div
+                        className="absolute inset-0 bg-black/55 pointer-events-none animate-[menuDim_600ms_ease-in-out_both]"
+                        style={{
+                          animationDelay: "1000ms",
+                        }}
+                      />
+
+                      <div className="relative z-10 flex h-full flex-col justify-end px-8 pb-16">
+                        <ul className="flex flex-col gap-8">
+                          {menuItems.map((item, index) => {
+                            const underlineDelay = 1600 + index * 150;
+                            const textDelay = underlineDelay + 500;
+
+                            return (
+                              <li key={item.href}>
+                                <SheetClose asChild>
+                                  <Link href={item.href} className="block">
+                                    <div className="overflow-hidden">
+                                      {/* テキスト */}
+                                      <p
+                                        className={`mt-3 text-3xl font-semibold tracking-wider text-white opacity-0 animate-[textReveal_500ms_ease-out_forwards]
+                                        }`}
+                                        style={{
+                                          animationDelay: `${textDelay}ms`,
+                                        }}
+                                      >
+                                        {/* 下線 */}
+                                        {item.label}
+                                      </p>
+
+                                      <div
+                                        className="h-[0.5px] bg-white origin-left scale-x-0 animate-[lineReveal_500ms_ease-out_forwards]"
+                                        style={{
+                                          animationDelay: `${underlineDelay}ms`,
+                                        }}
+                                      />
+                                    </div>
+                                  </Link>
+                                </SheetClose>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      </div>
+                    </div>
+                  </SheetContent>
+                </Sheet>
+              </div>
+              {/* <div className="flex flex-col relative sm:hidden right-4 top-[-6px] cursor-pointer">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="28"
@@ -100,7 +194,7 @@ const LandingPageHeader = () => {
                   <line x1="4" x2="24" y1="18" y2="18" />
                 </svg>
                 <p className="text-[11px] absolute bottom-0 left-[2px]">menu</p>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
