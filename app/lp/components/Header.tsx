@@ -11,11 +11,12 @@ import {
   SheetHeader,
   SheetClose,
 } from "@/components/ui/sheet";
+import { useRouter, usePathname } from "next/navigation";
 
 const menuItems = [
   { href: "/lp#about", label: "ABOUT" },
   { href: "/lp#staff", label: "STAFF" },
-  { href: "/lp#contact", label: "CONTACT" },
+  { href: "/lp/contact", label: "CONTACT" },
   { href: "/lp#recruit", label: "採用情報" },
 ];
 
@@ -23,6 +24,9 @@ const LandingPageHeader = () => {
   const [visible, setVisible] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
   const [menuImageLoaded, setMenuImageLoaded] = useState(false);
+
+  const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -44,20 +48,46 @@ const LandingPageHeader = () => {
     };
   }, []);
 
+  const handleDesktopNav = (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    href: string,
+  ) => {
+    if (!href.startsWith("/lp#")) return;
+
+    e.preventDefault();
+
+    if (pathname !== "/lp") {
+      router.push(href);
+      return;
+    }
+
+    const id = href.replace("/lp#", "");
+    const element = document.getElementById(id);
+
+    if (element) {
+      element.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
+
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50
-    pt-[env(safe-area-inset-top)] 
-    h-[calc(100px+env(safe-area-inset-top))]
-    bg-gradient-to-b from-white via-white/60 to-transparent
-    backdrop-blur-md
-    overflow-hidden
-    transition-opacity duration-500 ease-in-out
-    ${visible ? "opacity-100" : "opacity-0"}
-  `}
+      
+    `}
     >
-      <nav className="h-[100px] p-1 pr-0 sm:p-2 md:p-4">
-        <div className="flex items-end gap-2">
+      <nav className={`w-full p-1 pr-0 sm:p-2 md:p-4 transition-opacity duration-500 ease-in-out pt-[env(safe-area-inset-top)] 
+      h-[calc(100px+env(safe-area-inset-top))]
+      bg-gradient-to-b from-white via-white/60 to-transparent
+      backdrop-blur-md
+      overflow-hidden
+                      ${visible ? "opacity-100" : "opacity-0"}`}>
+        <div
+          className={`flex items-end gap-2 
+                      `}
+        >
           <Image
             src={"/images/logo_food.png"}
             alt="LPのheaderロゴ"
@@ -81,6 +111,7 @@ const LandingPageHeader = () => {
                 <li className="hidden sm:block">
                   <Link
                     href="/lp#about"
+                    onClick={(e) => handleDesktopNav(e, "/lp#about")}
                     className="hover:text-blue-500 hover:underline hover:underline-offset-4"
                   >
                     ABOUT
@@ -89,6 +120,7 @@ const LandingPageHeader = () => {
                 <li className="hidden sm:block">
                   <Link
                     href="/lp#staff"
+                    onClick={(e) => handleDesktopNav(e, "/lp#staff")}
                     className="hover:text-blue-500 hover:underline hover:underline-offset-4"
                   >
                     STAFF
@@ -97,6 +129,7 @@ const LandingPageHeader = () => {
                 <li className="hidden sm:block">
                   <Link
                     href="/lp/contact"
+                    onClick={(e) => handleDesktopNav(e, "/lp/contact")}
                     className="hover:text-blue-500 hover:underline hover:underline-offset-4"
                   >
                     CONTACT
@@ -105,110 +138,91 @@ const LandingPageHeader = () => {
                 <li className="hidden sm:block">
                   <Link
                     href="/lp#recruit"
+                    onClick={(e) => handleDesktopNav(e, "/lp#recruit")}
                     className="hover:text-blue-500 hover:underline hover:underline-offset-4"
                   >
                     採用情報
                   </Link>
                 </li>
               </ul>
-
-              <div className="sm:hidden mr-2">
-                <Sheet open={open} onOpenChange={setOpen}>
-                  <SheetTrigger asChild>
-                    <button
-                      type="button"
-                      aria-label="メニューを開く"
-                      className="bg-blue-400 p-0.5 rounded-sm transition-all duration-500 ease-in-out hover:rounded-lg hover-bg-blue-500 group"
-                    >
-                      <span className="block border-[0.5px]  border-white px-2 py-[5px] text-xs font-semibold text-white rounded-sm transition-all duration-500 ease-in-out group-hover:rounded-lg">
-                        MENU
-                      </span>
-                    </button>
-                  </SheetTrigger>
-
-                  <SheetContent
-                    side="right"
-                    className="w-full sm:max-w-none border-none p-0 bg-transparent"
-                  >
-                    <SheetHeader>
-                      <SheetTitle className="sr-only">
-                        ナビゲーションメニュー
-                      </SheetTitle>
-                    </SheetHeader>
-
-                    <div className="relative h-full w-full overflow-hidden">
-                      <div className="absolute inset-0 bg-[url('/images/NavMenu.png')] bg-cover bg-center bg-no-repeat"></div>
-                      <div
-                        className="absolute inset-0 bg-black/55 pointer-events-none animate-[menuDim_600ms_ease-in-out_both]"
-                        style={{
-                          animationDelay: "1000ms",
-                        }}
-                      />
-
-                      <div className="relative z-10 flex h-full flex-col justify-end px-8 pb-16">
-                        <ul className="flex flex-col gap-8">
-                          {menuItems.map((item, index) => {
-                            const underlineDelay = 1600 + index * 150;
-                            const textDelay = underlineDelay + 500;
-
-                            return (
-                              <li key={item.href}>
-                                <SheetClose asChild>
-                                  <Link href={item.href} className="block">
-                                    <div className="overflow-hidden">
-                                      {/* テキスト */}
-                                      <p
-                                        className={`mt-3 text-3xl font-semibold tracking-wider text-white opacity-0 ${open && menuImageLoaded ? "animate-[textReveal_500ms_ease-out_forwards]" : ""}
-                                        `}
-                                        style={{
-                                          animationDelay: `${textDelay}ms`,
-                                        }}
-                                      >
-                                        {/* 下線 */}
-                                        {item.label}
-                                      </p>
-
-                                      <div
-                                        className={`h-[0.5px] bg-white origin-left scale-x-0 ${open && menuImageLoaded ? "animate-[lineReveal_500ms_ease-out_forwards]" : ""}`}
-                                        style={{
-                                          animationDelay: `${underlineDelay}ms`,
-                                        }}
-                                      />
-                                    </div>
-                                  </Link>
-                                </SheetClose>
-                              </li>
-                            );
-                          })}
-                        </ul>
-                      </div>
-                    </div>
-                  </SheetContent>
-                </Sheet>
-              </div>
-              {/* <div className="flex flex-col relative sm:hidden right-4 top-[-6px] cursor-pointer">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="28"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  className="lucide lucide-menu sm:hidden"
-                >
-                  <line x1="4" x2="24" y1="12" y2="12" />
-                  <line x1="4" x2="24" y1="6" y2="6" />
-                  <line x1="4" x2="24" y1="18" y2="18" />
-                </svg>
-                <p className="text-[11px] absolute bottom-0 left-[2px]">menu</p>
-              </div> */}
             </div>
           </div>
         </div>
       </nav>
+      <div className="sm:hidden fixed top-9 right-4 z-[60]">
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <button
+              type="button"
+              aria-label="メニューを開く"
+              className="bg-blue-400 p-0.5 rounded-sm transition-all duration-500 ease-in-out hover:rounded-lg hover:bg-blue-500 group"
+            >
+              <span className="block border-[0.5px]  border-white px-2 py-4 text-xs font-semibold text-white rounded-sm transition-all duration-500 ease-in-out group-hover:rounded-lg">
+                MENU
+              </span>
+            </button>
+          </SheetTrigger>
+
+          <SheetContent
+            side="right"
+            className="w-full sm:max-w-none border-none p-0 bg-transparent"
+          >
+            <SheetHeader>
+              <SheetTitle className="sr-only">
+                ナビゲーションメニュー
+              </SheetTitle>
+            </SheetHeader>
+
+            <div className="relative h-full w-full overflow-hidden">
+              <div className="absolute inset-0 bg-[url('/images/NavMenu.png')] bg-cover bg-center bg-no-repeat"></div>
+              <div
+                className="absolute inset-0 bg-black/55 pointer-events-none animate-[menuDim_600ms_ease-in-out_both]"
+                style={{
+                  animationDelay: "1000ms",
+                }}
+              />
+
+              <div className="relative z-10 flex h-full flex-col justify-end px-8 pb-16">
+                <ul className="flex flex-col gap-8">
+                  {menuItems.map((item, index) => {
+                    const underlineDelay = 1600 + index * 150;
+                    const textDelay = underlineDelay + 500;
+
+                    return (
+                      <li key={item.href}>
+                        <SheetClose asChild>
+                          <Link href={item.href} className="block">
+                            <div className="overflow-hidden">
+                              {/* テキスト */}
+                              <p
+                                className={`mt-3 text-3xl font-semibold tracking-wider text-white opacity-0 ${open && menuImageLoaded ? "animate-[textReveal_500ms_ease-out_forwards]" : ""}
+                                        `}
+                                style={{
+                                  animationDelay: `${textDelay}ms`,
+                                }}
+                              >
+                                {/* 下線 */}
+                                {item.label}
+                              </p>
+
+                              <div
+                                className={`h-[0.5px] bg-white origin-left scale-x-0 ${open && menuImageLoaded ? "animate-[lineReveal_500ms_ease-out_forwards]" : ""}`}
+                                style={{
+                                  animationDelay: `${underlineDelay}ms`,
+                                }}
+                              />
+                            </div>
+                          </Link>
+                        </SheetClose>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
     </header>
   );
 };

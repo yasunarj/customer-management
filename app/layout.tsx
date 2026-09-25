@@ -127,7 +127,7 @@ export default async function RootLayout({
   const isLP = pathname.startsWith("/lp");
 
   return (
-    <html lang="en" className="scroll-smooth">
+    <html lang="en">
       <body
         className={`${playfairDisplay.variable} ${geistSans.variable} ${
           geistMono.variable
