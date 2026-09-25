@@ -22,6 +22,7 @@ const menuItems = [
 const LandingPageHeader = () => {
   const [visible, setVisible] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
+  const [menuImageLoaded, setMenuImageLoaded] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,7 +34,16 @@ const LandingPageHeader = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  console.log(open);
+  useEffect(() => {
+    const img = new window.Image();
+
+    img.src = "/images/NavMenu.png";
+
+    img.onload = () => {
+      setMenuImageLoaded(true);
+    };
+  }, []);
+
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50
@@ -148,8 +158,8 @@ const LandingPageHeader = () => {
                                     <div className="overflow-hidden">
                                       {/* テキスト */}
                                       <p
-                                        className={`mt-3 text-3xl font-semibold tracking-wider text-white opacity-0 animate-[textReveal_500ms_ease-out_forwards]
-                                        }`}
+                                        className={`mt-3 text-3xl font-semibold tracking-wider text-white opacity-0 ${open && menuImageLoaded ? "animate-[textReveal_500ms_ease-out_forwards]" : ""}
+                                        `}
                                         style={{
                                           animationDelay: `${textDelay}ms`,
                                         }}
@@ -159,7 +169,7 @@ const LandingPageHeader = () => {
                                       </p>
 
                                       <div
-                                        className="h-[0.5px] bg-white origin-left scale-x-0 animate-[lineReveal_500ms_ease-out_forwards]"
+                                        className={`h-[0.5px] bg-white origin-left scale-x-0 ${open && menuImageLoaded ? "animate-[lineReveal_500ms_ease-out_forwards]" : ""}`}
                                         style={{
                                           animationDelay: `${underlineDelay}ms`,
                                         }}
