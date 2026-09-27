@@ -36,6 +36,7 @@ const Hero = () => {
 
   return (
     <div
+    id="top"
   className={`relative w-full overflow-hidden transition-opacity duration-1000
     h-[var(--vvh)]
     ${isVisibleImage ? "opacity-100" : "opacity-0"}`}

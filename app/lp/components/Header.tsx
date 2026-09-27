@@ -14,6 +14,7 @@ import {
 import { useRouter, usePathname } from "next/navigation";
 
 const menuItems = [
+  { href: "/lp#top", label: "TOP"},
   { href: "/lp#about", label: "ABOUT" },
   { href: "/lp#staff", label: "STAFF" },
   { href: "/lp/contact", label: "CONTACT" },
@@ -73,14 +74,16 @@ const LandingPageHeader = () => {
   };
 
   return (
-    <header
-      className="fixed top-0 left-0 w-full z-50">
-      <nav className={`w-full p-1 pr-0 sm:p-2 md:p-4 transition-opacity duration-500 ease-in-out pt-[env(safe-area-inset-top)] 
+    <header className="fixed top-0 left-0 w-full z-50">
+      <nav
+        className={`w-full p-1 pr-0 sm:p-2 md:p-4 transition-opacity duration-500 ease-in-out pt-[env(safe-area-inset-top)] 
       h-[calc(84px+env(safe-area-inset-top))]
+      sm:h-[calc(100px+env(safe-area-inset-top))]
       bg-gradient-to-b from-white via-white/60 to-transparent
       backdrop-blur-md
       overflow-hidden
-                      ${visible ? "opacity-100" : "opacity-0"}`}>
+                      ${visible ? "opacity-100" : "opacity-0"}`}
+      >
         <div
           className={`flex items-end gap-2 
                       `}
@@ -153,7 +156,7 @@ const LandingPageHeader = () => {
             <button
               type="button"
               aria-label="メニューを開く"
-              className="bg-blue-400 p-0.5 rounded-sm transition-all duration-500 ease-in-out hover:rounded-lg hover:bg-blue-500 group"
+              className="bg-green-500 p-0.5 rounded-sm transition-all duration-500 ease-in-out hover:rounded-lg hover:bg-green-600 group"
             >
               <span className="block border-[0.5px]  border-white px-[5px] py-[12px] text-xs font-semibold text-white rounded-sm transition-all duration-500 ease-in-out group-hover:rounded-lg">
                 MENU
@@ -185,9 +188,8 @@ const LandingPageHeader = () => {
                   {menuItems.map((item, index) => {
                     const underlineDelay = 1600 + index * 150;
                     const textDelay = underlineDelay + 500;
-
                     return (
-                      <li key={item.href}>
+                      <li key={item.href} className="group">
                         <SheetClose asChild>
                           <Link href={item.href} className="block">
                             <div className="overflow-hidden">
@@ -199,16 +201,21 @@ const LandingPageHeader = () => {
                                   animationDelay: `${textDelay}ms`,
                                 }}
                               >
-                                {/* 下線 */}
                                 {item.label}
                               </p>
+                              {/* 下線 */}
+                              <div className="relative h-px">
+                                {/* 通常時の薄い線 */}
+                                <div
+                                  className={`absolute inset-0 bg-white/30 origin-left scale-x-0 ${open && menuImageLoaded ? "animate-[lineReveal_500ms_ease-out_forwards]" : ""}`}
+                                  style={{
+                                    animationDelay: `${underlineDelay}ms`,
+                                  }}
+                                />
 
-                              <div
-                                className={`h-[0.5px] bg-white origin-left scale-x-0 ${open && menuImageLoaded ? "animate-[lineReveal_500ms_ease-out_forwards]" : ""}`}
-                                style={{
-                                  animationDelay: `${underlineDelay}ms`,
-                                }}
-                              />
+                                {/* hover時に左->右へ流れる白線 */}
+                                <div className="absolute inset-0 bg-white origin-left scale-x-0 transition-transform duration-500 ease-out group-hover:scale-x-100" />
+                              </div>
                             </div>
                           </Link>
                         </SheetClose>

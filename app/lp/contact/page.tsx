@@ -26,7 +26,7 @@ const initialState = {
 const ContactPage = () => {
   const [isSending, setIsSending] = useState<boolean>(false);
   const [localErrors, setLocalErrors] = useState<typeof initialState.errors>(
-    {}
+    {},
   );
   const [touchedFields, setTouchedFields] = useState<TouchedFields>({
     name: false,
@@ -36,7 +36,7 @@ const ContactPage = () => {
   const [state, formAction] = useActionState(
     async (_prevState: typeof initialState, formData: FormData) =>
       await handleContactForm(formData),
-    initialState
+    initialState,
   );
 
   const enhancedFormAction = async (formData: FormData) => {
@@ -57,32 +57,34 @@ const ContactPage = () => {
   }, [state]);
 
   return (
-    <div>
-      <div className="mt-24 rounded-tl-full bg-gray-100">
-        <div className="max-w-2xl mx-auto p-6 ">
-          <h2 className="text-2xl text-green-500 text-center font-oswald font-bold tracking-wide mb-1">
-            contact
-          </h2>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl text-center font-bold text-gray-800 mb-4">
-            お問い合わせ
-          </h1>
-          <div className="mb-4 text-center text-gray-800">
-            <div className="h-[1px] bg-gray-800 w-[80%] mx-auto"></div>
-            <div className="py-4 font-semibold">
-              <h3 className="text-sm sm:text-[16px] lg:text-lg">
-                お電話にてお問い合わせ
-              </h3>
-              <p className="flex items-center justify-center text-2xl lg:text-3xl mr-4 tracking-normal font-sans font-extrabold gap-1">
-                <Phone className="w-[20px] mt-[2px]" />
-                028-682-9365
-              </p>
+    <div className="h-full bg-gray-100">
+      <div className="bg-green-400">
+        <div className="mt-24 rounded-tl-full bg-gray-100">
+          <div className="max-w-2xl mx-auto p-6">
+            <h2 className="text-2xl text-green-500 text-center font-oswald font-bold tracking-wide mb-1">
+              contact
+            </h2>
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl text-center font-bold text-gray-800 mb-4">
+              お問い合わせ
+            </h1>
+            <div className="mb-4 text-center text-gray-800">
+              <div className="h-[1px] bg-gray-800 w-[80%] mx-auto"></div>
+              <div className="py-4 font-semibold">
+                <h3 className="text-sm sm:text-[16px] lg:text-lg">
+                  お電話にてお問い合わせ
+                </h3>
+                <p className="flex items-center justify-center text-2xl lg:text-3xl mr-4 tracking-normal font-sans font-extrabold gap-1">
+                  <Phone className="w-[20px] mt-[2px]" />
+                  028-682-9365
+                </p>
+              </div>
+              <div className="h-[1px] bg-gray-800 w-[80%] mx-auto"></div>
             </div>
-            <div className="h-[1px] bg-gray-800 w-[80%] mx-auto"></div>
+            <p className="text-center text-gray-700 text-sm md:text-[16px]">
+              <span className="block sm:inline">担当者からメールまたは、</span>
+              <span>お電話にて対応いたします。</span>
+            </p>
           </div>
-          <p className="text-center text-gray-700 text-sm md:text-[16px]">
-            <span className="block sm:inline">担当者からメールまたは、</span>
-            <span>お電話にて対応いたします。</span>
-          </p>
         </div>
       </div>
 
