@@ -23,6 +23,8 @@ export async function handleContactForm(
 
   const result = contactSchema.safeParse(raw);
 
+  console.log(result);
+
   if (!result.success) {
     return {
       success: false,
@@ -77,20 +79,28 @@ export async function handleContactForm(
       subject: adminSubject,
       text: adminText,
     });
+  } catch (e) {
+    console.error("管理者宛メール送信に失敗", e);
 
+    return {
+      success: false,
+      errors: { message: [`メール送信に失敗しました`] },
+    }
+  }
+
+  try {
     await sendMail({
       to: raw.email,
       subject: userSubject,
       text: userText,
       html: userHtml,
     });
-
-    return { success: true, errors: {} };
   } catch (e) {
-    console.error("お問合わせメール送信に失敗", e);
-    return {
-      success: false,
-      errors: { message: ["メールの送信に失敗しました"] },
-    };
+    console.error("自動返信メール送信に失敗", e);
+  }
+
+  return {
+    success: true,
+    errors: {},
   }
 }

@@ -59,7 +59,7 @@ const ContactPage = () => {
   return (
     <div className="h-full bg-gray-100">
       <div className="bg-green-400">
-        <div className="mt-24 rounded-tl-full bg-gray-100">
+        <div className="mt-20 rounded-tl-full bg-gray-100">
           <div className="max-w-2xl mx-auto p-6">
             <h2 className="text-2xl text-green-500 text-center font-oswald font-bold tracking-wide mb-1">
               contact
@@ -88,7 +88,7 @@ const ContactPage = () => {
         </div>
       </div>
 
-      <div className="bg-gray-100">
+      <div>
         <div className="max-w-2xl mx-auto p-6">
           <form
             action={enhancedFormAction}
