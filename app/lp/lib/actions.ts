@@ -2,6 +2,8 @@
 
 import { contactSchema } from "./contactSchema";
 import { sendMail } from "./mailer";
+import { headers } from "next/headers";
+import { checkContactRateLimit } from "./checkContactRateLimit";
 
 interface InitialState {
   success: boolean;
@@ -12,9 +14,34 @@ interface InitialState {
   };
 }
 
+const escapeHtml = (value: string) => 
+  value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+
 export async function handleContactForm(
   formData: FormData
 ): Promise<InitialState> {
+  const headerList = await headers();
+
+  const ip = headerList.get("x-forwarded-for")?.split(",")[0]?.trim() ?? 
+  headerList.get("x-real-ip") ??
+  "unknown";
+
+  const rateLimitResult = await checkContactRateLimit(ip);
+
+  if (!rateLimitResult.allowed) {
+    return {
+      success: false,
+      errors: {
+        message: ["短時間に複数回送信されています。しばらくしてからお試しください"],
+      }
+    }
+  } 
+
   const raw = {
     name: String(formData.get("name") ?? ""),
     email: String(formData.get("email") ?? ""),
@@ -23,14 +50,16 @@ export async function handleContactForm(
 
   const result = contactSchema.safeParse(raw);
 
-  console.log(result);
-
   if (!result.success) {
     return {
       success: false,
       errors: result.error.flatten().fieldErrors,
     };
   }
+
+  const safeName = escapeHtml(raw.name);
+  const safeEmail = escapeHtml(raw.email);
+  const safeMessage = escapeHtml(raw.message);
 
   const adminSubject = "[お問合せフォーム] 新しいメッセージ";
   const adminText = `
@@ -59,12 +88,12 @@ export async function handleContactForm(
     <p>このたびは <strong>さくら卯の里4丁目店</strong> にお問い合わせいただき、誠にありがとうございます。</p>
     <p>以下の内容で受け付けました。</p>
     <hr style="margin: 20px 0;" />
-    <p><strong>お名前：</strong> ${raw.name}</p>
-    <p><strong>メールアドレス：</strong> ${raw.email}</p>
-    <p><strong>お問い合わせ内容：</strong><br />${raw.message.replace(
-      /\n/g,
-      "<br />"
-    )}</p>
+    <p><strong>お名前：</strong> ${safeName}</p>
+    <p><strong>メールアドレス：</strong> ${safeEmail}</p>
+    <p>
+      <strong>お問い合わせ内容：</strong><br />
+      ${safeMessage.replace(/\n/g, "<br />")}
+    </p>
     <hr style="margin: 20px 0;" />
     <p style="font-size: 14px; color: #888;">※このメールは自動返信です。ご返信いただいてもお答えできかねる場合がございます。</p>
     <p style="margin-top: 24px;">さくら卯の里4丁目店</p>
@@ -84,7 +113,7 @@ export async function handleContactForm(
 
     return {
       success: false,
-      errors: { message: [`メール送信に失敗しました`] },
+      errors: { message: ["メール送信に失敗しました"] },
     }
   }
 

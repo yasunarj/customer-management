@@ -63,6 +63,9 @@ const LandingPageFooter = () => {
               <li className="hover:text-gray-200 text-sm sm:text-[16px] 2xl:text-lg">
                 <Link href="/">FAQ</Link>
               </li>
+              <li className="hover:text-gray-200 text-sm sm:text-[16px] 2xl:text-lg">
+                <Link href="/">Home</Link>
+              </li>
             </div>
           </ul>
         </div>

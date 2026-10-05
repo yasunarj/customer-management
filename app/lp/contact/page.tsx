@@ -2,11 +2,11 @@
 import { handleContactForm } from "../lib/actions";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { startTransition, useActionState } from "react";
 import { useState, useEffect } from "react";
-import { Loader2, Phone } from "lucide-react";
+import { Phone } from "lucide-react";
+import SubmitButton from "../components/ContactForm/SubmitButton";
 
 interface TouchedFields {
   name: boolean;
@@ -24,7 +24,6 @@ const initialState = {
 };
 
 const ContactPage = () => {
-  const [isSending, setIsSending] = useState<boolean>(false);
   const [localErrors, setLocalErrors] = useState<typeof initialState.errors>(
     {},
   );
@@ -40,7 +39,6 @@ const ContactPage = () => {
   );
 
   const enhancedFormAction = async (formData: FormData) => {
-    setIsSending(true);
     await new Promise((resolve) => setTimeout(resolve));
     startTransition(() => {
       formAction(formData);
@@ -53,7 +51,6 @@ const ContactPage = () => {
     } else {
       setLocalErrors({});
     }
-    setIsSending(false);
   }, [state]);
 
   return (
@@ -92,6 +89,15 @@ const ContactPage = () => {
         <div className="max-w-2xl mx-auto p-6">
           <form
             action={enhancedFormAction}
+            onSubmit={() => {
+              setTouchedFields({
+                name: false,
+                email: false,
+                message: false,
+              });
+
+              setLocalErrors({});
+            }}
             className="mt-12 space-y-8 bg-white p-6"
           >
             <div className="space-y-2">
@@ -148,25 +154,7 @@ const ContactPage = () => {
             </div>
 
             <div className="text-center">
-              <Button
-                type="submit"
-                className="sm:text-lg w-[100px] md:w-[160px]"
-                onClick={() => {
-                  setTouchedFields({
-                    name: false,
-                    email: false,
-                    message: false,
-                  });
-                  setIsSending(true);
-                  setLocalErrors({});
-                }}
-              >
-                {isSending ? (
-                  <Loader2 className="animate-spin h-10 w-10" strokeWidth={3} />
-                ) : (
-                  "送信"
-                )}
-              </Button>
+              <SubmitButton />
             </div>
             {state.success && (
               <p className="text-green-600 mt-2">

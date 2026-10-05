@@ -24,7 +24,7 @@ const menuItems = [
 const LandingPageHeader = () => {
   const [visible, setVisible] = useState<boolean>(false);
   const [open, setOpen] = useState<boolean>(false);
-  const [menuImageLoaded, setMenuImageLoaded] = useState(false);
+  const [menuReady, setMenuReady] = useState(false);
 
   const pathname = usePathname();
   const router = useRouter();
@@ -45,8 +45,12 @@ const LandingPageHeader = () => {
     img.src = "/images/NavMenu.png";
 
     img.onload = () => {
-      setMenuImageLoaded(true);
+      setMenuReady(true);
     };
+
+    img.onload = () => {
+      setMenuReady(true)
+    }
   }, []);
 
   const handleDesktopNav = (
@@ -85,9 +89,7 @@ const LandingPageHeader = () => {
                       ${visible ? "opacity-100" : "opacity-0"}`}
       >
         <div
-          className={`flex items-end gap-2 
-                      `}
-        >
+          className={`flex items-end gap-2`}>
           <Image
             src={"/images/logo_food.png"}
             alt="LPのheaderロゴ"
@@ -102,13 +104,13 @@ const LandingPageHeader = () => {
             </div>
             <div className="flex w-full justify-between">
               <h3 className="flex flex-col text-lg sm:text-xl  md:text-2xl font-bold bg-gradient-to-r from-gray-700 via-gray-800 to-gray-900 text-transparent bg-clip-text mb-1">
-                <Link href="/">
+                <Link href="/lp#top">
                   <span>さくら卯の里４丁目店</span>
                 </Link>
               </h3>
 
               <ul className="flex sm:items-center text-sm lg:text-[16px] text-gray-800 font-semibold md:gap-6 lg:gap-12 gap-6 mr-6 lg:mr-12">
-                <li className="hidden sm:block">
+                <li className="hidden md:block">
                   <Link
                     href="/lp#about"
                     onClick={(e) => handleDesktopNav(e, "/lp#about")}
@@ -117,7 +119,7 @@ const LandingPageHeader = () => {
                     ABOUT
                   </Link>
                 </li>
-                <li className="hidden sm:block">
+                <li className="hidden md:block">
                   <Link
                     href="/lp#staff"
                     onClick={(e) => handleDesktopNav(e, "/lp#staff")}
@@ -126,7 +128,7 @@ const LandingPageHeader = () => {
                     STAFF
                   </Link>
                 </li>
-                <li className="hidden sm:block">
+                <li className="hidden md:block">
                   <Link
                     href="/lp/contact"
                     onClick={(e) => handleDesktopNav(e, "/lp/contact")}
@@ -135,7 +137,7 @@ const LandingPageHeader = () => {
                     CONTACT
                   </Link>
                 </li>
-                <li className="hidden sm:block">
+                <li className="hidden md:block">
                   <Link
                     href="/lp#recruit"
                     onClick={(e) => handleDesktopNav(e, "/lp#recruit")}
@@ -150,7 +152,7 @@ const LandingPageHeader = () => {
         </div>
       </nav>
 
-      <div className="sm:hidden fixed top-7 right-4 z-[60]">
+      <div className="md:hidden fixed top-7 right-4 sm:top-10 z-[60]">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <button
@@ -195,7 +197,7 @@ const LandingPageHeader = () => {
                             <div className="overflow-hidden">
                               {/* テキスト */}
                               <p
-                                className={`mt-3 text-3xl font-semibold tracking-wider text-white opacity-0 ${open && menuImageLoaded ? "animate-[textReveal_500ms_ease-out_forwards]" : ""}
+                                className={`mt-3 text-3xl font-semibold tracking-wider text-white opacity-0 ${open && menuReady ? "animate-[textReveal_500ms_ease-out_forwards]" : ""}
                                         `}
                                 style={{
                                   animationDelay: `${textDelay}ms`,
@@ -207,7 +209,7 @@ const LandingPageHeader = () => {
                               <div className="relative h-px">
                                 {/* 通常時の薄い線 */}
                                 <div
-                                  className={`absolute inset-0 bg-white/30 origin-left scale-x-0 ${open && menuImageLoaded ? "animate-[lineReveal_500ms_ease-out_forwards]" : ""}`}
+                                  className={`absolute inset-0 bg-white/30 origin-left scale-x-0 ${open && menuReady ? "animate-[lineReveal_500ms_ease-out_forwards]" : ""}`}
                                   style={{
                                     animationDelay: `${underlineDelay}ms`,
                                   }}
