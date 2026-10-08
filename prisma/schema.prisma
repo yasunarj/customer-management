@@ -109,6 +109,17 @@ model DailyCheckResult {
   @@unique([ownerId, date])
 }
 
+model DailyTodo {
+  id          String    @id @default(cuid())
+  ownerId     String
+  title       String
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([ownerId, completedAt])
+}
+
 model LoginRateLimit {
   key         String    @id
   failCount   Int       @default(0)

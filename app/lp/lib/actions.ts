@@ -31,7 +31,20 @@ export async function handleContactForm(
   headerList.get("x-real-ip") ??
   "unknown";
 
-  const rateLimitResult = await checkContactRateLimit(ip);
+  let rateLimitResult;
+
+  try {
+    rateLimitResult = await checkContactRateLimit(ip);
+  } catch (e) {
+    console.error("レート制限チェックに失敗", e);
+
+    return {
+      success: false,
+      errors: {
+        message: ["現在送信できません。時間をおいて再度お試しください"],
+      },
+    };
+  }
 
   if (!rateLimitResult.allowed) {
     return {

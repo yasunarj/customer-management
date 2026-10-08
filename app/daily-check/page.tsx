@@ -13,6 +13,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Menu } from "lucide-react";
+import DailyTodoSection from "./components/DailyTodoSection";
 
 const DailyCheckPage = () => {
   const [streak, setStreak] = useState<number | null>(null);
@@ -112,6 +113,10 @@ const DailyCheckPage = () => {
         </p>
         <div className="mt-6">
           <DailyCheckClient />
+        </div>
+
+        <div className="mt-8">
+          <DailyTodoSection />
         </div>
       </div>
     </main>

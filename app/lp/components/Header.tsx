@@ -42,15 +42,16 @@ const LandingPageHeader = () => {
   useEffect(() => {
     const img = new window.Image();
 
-    img.src = "/images/NavMenu.png";
-
+    
     img.onload = () => {
       setMenuReady(true);
     };
-
-    img.onload = () => {
-      setMenuReady(true)
+    
+    img.onerror = () => {
+      setMenuReady(true);
     }
+    
+    img.src = "/images/NavMenu.png";
   }, []);
 
   const handleDesktopNav = (
